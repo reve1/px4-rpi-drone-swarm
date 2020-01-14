@@ -1,0 +1,25 @@
+#ifndef FILEWRITE_H
+#define FILEWRITE_H
+
+#include <QObject>
+#include <QFile>
+#include <QString>
+#include <QDebug>
+#include <QThread>
+#include <QDateTime>
+
+
+class FileWrite : public QObject
+{
+    Q_OBJECT
+
+public:
+    FileWrite();
+    static void WriteFromClass(int flag, QString data);
+private:
+    //QString name = "bluetoothserver.txt";
+    //QString name;
+};
+
+
+#endif // FILEWRITE_H
