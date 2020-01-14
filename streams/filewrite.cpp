@@ -2,7 +2,6 @@
 
 FileWrite::FileWrite()
 {
-
 }
 
 void FileWrite::WriteFromClass(int flag, QString data)
@@ -50,4 +49,8 @@ void FileWrite::WriteFromClass(int flag, QString data)
         stream << QDateTime::currentDateTime().toString("dd.MM.yyyy HH:mm:ss    ") + data;
         stream << "\r\n";
     }
+}
+
+FileWrite::~FileWrite()
+{
 }
