@@ -16,9 +16,6 @@ class FileWrite : public QObject
 public:
     FileWrite();
     static void WriteFromClass(int flag, QString data);
-private:
-    //QString name = "bluetoothserver.txt";
-    //QString name;
 };
 
 
