@@ -39,7 +39,6 @@ private slots:
 
 private:
     QBluetoothSocket *socket = nullptr;
-
     FileWrite *fw;
     QString data;
 };
