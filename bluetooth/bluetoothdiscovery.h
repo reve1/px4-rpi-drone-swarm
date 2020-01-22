@@ -14,7 +14,6 @@ class BluetoothDiscovery: public QObject
     Q_OBJECT
 public:
     BluetoothDiscovery(QObject *parent = nullptr);
-    //QBluetoothServiceInfo *service;
 
 signals:
     void deviceFound(QBluetoothServiceInfo);
