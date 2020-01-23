@@ -25,13 +25,13 @@ Vehicle::Vehicle()
     //system.register_component_discovered_callback(component_discovered);
     //mavsdk::Action::Action(mavsdk::System &system);
     //auto action = std::make_shared<mavsdk::Action>(system);
-    //mavsdk::Action::takeoff() 15;
 
     auto action = std::make_shared<mavsdk::Action>(system);
     const mavsdk::Action::Result arm_result = action->arm();
     const mavsdk::Action::Result takeoff_result = action->takeoff();
     //action->goto_location(1,1,1,1);
-
+    //mavsdk::Action::takeoff() 15;
+    
     auto telemetry = std::make_shared<mavsdk::Telemetry>(system);
     const mavsdk::Telemetry::Result set_rate_result = telemetry->set_rate_position(1.0);
     if (set_rate_result != mavsdk::Telemetry::Result::SUCCESS) {
