@@ -16,5 +16,4 @@ public:
     Vehicle();
 };
 
-
 #endif // VEHICLE_H
