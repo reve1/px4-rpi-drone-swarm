@@ -13,9 +13,9 @@ public:
 
     struct DeviceModel
     {
-        //QList<int> ControllerParametrs;
         QList<QString> BluetoothParametrsName;
         QList<int> BluetoothParametrsRSSI;
+        //QList<int> ControllerParametrs;
     };
 
     struct ControllerModel
