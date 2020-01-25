@@ -46,7 +46,7 @@ void BluetoothDiscovery::StartServiceDiscovery()
 #else
     discoveryServiceAgent->setUuidFilter(QBluetoothUuid(serviceUuid));
 #endif
-    //discoveryServiceAgent->setRemoteAddress(QBluetoothAddress(bluetoothAddress));
+//    discoveryServiceAgent->setRemoteAddress(QBluetoothAddress(bluetoothAddress));
     discoveryServiceAgent->start(QBluetoothServiceDiscoveryAgent::FullDiscovery);
     qDebug() << "Начато сканирование сервисов";
     data = "Начато сканирование сервисов";
