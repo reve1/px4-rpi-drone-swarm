@@ -19,5 +19,4 @@ public:
     static void WriteFromClass(int flag, QString data);
 };
 
-
 #endif // FILEWRITE_H
