@@ -15,6 +15,7 @@ class FileWrite : public QObject
 
 public:
     FileWrite();
+    ~FileWrite();
     static void WriteFromClass(int flag, QString data);
 };
 
