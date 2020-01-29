@@ -8,7 +8,7 @@ class TimerMessage : public QObject
     Q_OBJECT
 
 public:
-    TimerMessage(QObject *parent = nullptr);
+    TimerMessage();
     ~TimerMessage();
     QTimer timer;
 

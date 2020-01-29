@@ -8,7 +8,7 @@ class TimerRSSI : public QObject
     Q_OBJECT
 
 public:
-    TimerRSSI(QObject *parent = nullptr);
+    TimerRSSI();
     ~TimerRSSI();
     QTimer timer;
 

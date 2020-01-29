@@ -1,7 +1,6 @@
 #include "timermessage.h"
 
-TimerMessage::TimerMessage(QObject *parent)
-    :   QObject(parent)
+TimerMessage::TimerMessage()
 {
     connect(&timer, SIGNAL(timeout()), SLOT (Timer()));
 }
