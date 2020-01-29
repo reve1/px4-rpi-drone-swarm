@@ -1,9 +1,7 @@
-#include "bluetoothdiscovery.h"
-
 #if defined (Q_OS_ANDROID)
 #include <QtAndroidExtras/QtAndroid>
 #endif
-
+#include "bluetoothdiscovery.h"
 static const QLatin1String serviceUuid("e8e10f95-1a70-4b27-9ccf-02010264e9c8");
 #if defined (Q_OS_ANDROID)
 static const QLatin1String reverseUuid("c8e96402-0102-cf9c-274b-701a950fe1e8");
@@ -11,6 +9,7 @@ static const QLatin1String reverseUuid("c8e96402-0102-cf9c-274b-701a950fe1e8");
 
 //static const QLatin1String serviceUuid("00001101-0000-1000-8000-00805F9B34FB");
 //static const QLatin1String serviceUuid("a23d00bc-217c-123b-9c00-fc44577136ee");
+
 //static const QLatin1String bluetoothAddress("9C:E0:63:BD:A8:88"); //Note 8 (android)
 //static const QLatin1String bluetoothAddress("B8:27:EB:89:C5:44"); //RPi
 //static const QLatin1String bluetoothAddress("A4:17:31:36:3E:16"); //Notebook (Linux)

@@ -22,11 +22,9 @@ SOURCES += \
         bluetooth/chatclient.cpp \
         bluetooth/chatserver.cpp \
         main.cpp \
-        model/model.cpp \
         streams/filewrite.cpp \
         streams/timermessage.cpp \
-        streams/timerrssi.cpp \
-        vehicle/vehicle.cpp
+        streams/timerrssi.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -38,30 +36,9 @@ HEADERS += \
     bluetooth/chat.h \
     bluetooth/chatclient.h \
     bluetooth/chatserver.h \ \
-    mavsdk/include/mavsdk/connection_result.h \
-    mavsdk/include/mavsdk/mavsdk.h \
-    mavsdk/include/mavsdk/plugin_base.h \
-    mavsdk/include/mavsdk/plugins/action/action.h \
-    mavsdk/include/mavsdk/plugins/calibration/calibration.h \
-    mavsdk/include/mavsdk/plugins/camera/camera.h \
-    mavsdk/include/mavsdk/plugins/follow_me/follow_me.h \
-    mavsdk/include/mavsdk/plugins/geofence/geofence.h \
-    mavsdk/include/mavsdk/plugins/gimbal/gimbal.h \
-    mavsdk/include/mavsdk/plugins/info/info.h \
-    mavsdk/include/mavsdk/plugins/log_files/log_files.h \
-    mavsdk/include/mavsdk/plugins/mission/mission.h \
-    mavsdk/include/mavsdk/plugins/mission/mission_item.h \
-    mavsdk/include/mavsdk/plugins/mission_raw/mission_raw.h \
-    mavsdk/include/mavsdk/plugins/offboard/offboard.h \
-    mavsdk/include/mavsdk/plugins/param/param.h \
-    mavsdk/include/mavsdk/plugins/telemetry/telemetry.h \
-    mavsdk/include/mavsdk/system.h \
-    model/model.h \
     streams/filewrite.h \
     streams/timermessage.h \
-    streams/timerrssi.h \
-    vehicle/vehicle.h
-
+    streams/timerrssi.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/mavsdk/lib/release/ -lmavsdk
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/mavsdk/lib/debug/ -lmavsdk
