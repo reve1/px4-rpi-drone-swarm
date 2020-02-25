@@ -17,9 +17,9 @@ static const QLatin1String reverseUuid("c8e96402-0102-cf9c-274b-701a950fe1e8");
 BluetoothDiscovery::BluetoothDiscovery(QObject *parent) : QObject(parent)
 {
     TimerRSSI *timerrssi = new TimerRSSI;
-    connect(discoveryServiceAgent, SIGNAL(serviceDiscovered(QBluetoothServiceInfo)), this, SIGNAL(deviceFound(QBluetoothServiceInfo)));
-    connect(discoveryDeviceAgent, SIGNAL(finished()), this, SLOT(StartDeviceDiscovery()));
-    connect(timerrssi, SIGNAL(doTimer()), this, SLOT(UpdateRSSI()));
+    connect(discoveryServiceAgent, SIGNAL(serviceDiscovered(QBluetoothServiceInfo)), this, SIGNAL(deviceFound(QBluetoothServiceInfo)));//подключение устройства к существующему серверу RFCOMM
+    connect(discoveryDeviceAgent, SIGNAL(finished()), this, SLOT(StartDeviceDiscovery())); //запуск обновления устройств после окончания
+    connect(timerrssi, SIGNAL(doTimer()), this, SLOT(UpdateRSSI())); //для обновление уровня сигнала
     //connect(discoveryServiceAgent, SIGNAL(finished()), this, SLOT(StartServiceDiscovery())); //если не нашел иши дальше... возможно это и не нужно...
     //connect(localDevice, SIGNAL(hostModeStateChanged(QBluetoothLocalDevice::HostMode)), this, SLOT(SetHostDiscoverable())); //позволяет обновлять "видимость в сети" но на андроиде не работает, а надо ли?
     SetHostDiscoverable();
