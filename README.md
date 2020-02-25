@@ -1,5 +1,6 @@
 # px4-rpi-drone-swarm
 
+sdptool search SP
 
 sudo hciconfig 0 sspmode 0
 
