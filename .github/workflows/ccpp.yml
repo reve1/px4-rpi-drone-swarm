@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: configure
-      #run: ls -la
+      run: ls -la
       #run: ./configure
     - name: make
       run: make
