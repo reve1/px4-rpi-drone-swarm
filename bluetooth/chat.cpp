@@ -16,7 +16,7 @@ Chat::Chat(QObject *parent)
     connect(tm, SIGNAL(doTimer()), this, SLOT(sendClicked()));
     connect(server, SIGNAL(clientConnected(QString)), this, SLOT(clientConnected(QString)));
     connect(server, SIGNAL(clientDisconnected(QString)), this, SLOT(clientDisconnected(QString)));
-    connect(server, SIGNAL(messageReceived(QString,QString)), this, SLOT(showMessage(QString,QString)));
+    //connect(server, SIGNAL(messageReceived(QString,QString)), this, SLOT(showMessage(QString,QString)));
     //connect(this, SIGNAL(sendMessage(QString)), server, SLOT(sendMessage(QString)));
     connect(this, SIGNAL(SEND()), tm, SLOT(StartTimer())); //убрать эту хрень после потока
 
@@ -84,11 +84,11 @@ void Chat::sendClicked() //убрать эту хрень после поток�
     qCritical() << "Информация передана: " + message.simplified(); //ECHO
 }
 
-void Chat::showMessage(const QString &sender, const QString &message) //убрать эту хрень после потока
-{
-    qCritical() << "Принято сообщение от: " + sender + ", с текстом " + message.simplified();
-    //emit sendMessage(message1); //убрать эту хрень после потока
-}
+//void Chat::showMessage(const QString &sender, const QString &message) //убрать эту хрень после потока
+//{
+//    qCritical() << "Принято сообщение от: " + sender + ", с текстом " + message.simplified();
+//    //emit sendMessage(message1); //убрать эту хрень после потока
+//}
 
 void Chat::connectClicked(QBluetoothServiceInfo info)
 {
@@ -99,7 +99,7 @@ void Chat::connectClicked(QBluetoothServiceInfo info)
     ChatClient *client = new ChatClient(this);
     qDebug() << "Подключение...";
 
-    connect(client, &ChatClient::messageReceived, this, &Chat::showMessage);
+    //connect(client, &ChatClient::messageReceived, this, &Chat::showMessage);
     connect(client, &ChatClient::disconnected, this, QOverload<>::of(&Chat::clientDisconnected));
     connect(client, QOverload<const QString &>::of(&ChatClient::connected), this, &Chat::connected);
     connect(client, &ChatClient::socketErrorOccurred, this, &Chat::reactOnSocketError);
