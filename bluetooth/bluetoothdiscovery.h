@@ -3,6 +3,7 @@
 #include <QBluetoothLocalDevice>
 #include <QBluetoothServiceDiscoveryAgent>
 #include <QBluetoothServiceInfo>
+#include <QBluetoothUuid>
 #include <QThread>
 
 #include <model/model.h>
