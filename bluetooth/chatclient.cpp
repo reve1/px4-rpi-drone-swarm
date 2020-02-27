@@ -29,7 +29,6 @@ void ChatClient::startClient(const QBluetoothServiceInfo &remoteService)
     qDebug() << "Подключение к " + socket->peerAddress().toString() + " выполнено";
     data = "Подключение к " + socket->peerAddress().toString() + " выполнено";
     fw->WriteFromClass(2, data);
-
     connect(socket, &QBluetoothSocket::readyRead, this, &ChatClient::readSocket);
     connect(socket, &QBluetoothSocket::connected, this, QOverload<>::of(&ChatClient::connected));
     connect(socket, &QBluetoothSocket::disconnected, this, &ChatClient::disconnected);
@@ -63,6 +62,7 @@ void ChatClient::sendMessage(const QString &message)
 {
     QByteArray text = message.toUtf8() + '\n';
     socket->write(text);
+    qCritical() << "Информация передана: " + message.simplified(); //ECHO
     data = "Отправлено на " + socket->peerName() +" сообщение: " + message;
     fw->WriteFromClass(3, data);
 }

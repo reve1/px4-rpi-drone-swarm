@@ -9,6 +9,7 @@ static const QLatin1String serviceUuid("e8e10f95-1a70-4b27-9ccf-02010264e9c8");
 ChatServer::ChatServer(QObject *parent)
     :   QObject(parent)
 {
+    connect(this, SIGNAL(messageReceived_reply(QString)), this, SLOT(sendMessage(QString)));
     data = "Отработал конструктор класса ChatServer.";
     fw->WriteFromClass(1, data);
 }
@@ -128,11 +129,8 @@ void ChatServer::clientDisconnected()
         return;
 
     emit clientDisconnected(socket->peerName());
-
     clientSockets.removeOne(socket);
-
     socket->deleteLater();
-
     data = "Отключился клиент " + socket->peerAddress().toString();
     fw->WriteFromClass(1, data);
 }
@@ -145,8 +143,8 @@ void ChatServer::readSocket()
 
     while (socket->canReadLine()) {
         QByteArray line = socket->readLine().trimmed();
-        emit messageReceived(socket->peerName(),
-                             QString::fromUtf8(line.constData(), line.length()));
+        emit messageReceived(socket->peerName(), QString::fromUtf8(line.constData(), line.length()));
+        emit messageReceived_reply("REPLY");
         data = "Получено от: " + socket->peerName() +" сообщение: " + QString::fromUtf8(line.constData(), line.length());
         fw->WriteFromClass(3, data.simplified());
         qWarning() << data;
