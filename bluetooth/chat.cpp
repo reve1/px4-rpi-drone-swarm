@@ -13,13 +13,13 @@ Chat::Chat(QObject *parent)
 {
     server = new ChatServer (this);
 
+
     connect(tm, SIGNAL(doTimer()), this, SLOT(sendClicked()));
     connect(server, SIGNAL(clientConnected(QString)), this, SLOT(clientConnected(QString)));
     connect(server, SIGNAL(clientDisconnected(QString)), this, SLOT(clientDisconnected(QString)));
     //connect(server, SIGNAL(messageReceived(QString,QString)), this, SLOT(showMessage(QString,QString)));
     //connect(this, SIGNAL(sendMessage(QString)), server, SLOT(sendMessage(QString)));
     connect(this, SIGNAL(SEND()), tm, SLOT(StartTimer())); //убрать эту хрень после потока
-
     server->startServer();
     localName = QBluetoothLocalDevice().name();
 
@@ -100,11 +100,13 @@ void Chat::connectClicked(QBluetoothServiceInfo info)
     qDebug() << "Подключение...";
 
     //connect(client, &ChatClient::messageReceived, this, &Chat::showMessage);
+    //connect(tm, SIGNAL(doTimer()), client, SLOT(sendMessage()));
     connect(client, &ChatClient::disconnected, this, QOverload<>::of(&Chat::clientDisconnected));
     connect(client, QOverload<const QString &>::of(&ChatClient::connected), this, &Chat::connected);
     connect(client, &ChatClient::socketErrorOccurred, this, &Chat::reactOnSocketError);
     connect(this, &Chat::sendMessage, client, &ChatClient::sendMessage);
-    connect(client, SIGNAL(messageReceived_reply()), this, SLOT(sendClicked()));
+    //connect(client, SIGNAL(messageReceived_reply()), this, SLOT(sendClicked()));
+    //connect(server, SIGNAL(messageReceived_reply()), server, SLOT(sendClicked()));
     qDebug() << "Клиент стартовал";
     client->startClient(service);
 
