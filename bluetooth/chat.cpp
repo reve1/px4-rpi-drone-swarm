@@ -13,13 +13,12 @@ Chat::Chat(QObject *parent)
 {
     server = new ChatServer (this);
 
-    connect(tm, SIGNAL(doTimer()), this, SLOT(sendClicked()));
+    connect(tm, SIGNAL(doTimer()), this, SLOT(startEcho())); //только для ECHO - REPLY
     connect(server, SIGNAL(clientConnected(QString)), this, SLOT(clientConnected(QString)));
     connect(server, SIGNAL(clientDisconnected(QString)), this, SLOT(clientDisconnected(QString)));
-    //connect(server, SIGNAL(messageReceived(QString,QString)), this, SLOT(showMessage(QString,QString)));
-    //connect(this, SIGNAL(sendMessage(QString)), server, SLOT(sendMessage(QString)));
+    //!!!!!!!!
     connect(this, SIGNAL(SEND()), tm, SLOT(StartTimer())); //убрать эту хрень после потока
-
+    //!!!!!!!!
     server->startServer();
     localName = QBluetoothLocalDevice().name();
 
@@ -38,23 +37,23 @@ Chat::~Chat()
 
 void Chat::clientConnected(const QString &name)
 {
-    qDebug() << "Подключился клиент: " + name;
-    data = "Подключился клиент: " + name;
-    fw->WriteFromClass(3, data);
+    //qDebug() << "Подключился клиент: " + name;
+    //data = "Подключился клиент: " + name;
+    //fw->WriteFromClass(3, data);
 }
 
 void Chat::clientDisconnected(const QString &name)
 {
-    qDebug() << "Отключился клиент: " + name;
-    data = "Отключился клиент: " + name;
-    fw->WriteFromClass(3, data);
+    //qDebug() << "Отключился клиент: " + name;
+    //data = "Отключился клиент: " + name;
+    //fw->WriteFromClass(3, data);
 }
 
 void Chat::connected(const QString &name)
 {
-    qDebug() << "Подключен к: " + name;
-    data = "Подключен к: " + name;
-    fw->WriteFromClass(3, data);
+    //qDebug() << "Подключен к: " + name;
+    //data = "Подключен к: " + name;
+    //fw->WriteFromClass(3, data);
     emit SEND(); //убрать эту хрень после потока
 }
 
@@ -76,19 +75,10 @@ void Chat::clientDisconnected()
     }
 }
 
-//===================ПОЛНАЯ ХРЕНЬ!!!!!!!!!!!!!
-
-void Chat::sendClicked() //убрать эту хрень после потока
+void Chat::startEcho() //убрать эту хрень после потока
 {
     emit sendMessage(message);
-    qCritical() << "Информация передана: " + message.simplified(); //ECHO
 }
-
-//void Chat::showMessage(const QString &sender, const QString &message) //убрать эту хрень после потока
-//{
-//    qCritical() << "Принято сообщение от: " + sender + ", с текстом " + message.simplified();
-//    //emit sendMessage(message1); //убрать эту хрень после потока
-//}
 
 void Chat::connectClicked(QBluetoothServiceInfo info)
 {
@@ -99,12 +89,11 @@ void Chat::connectClicked(QBluetoothServiceInfo info)
     ChatClient *client = new ChatClient(this);
     qDebug() << "Подключение...";
 
-    //connect(client, &ChatClient::messageReceived, this, &Chat::showMessage);
     connect(client, &ChatClient::disconnected, this, QOverload<>::of(&Chat::clientDisconnected));
     connect(client, QOverload<const QString &>::of(&ChatClient::connected), this, &Chat::connected);
     connect(client, &ChatClient::socketErrorOccurred, this, &Chat::reactOnSocketError);
     connect(this, &Chat::sendMessage, client, &ChatClient::sendMessage);
-    connect(client, SIGNAL(messageReceived_reply()), this, SLOT(sendClicked()));
+
     qDebug() << "Клиент стартовал";
     client->startClient(service);
 

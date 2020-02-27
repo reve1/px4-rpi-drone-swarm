@@ -23,10 +23,10 @@ int main(int argc, char *argv[])
     QLoggingCategory::setFilterRules(QStringLiteral("qt.bluetooth* = true"));
     Model *md = new Model;
     FileWrite *fw = new FileWrite;
-    Chat *bch = new Chat;
+    Chat *bchat = new Chat;
     BluetoothDiscovery *bd = new BluetoothDiscovery;
 
-    QObject::connect(bd, SIGNAL(deviceFound(QBluetoothServiceInfo)), bch, SLOT(connectClicked(QBluetoothServiceInfo)));
+    QObject::connect(bd, SIGNAL(deviceFound(QBluetoothServiceInfo)), bchat, SLOT(connectClicked(QBluetoothServiceInfo)));
 
 
     bd->StartServiceDiscovery();

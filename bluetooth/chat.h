@@ -32,7 +32,7 @@ signals:
 
 private slots:
     void connectClicked(QBluetoothServiceInfo);
-    void sendClicked();
+    void startEcho();
 
    // void showMessage(const QString &sender, const QString &message);
 

@@ -33,6 +33,7 @@ void ChatClient::startClient(const QBluetoothServiceInfo &remoteService)
     connect(socket, &QBluetoothSocket::disconnected, this, &ChatClient::disconnected);
     connect(socket, QOverload<QBluetoothSocket::SocketError>::of(&QBluetoothSocket::error),
             this, &ChatClient::onSocketErrorOccurred);
+    //connect(this, SIGNAL(messageReceived_reply()), this, SLOT(sendClicked()));
 }
 
 void ChatClient::stopClient()
@@ -54,7 +55,7 @@ void ChatClient::readSocket()
         qCritical() << "Получено от " << socket->peerName() <<  " сообщение: " << line.simplified();
         data = "Получено от " + socket->peerName() + " сообщение: " + QString::fromUtf8(line.constData(), line.length());
         fw->WriteFromClass(3, data.simplified());
-        emit messageReceived_reply();
+        //emit messageReceived_reply();
     }
 }
 
@@ -84,5 +85,8 @@ void ChatClient::onSocketErrorOccurred(QBluetoothSocket::SocketError error)
 
 void ChatClient::connected()
 {
+    qDebug() << "Подключен к: " + socket->peerName();
+    data = "Подключен к: " + socket->peerName();
+    fw->WriteFromClass(3, data);
     emit connected(socket->peerName());
 }
