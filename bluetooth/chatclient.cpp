@@ -1,153 +1,89 @@
-#include "bluetooth/chatserver.h"
+#include "bluetooth/chatclient.h"
+#include <QtCore/qmetaobject.h>
 
-#include <QtBluetooth/qbluetoothserver.h>
-#include <QtBluetooth/qbluetoothsocket.h>
-
-//static const QLatin1String serviceUuid("00001101-0000-1000-8000-00805F9B34FB");
-static const QLatin1String serviceUuid("e8e10f95-1a70-4b27-9ccf-02010264e9c8");
-
-ChatServer::ChatServer(QObject *parent)
+ChatClient::ChatClient(QObject *parent)
     :   QObject(parent)
 {
-    connect(this, SIGNAL(messageReceived_reply(QString)), this, SLOT(sendMessage(QString)));
-    data = "Отработал конструктор класса ChatServer.";
-    fw->WriteFromClass(1, data);
+    data = "Отработал конструктор класса ChatClient.";
+    fw->WriteFromClass(2, data);
 }
 
-ChatServer::~ChatServer()
+ChatClient::~ChatClient()
 {
-    stopServer();
-    data = "Отработал деструктор класса ChatServer.";
-    fw->WriteFromClass(1, data);
+    stopClient();
+    data = "Отработал деструктор класса ChatClient.";
+    fw->WriteFromClass(2, data);
 }
 
-void ChatServer::startServer(const QBluetoothAddress& localAdapter)
+void ChatClient::startClient(const QBluetoothServiceInfo &remoteService)
 {
-    stopServer();
-    if (rfcommServer)
+    if (socket)
         return;
 
-    rfcommServer = new QBluetoothServer(QBluetoothServiceInfo::RfcommProtocol, this);
-    connect(rfcommServer, &QBluetoothServer::newConnection,
-            this, QOverload<>::of(&ChatServer::clientConnected));
-    bool result = rfcommServer->listen(localAdapter);
-    if (!result) {
-        qWarning() << "Невозможно привязать сервер к " << localAdapter.toString();
-        data = "Невозможно привязать сервер к " + localAdapter.toString();
-        fw->WriteFromClass(1, data);
-        return;
-    }
-
-    serviceInfo.setAttribute(QBluetoothServiceInfo::ServiceRecordHandle, (uint)0x00010010);
-
-    QBluetoothServiceInfo::Sequence profileSequence;
-    QBluetoothServiceInfo::Sequence classId;
-    classId << QVariant::fromValue(QBluetoothUuid(QBluetoothUuid::SerialPort));
-    classId << QVariant::fromValue(quint16(0x100));
-    profileSequence.append(QVariant::fromValue(classId));
-    serviceInfo.setAttribute(QBluetoothServiceInfo::BluetoothProfileDescriptorList,
-                             profileSequence);
-
-    classId.clear();
-    classId << QVariant::fromValue(QBluetoothUuid(serviceUuid));
-    classId << QVariant::fromValue(QBluetoothUuid(QBluetoothUuid::SerialPort));
-
-    serviceInfo.setAttribute(QBluetoothServiceInfo::ServiceClassIds, classId);
-
-    serviceInfo.setAttribute(QBluetoothServiceInfo::ServiceName, tr("Bt Chat Server"));
-    serviceInfo.setAttribute(QBluetoothServiceInfo::ServiceDescription, tr("Example bluetooth chat server"));
-    serviceInfo.setAttribute(QBluetoothServiceInfo::ServiceProvider, tr("qt-project.org"));
-
-    serviceInfo.setServiceUuid(QBluetoothUuid(serviceUuid));
-
-    QBluetoothServiceInfo::Sequence publicBrowse;
-    publicBrowse << QVariant::fromValue(QBluetoothUuid(QBluetoothUuid::PublicBrowseGroup));
-    serviceInfo.setAttribute(QBluetoothServiceInfo::BrowseGroupList,
-                             publicBrowse);
-
-    QBluetoothServiceInfo::Sequence protocolDescriptorList;
-    QBluetoothServiceInfo::Sequence protocol;
-    protocol << QVariant::fromValue(QBluetoothUuid(QBluetoothUuid::L2cap));
-    protocolDescriptorList.append(QVariant::fromValue(protocol));
-    protocol.clear();
-    protocol << QVariant::fromValue(QBluetoothUuid(QBluetoothUuid::Rfcomm))
-             << QVariant::fromValue(quint8(rfcommServer->serverPort()));
-    protocolDescriptorList.append(QVariant::fromValue(protocol));
-    serviceInfo.setAttribute(QBluetoothServiceInfo::ProtocolDescriptorList,
-                             protocolDescriptorList);
-
-    serviceInfo.registerService(localAdapter);
-
-    data = "Старт сервера Bluetooth.";
-    fw->WriteFromClass(1, data);
-
+    socket = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
+    qDebug() << "Создан socket";
+    data = "Создан socket";
+    fw->WriteFromClass(2, data);
+    socket->connectToService(remoteService, QIODevice::ReadWrite);
+    qDebug() << "Подключение к " << socket->peerAddress().toString() << " выполнено";
+    data = "Подключение к " + socket->peerAddress().toString() + " выполнено";
+    fw->WriteFromClass(2, data);
+    connect(socket, &QBluetoothSocket::readyRead, this, &ChatClient::readSocket);
+    connect(socket, &QBluetoothSocket::connected, this, QOverload<>::of(&ChatClient::connected));
+    connect(socket, &QBluetoothSocket::disconnected, this, &ChatClient::disconnected);
+    connect(socket, QOverload<QBluetoothSocket::SocketError>::of(&QBluetoothSocket::error),
+            this, &ChatClient::onSocketErrorOccurred);
+    //connect(this, SIGNAL(messageReceived_reply()), this, SLOT(sendClicked()));
 }
 
-void ChatServer::stopServer()
+void ChatClient::stopClient()
 {
-    serviceInfo.unregisterService();
-    qDeleteAll(clientSockets);
-    delete rfcommServer;
-    rfcommServer = nullptr;
-    data = "Стоп сервера Bluetooth.";
-    fw->WriteFromClass(1, data);
+    delete socket;
+    socket = nullptr;
+    data = "Клиент остановлен";
+    fw->WriteFromClass(2, data);
 }
 
-void ChatServer::sendMessage(const QString &message)
+void ChatClient::readSocket()
 {
-    QByteArray text = message.toUtf8() + '\n';
-
-    for (QBluetoothSocket *socket : qAsConst(clientSockets))
-    {
-        qCritical() << "Отправлено на " << socket->peerName() <<  " сообщение: "  << message.simplified();
-        data = "Отправлено на: " + socket->peerName() +" сообщение: " + message;
-        fw->WriteFromClass(3, data);
-        socket->write(text);
-    }
-
-}
-
-void ChatServer::clientConnected()
-{
-    QBluetoothSocket *socket = rfcommServer->nextPendingConnection();
-    if (!socket)
-        return;
-
-    connect(socket, &QBluetoothSocket::readyRead, this, &ChatServer::readSocket);
-    connect(socket, &QBluetoothSocket::disconnected, this, QOverload<>::of(&ChatServer::clientDisconnected));
-    clientSockets.append(socket);
-
-    emit clientConnected(socket->peerName());
-
-    data = "Подключился клиент " + socket->peerAddress().toString();
-    fw->WriteFromClass(1, data);
-}
-
-void ChatServer::clientDisconnected()
-{
-    QBluetoothSocket *socket = qobject_cast<QBluetoothSocket *>(sender());
-    if (!socket)
-        return;
-
-    emit clientDisconnected(socket->peerName());
-    clientSockets.removeOne(socket);
-    socket->deleteLater();
-    data = "Отключился клиент " + socket->peerAddress().toString();
-    fw->WriteFromClass(1, data);
-}
-
-void ChatServer::readSocket()
-{
-    QBluetoothSocket *socket = qobject_cast<QBluetoothSocket *>(sender());
     if (!socket)
         return;
 
     while (socket->canReadLine()) {
-        QByteArray line = socket->readLine().trimmed();
+        QByteArray line = socket->readLine();
         emit messageReceived(socket->peerName(), QString::fromUtf8(line.constData(), line.length()));
-        emit messageReceived_reply("REPLY");
         qCritical() << "Получено от " << socket->peerName() <<  " сообщение: " << line.simplified();
-        data = "Получено от: " + socket->peerName() +" сообщение: " + line.simplified();
+        data = "Получено от " + socket->peerName() + " сообщение: " + QString::fromUtf8(line.constData(), line.length());
         fw->WriteFromClass(3, data.simplified());
+        //emit messageReceived_reply();
     }
+}
+
+void ChatClient::sendMessage(const QString &message)
+{
+    QByteArray text = message.toUtf8() + '\n';
+    socket->write(text);
+    qCritical() << "Отправлено на " << socket->peerName() <<  " сообщение: "  << message.simplified();
+    data = "Отправлено на " + socket->peerName() +" сообщение: " + message.simplified();
+    fw->WriteFromClass(3, data);
+}
+
+void ChatClient::onSocketErrorOccurred(QBluetoothSocket::SocketError error)
+{
+    if (error == QBluetoothSocket::NoSocketError)
+        return;
+
+    QMetaEnum metaEnum = QMetaEnum::fromType<QBluetoothSocket::SocketError>();
+    QString errorString = socket->peerName() + QLatin1Char(' ')
+            + metaEnum.valueToKey(error) + QLatin1String(" occurred");
+
+    emit socketErrorOccurred(errorString);
+    qCritical() << "Ошибка соединения: " << errorString;
+    data = "Ошибка соединения: " + errorString;
+    fw->WriteFromClass(2, data);
+}
+
+void ChatClient::connected()
+{
+    emit connected(socket->peerName());
 }
