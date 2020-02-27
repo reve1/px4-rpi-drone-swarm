@@ -129,11 +129,8 @@ void ChatServer::clientDisconnected()
         return;
 
     emit clientDisconnected(socket->peerName());
-
     clientSockets.removeOne(socket);
-
     socket->deleteLater();
-
     data = "Отключился клиент " + socket->peerAddress().toString();
     fw->WriteFromClass(1, data);
 }
@@ -146,8 +143,7 @@ void ChatServer::readSocket()
 
     while (socket->canReadLine()) {
         QByteArray line = socket->readLine().trimmed();
-        emit messageReceived(socket->peerName(),
-                             QString::fromUtf8(line.constData(), line.length()));
+        emit messageReceived(socket->peerName(), QString::fromUtf8(line.constData(), line.length()));
         emit messageReceived_reply("REPLY");
         data = "Получено от: " + socket->peerName() +" сообщение: " + QString::fromUtf8(line.constData(), line.length());
         fw->WriteFromClass(3, data.simplified());
