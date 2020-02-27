@@ -76,6 +76,8 @@ void Chat::clientDisconnected()
     }
 }
 
+//===================ПОЛНАЯ ХРЕНЬ!!!!!!!!!!!!!
+
 void Chat::sendClicked() //убрать эту хрень после потока
 {
     emit sendMessage(message);

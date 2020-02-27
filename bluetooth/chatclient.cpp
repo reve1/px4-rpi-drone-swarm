@@ -25,7 +25,7 @@ void ChatClient::startClient(const QBluetoothServiceInfo &remoteService)
     data = "Создан socket";
     fw->WriteFromClass(2, data);
     socket->connectToService(remoteService, QIODevice::ReadWrite);
-    qDebug() << "Подключение к " + socket->peerAddress().toString() + " выполнено";
+    qDebug() << "Подключение к " << socket->peerAddress().toString() << " выполнено";
     data = "Подключение к " + socket->peerAddress().toString() + " выполнено";
     fw->WriteFromClass(2, data);
     connect(socket, &QBluetoothSocket::readyRead, this, &ChatClient::readSocket);
@@ -50,9 +50,9 @@ void ChatClient::readSocket()
 
     while (socket->canReadLine()) {
         QByteArray line = socket->readLine();
-        emit messageReceived(socket->peerName(),
-                             QString::fromUtf8(line.constData(), line.length()));
-        data = "Получено от " + socket->peerName() +" сообщение: " + QString::fromUtf8(line.constData(), line.length());
+        emit messageReceived(socket->peerName(), QString::fromUtf8(line.constData(), line.length()));
+        qCritical() << "Получено от " << socket->peerName() <<  " сообщение: " << line.simplified();
+        data = "Получено от " + socket->peerName() + " сообщение: " + QString::fromUtf8(line.constData(), line.length());
         fw->WriteFromClass(3, data.simplified());
         emit messageReceived_reply();
     }
@@ -62,8 +62,8 @@ void ChatClient::sendMessage(const QString &message)
 {
     QByteArray text = message.toUtf8() + '\n';
     socket->write(text);
-    qCritical() << "Информация передана: " << message.simplified(); //ECHO
-    data = "Отправлено на " + socket->peerName() +" сообщение: " + message;
+    qCritical() << "Отправлено на " << socket->peerName() <<  " сообщение: "  << message.simplified();
+    data = "Отправлено на " + socket->peerName() +" сообщение: " + message.simplified();
     fw->WriteFromClass(3, data);
 }
 
@@ -77,6 +77,7 @@ void ChatClient::onSocketErrorOccurred(QBluetoothSocket::SocketError error)
             + metaEnum.valueToKey(error) + QLatin1String(" occurred");
 
     emit socketErrorOccurred(errorString);
+    qCritical() << "Ошибка соединения: " << errorString;
     data = "Ошибка соединения: " + errorString;
     fw->WriteFromClass(2, data);
 }
