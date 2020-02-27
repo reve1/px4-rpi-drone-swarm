@@ -62,6 +62,7 @@ void ChatClient::sendMessage(const QString &message)
 {
     QByteArray text = message.toUtf8() + '\n';
     socket->write(text);
+    qCritical() << "Информация передана: " << message.simplified(); //ECHO
     data = "Отправлено на " + socket->peerName() +" сообщение: " + message;
     fw->WriteFromClass(3, data);
 }

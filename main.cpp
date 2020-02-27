@@ -28,6 +28,7 @@ int main(int argc, char *argv[])
 
     QObject::connect(bd, SIGNAL(deviceFound(QBluetoothServiceInfo)), bch, SLOT(connectClicked(QBluetoothServiceInfo)));
 
+
     bd->StartServiceDiscovery();
     return a.exec();
 }
