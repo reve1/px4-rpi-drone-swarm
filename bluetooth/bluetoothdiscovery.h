@@ -28,6 +28,7 @@ public slots:
 private slots:
     void UpdateRSSI();
     void discoveryService_finished();
+    void discoveryService_discovered();
     void discoveryDevice_finished();
 
 private:

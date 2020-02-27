@@ -102,6 +102,7 @@ void Chat::connectClicked(QBluetoothServiceInfo info)
     connect(client, QOverload<const QString &>::of(&ChatClient::connected), this, &Chat::connected);
     connect(client, &ChatClient::socketErrorOccurred, this, &Chat::reactOnSocketError);
     connect(this, &Chat::sendMessage, client, &ChatClient::sendMessage);
+    connect(client, SIGNAL(messageReceived_reply()), this, SLOT(sendClicked()));
     qDebug() << "Клиент стартовал";
     client->startClient(service);
 

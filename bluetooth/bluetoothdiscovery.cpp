@@ -17,6 +17,7 @@ static const QLatin1String bluetoothAddress("68:94:23:39:C4:36");
 BluetoothDiscovery::BluetoothDiscovery(QObject *parent) : QObject(parent)
 {
     connect(discoveryServiceAgent, SIGNAL(serviceDiscovered(QBluetoothServiceInfo)), this, SIGNAL(deviceFound(QBluetoothServiceInfo)));
+    connect(discoveryServiceAgent, SIGNAL(serviceDiscovered(QBluetoothServiceInfo)), this, SLOT(discoveryService_discovered()));
     connect(discoveryServiceAgent, SIGNAL(finished()), this, SLOT(discoveryService_finished()));
     connect(discoveryDeviceAgent, SIGNAL(finished()), this, SLOT(discoveryDevice_finished()));
     //(discoveryDeviceAgent, SIGNAL(finished()), this, SLOT(StartDeviceDiscovery()));
@@ -35,8 +36,11 @@ BluetoothDiscovery::BluetoothDiscovery(QObject *parent) : QObject(parent)
 
 void BluetoothDiscovery::SetHostDiscoverable()
 {
+
+#if !defined (Q_OS_WIN) //не работает на ОС Windows
     localDevice->setHostMode(QBluetoothLocalDevice::HostPoweredOff);
     localDevice->setHostMode(QBluetoothLocalDevice::HostDiscoverable);
+#endif
     qDebug() << "Устройство " << localDevice->name() << " обнаружимо в сети";
     data = "Устройство " + localDevice->name() + " обнаружимо в сети";
     fw->WriteFromClass(4, data);
@@ -87,6 +91,14 @@ void BluetoothDiscovery::discoveryService_finished()
     data = "Cканирование устройств выполнено";
     fw->WriteFromClass(4, data);
 }
+
+void BluetoothDiscovery::discoveryService_discovered()
+{
+    qDebug() << "Обнаружен нужный сервис";
+    data = "Обнаружен нужный сервис";
+    fw->WriteFromClass(4, data);
+}
+
 void BluetoothDiscovery::discoveryDevice_finished()
 {
     qDebug() << "Cканирование сервисов выполнено";

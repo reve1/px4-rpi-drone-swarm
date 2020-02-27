@@ -28,7 +28,7 @@ public slots:
 
 signals:
     void messageReceived(const QString &sender, const QString &message);
-    void messageReceived_reply(QString);
+    void messageReceived_reply();
     void connected(const QString &name);
     void disconnected();
     void socketErrorOccurred(const QString &errorString);
