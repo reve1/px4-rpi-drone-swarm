@@ -85,5 +85,8 @@ void ChatClient::onSocketErrorOccurred(QBluetoothSocket::SocketError error)
 
 void ChatClient::connected()
 {
+    qDebug() << "Подключен к: " + socket->peerName();
+    data = "Подключен к: " + socket->peerName();
+    fw->WriteFromClass(3, data);
     emit connected(socket->peerName());
 }
