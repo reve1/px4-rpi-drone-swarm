@@ -99,6 +99,7 @@ void ChatServer::sendMessage(const QString &message)
 
     for (QBluetoothSocket *socket : qAsConst(clientSockets))
     {
+        qCritical() << "Отправлено на " << socket->peerName() <<  " сообщение: "  << message.simplified();
         data = "Отправлено на: " + socket->peerName() +" сообщение: " + message;
         fw->WriteFromClass(3, data);
         socket->write(text);
@@ -145,8 +146,8 @@ void ChatServer::readSocket()
         QByteArray line = socket->readLine().trimmed();
         emit messageReceived(socket->peerName(), QString::fromUtf8(line.constData(), line.length()));
         emit messageReceived_reply("REPLY");
-        data = "Получено от: " + socket->peerName() +" сообщение: " + QString::fromUtf8(line.constData(), line.length());
+        qCritical() << "Получено от " << socket->peerName() <<  " сообщение: " << line.simplified();
+        data = "Получено от: " + socket->peerName() +" сообщение: " + line.simplified();
         fw->WriteFromClass(3, data.simplified());
-        qWarning() << data;
     }
 }
