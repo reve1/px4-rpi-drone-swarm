@@ -7,11 +7,11 @@ FileWrite::FileWrite()
 void FileWrite::WriteFromClass(int flag, QString data)
 {
 #if defined (Q_OS_ANDROID)
-        QString path = "/storage/emulated/0/";      //Android
+    QString path = "/storage/emulated/0/";
 #elif defined (Q_OS_WIN)
-        QString path = "C:\\Users\\qt\\";           //Win
+    QString path = "C:\\Users\\yagodkin-aa\\S500\\";
 #else
-        QString path = "/var/log/s500/";            //linux-RPi
+    QString path = "/var/log/s500/";
 #endif
     QString name;
     switch(flag)
@@ -41,7 +41,7 @@ void FileWrite::WriteFromClass(int flag, QString data)
     QFile file(path + QDateTime::currentDateTime().toString("dd.MM.yyyy") + "_" + name);
     if (!file.open(QIODevice::Append))
     {
-        qCritical() << "ERROR";
+        qCritical() << "Ошибка записи в файл:" + path + name;
     }
     else
     {

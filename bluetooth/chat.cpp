@@ -56,8 +56,6 @@ void Chat::connected(const QString &name)
     data = "Подключен к: " + name;
     fw->WriteFromClass(3, data);
     emit SEND(); //убрать эту хрень после потока
-
-
 }
 
 void Chat::reactOnSocketError(const QString &error)

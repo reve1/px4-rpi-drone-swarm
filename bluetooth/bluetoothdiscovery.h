@@ -27,6 +27,8 @@ public slots:
 
 private slots:
     void UpdateRSSI();
+    void discoveryService_finished();
+    void discoveryDevice_finished();
 
 private:
     QBluetoothServiceDiscoveryAgent *discoveryServiceAgent = new QBluetoothServiceDiscoveryAgent;

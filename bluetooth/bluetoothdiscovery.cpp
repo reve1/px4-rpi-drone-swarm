@@ -9,18 +9,24 @@ static const QLatin1String serviceUuid("e8e10f95-1a70-4b27-9ccf-02010264e9c8");
 static const QLatin1String reverseUuid("c8e96402-0102-cf9c-274b-701a950fe1e8");
 #endif
 
-//static const QLatin1String serviceUuid("00001101-0000-1000-8000-00805F9B34FB");
-//static const QLatin1String serviceUuid("a23d00bc-217c-123b-9c00-fc44577136ee");
 //static const QLatin1String bluetoothAddress("9C:E0:63:BD:A8:88"); //Note 8 (android)
 //static const QLatin1String bluetoothAddress("B8:27:EB:89:C5:44"); //RPi
 //static const QLatin1String bluetoothAddress("A4:17:31:36:3E:16"); //Notebook (Linux)
+static const QLatin1String bluetoothAddress("68:94:23:39:C4:36");
 
 BluetoothDiscovery::BluetoothDiscovery(QObject *parent) : QObject(parent)
 {
-    TimerRSSI *timerrssi = new TimerRSSI;
     connect(discoveryServiceAgent, SIGNAL(serviceDiscovered(QBluetoothServiceInfo)), this, SIGNAL(deviceFound(QBluetoothServiceInfo)));
-    connect(discoveryDeviceAgent, SIGNAL(finished()), this, SLOT(StartDeviceDiscovery()));
+    connect(discoveryServiceAgent, SIGNAL(finished()), this, SLOT(discoveryService_finished()));
+    connect(discoveryDeviceAgent, SIGNAL(finished()), this, SLOT(discoveryDevice_finished()));
+    //(discoveryDeviceAgent, SIGNAL(finished()), this, SLOT(StartDeviceDiscovery()));
+    //connect(discoveryDeviceAgent, SIGNAL(error(QBluetoothDeviceDiscoveryAgent::Error error)), this, SLOT(StartDeviceDiscovery()));
+
+#if !defined (Q_OS_WIN) //не работает на ОС Windows
+    TimerRSSI *timerrssi = new TimerRSSI;
     connect(timerrssi, SIGNAL(doTimer()), this, SLOT(UpdateRSSI()));
+#endif
+
     //connect(discoveryServiceAgent, SIGNAL(finished()), this, SLOT(StartServiceDiscovery())); //если не нашел иши дальше... возможно это и не нужно...
     //connect(localDevice, SIGNAL(hostModeStateChanged(QBluetoothLocalDevice::HostMode)), this, SLOT(SetHostDiscoverable())); //позволяет обновлять "видимость в сети" но на андроиде не работает, а надо ли?
     SetHostDiscoverable();
@@ -46,7 +52,7 @@ void BluetoothDiscovery::StartServiceDiscovery()
 #else
     discoveryServiceAgent->setUuidFilter(QBluetoothUuid(serviceUuid));
 #endif
-    //discoveryServiceAgent->setRemoteAddress(QBluetoothAddress(bluetoothAddress));
+    discoveryServiceAgent->setRemoteAddress(QBluetoothAddress(bluetoothAddress));
     discoveryServiceAgent->start(QBluetoothServiceDiscoveryAgent::FullDiscovery);
     qDebug() << "Начато сканирование сервисов";
     data = "Начато сканирование сервисов";
@@ -73,4 +79,17 @@ void BluetoothDiscovery::UpdateRSSI()
             fw->WriteFromClass(4, data);
         }
     }
+}
+
+void BluetoothDiscovery::discoveryService_finished()
+{
+    qDebug() << "Cканирование устройств выполнено";
+    data = "Cканирование устройств выполнено";
+    fw->WriteFromClass(4, data);
+}
+void BluetoothDiscovery::discoveryDevice_finished()
+{
+    qDebug() << "Cканирование сервисов выполнено";
+    data = "Cканирование сервисов выполнено";
+    fw->WriteFromClass(4, data);
 }
