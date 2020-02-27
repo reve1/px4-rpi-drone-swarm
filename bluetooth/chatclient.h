@@ -1,47 +1,89 @@
-#ifndef CHATCLIENT_H
-#define CHATCLIENT_H
+#include "bluetooth/chatclient.h"
+#include <QtCore/qmetaobject.h>
 
-#include <QtCore/qobject.h>
-
-#include <QtBluetooth/qbluetoothserviceinfo.h>
-#include <QtBluetooth/qbluetoothsocket.h>
-
-#include <streams/filewrite.h>
-#include <streams/timermessage.h>
-
-QT_FORWARD_DECLARE_CLASS(QBluetoothSocket)
-
-QT_USE_NAMESPACE
-
-class ChatClient : public QObject
+ChatClient::ChatClient(QObject *parent)
+    :   QObject(parent)
 {
-    Q_OBJECT
+    data = "Отработал конструктор класса ChatClient.";
+    fw->WriteFromClass(2, data);
+}
 
-public:
-    explicit ChatClient(QObject *parent = nullptr);
-    ~ChatClient();
-    void startClient(const QBluetoothServiceInfo &remoteService);
-    void stopClient();
+ChatClient::~ChatClient()
+{
+    stopClient();
+    data = "Отработал деструктор класса ChatClient.";
+    fw->WriteFromClass(2, data);
+}
 
-public slots:
-    void sendMessage(const QString &message);
+void ChatClient::startClient(const QBluetoothServiceInfo &remoteService)
+{
+    if (socket)
+        return;
 
-signals:
-    void messageReceived(const QString &sender, const QString &message);
-    //void messageReceived_reply();
-    void connected(const QString &name);
-    void disconnected();
-    void socketErrorOccurred(const QString &errorString);
+    socket = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
+    qDebug() << "Создан socket";
+    data = "Создан socket";
+    fw->WriteFromClass(2, data);
+    socket->connectToService(remoteService, QIODevice::ReadWrite);
+    qDebug() << "Подключение к " << socket->peerAddress().toString() << " выполнено";
+    data = "Подключение к " + socket->peerAddress().toString() + " выполнено";
+    fw->WriteFromClass(2, data);
+    connect(socket, &QBluetoothSocket::readyRead, this, &ChatClient::readSocket);
+    connect(socket, &QBluetoothSocket::connected, this, QOverload<>::of(&ChatClient::connected));
+    connect(socket, &QBluetoothSocket::disconnected, this, &ChatClient::disconnected);
+    connect(socket, QOverload<QBluetoothSocket::SocketError>::of(&QBluetoothSocket::error),
+            this, &ChatClient::onSocketErrorOccurred);
+    //connect(this, SIGNAL(messageReceived_reply()), this, SLOT(sendClicked()));
+}
 
-private slots:
-    void readSocket();
-    void connected();
-    void onSocketErrorOccurred(QBluetoothSocket::SocketError);
+void ChatClient::stopClient()
+{
+    delete socket;
+    socket = nullptr;
+    data = "Клиент остановлен";
+    fw->WriteFromClass(2, data);
+}
 
-private:
-    QBluetoothSocket *socket = nullptr;
-    FileWrite *fw;
-    QString data;
-};
+void ChatClient::readSocket()
+{
+    if (!socket)
+        return;
 
-#endif // CHATCLIENT_H
+    while (socket->canReadLine()) {
+        QByteArray line = socket->readLine();
+        emit messageReceived(socket->peerName(), QString::fromUtf8(line.constData(), line.length()));
+        qCritical() << "Получено от " << socket->peerName() <<  " сообщение: " << line.simplified();
+        data = "Получено от " + socket->peerName() + " сообщение: " + QString::fromUtf8(line.constData(), line.length());
+        fw->WriteFromClass(3, data.simplified());
+        //emit messageReceived_reply();
+    }
+}
+
+void ChatClient::sendMessage(const QString &message)
+{
+    QByteArray text = message.toUtf8() + '\n';
+    socket->write(text);
+    qCritical() << "Отправлено на " << socket->peerName() <<  " сообщение: "  << message.simplified();
+    data = "Отправлено на " + socket->peerName() +" сообщение: " + message.simplified();
+    fw->WriteFromClass(3, data);
+}
+
+void ChatClient::onSocketErrorOccurred(QBluetoothSocket::SocketError error)
+{
+    if (error == QBluetoothSocket::NoSocketError)
+        return;
+
+    QMetaEnum metaEnum = QMetaEnum::fromType<QBluetoothSocket::SocketError>();
+    QString errorString = socket->peerName() + QLatin1Char(' ')
+            + metaEnum.valueToKey(error) + QLatin1String(" occurred");
+
+    emit socketErrorOccurred(errorString);
+    qCritical() << "Ошибка соединения: " << errorString;
+    data = "Ошибка соединения: " + errorString;
+    fw->WriteFromClass(2, data);
+}
+
+void ChatClient::connected()
+{
+    emit connected(socket->peerName());
+}
