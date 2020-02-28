@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     BluetoothDiscovery *bd = new BluetoothDiscovery;
 
     QObject::connect(bd, SIGNAL(deviceFound(QBluetoothServiceInfo)), bchat, SLOT(connectClicked(QBluetoothServiceInfo)));
-
+    QObject::connect(bchat, SIGNAL(socketError()), bd, SLOT(StartServiceDiscovery()));
 
     bd->StartServiceDiscovery();
     return a.exec();
