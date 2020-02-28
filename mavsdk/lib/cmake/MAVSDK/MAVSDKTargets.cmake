@@ -16,7 +16,7 @@ set(CMAKE_IMPORT_FILE_VERSION 1)
 set(_targetsDefined)
 set(_targetsNotDefined)
 set(_expectedTargets)
-foreach(_expectedTarget MAVSDK::mavsdk MAVSDK::mavsdk_action MAVSDK::mavsdk_calibration MAVSDK::mavsdk_camera MAVSDK::mavsdk_follow_me MAVSDK::mavsdk_gimbal MAVSDK::mavsdk_info MAVSDK::mavsdk_log_files MAVSDK::mavsdk_mission MAVSDK::mavsdk_mission_raw MAVSDK::mavsdk_offboard MAVSDK::mavsdk_param MAVSDK::mavsdk_telemetry MAVSDK::mavsdk_geofence)
+foreach(_expectedTarget MAVSDK::mavsdk MAVSDK::mavsdk_action MAVSDK::mavsdk_calibration MAVSDK::mavsdk_camera MAVSDK::mavsdk_follow_me MAVSDK::mavsdk_geofence MAVSDK::mavsdk_gimbal MAVSDK::mavsdk_info MAVSDK::mavsdk_log_files MAVSDK::mavsdk_mavlink_ftp MAVSDK::mavsdk_mission MAVSDK::mavsdk_mission_raw MAVSDK::mavsdk_mocap MAVSDK::mavsdk_offboard MAVSDK::mavsdk_param MAVSDK::mavsdk_shell MAVSDK::mavsdk_telemetry MAVSDK::mavsdk_tune)
   list(APPEND _expectedTargets ${_expectedTarget})
   if(NOT TARGET ${_expectedTarget})
     list(APPEND _targetsNotDefined ${_expectedTarget})
@@ -89,6 +89,14 @@ set_target_properties(MAVSDK::mavsdk_follow_me PROPERTIES
   INTERFACE_LINK_LIBRARIES "MAVSDK::mavsdk"
 )
 
+# Create imported target MAVSDK::mavsdk_geofence
+add_library(MAVSDK::mavsdk_geofence SHARED IMPORTED)
+
+set_target_properties(MAVSDK::mavsdk_geofence PROPERTIES
+  INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include/mavsdk"
+  INTERFACE_LINK_LIBRARIES "MAVSDK::mavsdk"
+)
+
 # Create imported target MAVSDK::mavsdk_gimbal
 add_library(MAVSDK::mavsdk_gimbal SHARED IMPORTED)
 
@@ -113,6 +121,14 @@ set_target_properties(MAVSDK::mavsdk_log_files PROPERTIES
   INTERFACE_LINK_LIBRARIES "MAVSDK::mavsdk"
 )
 
+# Create imported target MAVSDK::mavsdk_mavlink_ftp
+add_library(MAVSDK::mavsdk_mavlink_ftp SHARED IMPORTED)
+
+set_target_properties(MAVSDK::mavsdk_mavlink_ftp PROPERTIES
+  INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include/mavsdk"
+  INTERFACE_LINK_LIBRARIES "MAVSDK::mavsdk"
+)
+
 # Create imported target MAVSDK::mavsdk_mission
 add_library(MAVSDK::mavsdk_mission SHARED IMPORTED)
 
@@ -125,6 +141,14 @@ set_target_properties(MAVSDK::mavsdk_mission PROPERTIES
 add_library(MAVSDK::mavsdk_mission_raw SHARED IMPORTED)
 
 set_target_properties(MAVSDK::mavsdk_mission_raw PROPERTIES
+  INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include/mavsdk"
+  INTERFACE_LINK_LIBRARIES "MAVSDK::mavsdk"
+)
+
+# Create imported target MAVSDK::mavsdk_mocap
+add_library(MAVSDK::mavsdk_mocap SHARED IMPORTED)
+
+set_target_properties(MAVSDK::mavsdk_mocap PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include/mavsdk"
   INTERFACE_LINK_LIBRARIES "MAVSDK::mavsdk"
 )
@@ -145,6 +169,14 @@ set_target_properties(MAVSDK::mavsdk_param PROPERTIES
   INTERFACE_LINK_LIBRARIES "MAVSDK::mavsdk"
 )
 
+# Create imported target MAVSDK::mavsdk_shell
+add_library(MAVSDK::mavsdk_shell SHARED IMPORTED)
+
+set_target_properties(MAVSDK::mavsdk_shell PROPERTIES
+  INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include/mavsdk"
+  INTERFACE_LINK_LIBRARIES "MAVSDK::mavsdk"
+)
+
 # Create imported target MAVSDK::mavsdk_telemetry
 add_library(MAVSDK::mavsdk_telemetry SHARED IMPORTED)
 
@@ -153,10 +185,10 @@ set_target_properties(MAVSDK::mavsdk_telemetry PROPERTIES
   INTERFACE_LINK_LIBRARIES "MAVSDK::mavsdk"
 )
 
-# Create imported target MAVSDK::mavsdk_geofence
-add_library(MAVSDK::mavsdk_geofence SHARED IMPORTED)
+# Create imported target MAVSDK::mavsdk_tune
+add_library(MAVSDK::mavsdk_tune SHARED IMPORTED)
 
-set_target_properties(MAVSDK::mavsdk_geofence PROPERTIES
+set_target_properties(MAVSDK::mavsdk_tune PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include/mavsdk"
   INTERFACE_LINK_LIBRARIES "MAVSDK::mavsdk"
 )
