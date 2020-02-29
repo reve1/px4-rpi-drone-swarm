@@ -30,6 +30,8 @@ private slots:
     void discoveryService_finished();
     void discoveryService_discovered();
     void discoveryDevice_finished();
+    void discoveryService_stoped();
+    void discoveryDevice_stoped();
 
 private:
     QBluetoothServiceDiscoveryAgent *discoveryServiceAgent = new QBluetoothServiceDiscoveryAgent;
