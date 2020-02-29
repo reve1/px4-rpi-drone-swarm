@@ -28,6 +28,7 @@ void ChatServer::startServer(const QBluetoothAddress& localAdapter)
         return;
 
     rfcommServer = new QBluetoothServer(QBluetoothServiceInfo::RfcommProtocol, this);
+    rfcommServer->setSecurityFlags(QBluetooth::Security::NoSecurity);
     connect(rfcommServer, &QBluetoothServer::newConnection,
             this, QOverload<>::of(&ChatServer::clientConnected));
     bool result = rfcommServer->listen(localAdapter);

@@ -12,7 +12,7 @@ static const QLatin1String reverseUuid("c8e96402-0102-cf9c-274b-701a950fe1e8");
 //static const QLatin1String bluetoothAddress("9C:E0:63:BD:A8:88"); //Note 8 (android)
 //static const QLatin1String bluetoothAddress("B8:27:EB:89:C5:44"); //RPi
 //static const QLatin1String bluetoothAddress("A4:17:31:36:3E:16"); //Notebook (Linux)
-static const QLatin1String bluetoothAddress("68:94:23:39:C4:36");
+static const QLatin1String bluetoothAddress("68:94:23:39:C4:36"); //Notebook (Linux)
 
 BluetoothDiscovery::BluetoothDiscovery(QObject *parent) : QObject(parent)
 {
@@ -59,7 +59,7 @@ void BluetoothDiscovery::StartServiceDiscovery()
 #else
     discoveryServiceAgent->setUuidFilter(QBluetoothUuid(serviceUuid));
 #endif
-    //discoveryServiceAgent->setRemoteAddress(QBluetoothAddress(bluetoothAddress));
+    discoveryServiceAgent->setRemoteAddress(QBluetoothAddress(bluetoothAddress));
     discoveryServiceAgent->start(QBluetoothServiceDiscoveryAgent::FullDiscovery);
     //qDebug() << "Начато сканирование сервисов";
     data = "Начато сканирование сервисов";
