@@ -20,6 +20,7 @@ BluetoothDiscovery::BluetoothDiscovery(QObject *parent) : QObject(parent)
     connect(discoveryServiceAgent, SIGNAL(serviceDiscovered(QBluetoothServiceInfo)), this, SLOT(discoveryService_discovered()));
     connect(discoveryServiceAgent, SIGNAL(serviceDiscovered(QBluetoothServiceInfo)), this, SLOT(discoveryService_stoped()));
     connect(discoveryServiceAgent, SIGNAL(finished()), this, SLOT(discoveryService_finished()));
+    connect(discoveryServiceAgent, SIGNAL(finished()), this, SLOT(StartServiceDiscovery()));
     connect(discoveryDeviceAgent, SIGNAL(finished()), this, SLOT(discoveryDevice_finished()));
     //(discoveryDeviceAgent, SIGNAL(finished()), this, SLOT(StartDeviceDiscovery()));
     //connect(discoveryDeviceAgent, SIGNAL(error(QBluetoothDeviceDiscoveryAgent::Error error)), this, SLOT(StartDeviceDiscovery()));
@@ -49,6 +50,7 @@ void BluetoothDiscovery::SetHostDiscoverable()
 
 void BluetoothDiscovery::StartServiceDiscovery()
 {
+   discoveryServiceAgent->clear();
 #ifdef Q_OS_ANDROID
     if (QtAndroid::androidSdkVersion() >= 23)
         discoveryServiceAgent->setUuidFilter(QBluetoothUuid(reverseUuid));
@@ -57,9 +59,9 @@ void BluetoothDiscovery::StartServiceDiscovery()
 #else
     discoveryServiceAgent->setUuidFilter(QBluetoothUuid(serviceUuid));
 #endif
-    discoveryServiceAgent->setRemoteAddress(QBluetoothAddress(bluetoothAddress));
+    //discoveryServiceAgent->setRemoteAddress(QBluetoothAddress(bluetoothAddress));
     discoveryServiceAgent->start(QBluetoothServiceDiscoveryAgent::FullDiscovery);
-    qDebug() << "Начато сканирование сервисов";
+    //qDebug() << "Начато сканирование сервисов";
     data = "Начато сканирование сервисов";
     fw->WriteFromClass(4, data);
 }
@@ -68,7 +70,7 @@ void BluetoothDiscovery::StartDeviceDiscovery()
 {
     discoveryDeviceAgent->stop();
     discoveryDeviceAgent->start();
-    qDebug() << "Начато сканирование устройств";
+    //qDebug() << "Начато сканирование устройств";
     data = "Начато сканирование устройств";
     fw->WriteFromClass(4, data);
 }
@@ -88,7 +90,7 @@ void BluetoothDiscovery::UpdateRSSI()
 
 void BluetoothDiscovery::discoveryService_finished()
 {
-    qDebug() << "Cканирование сервисов выполнено";
+    //qDebug() << "Cканирование сервисов выполнено";
     data = "Cканирование сервисов выполнено";
     fw->WriteFromClass(4, data);
 }
@@ -102,7 +104,7 @@ void BluetoothDiscovery::discoveryService_discovered()
 
 void BluetoothDiscovery::discoveryDevice_finished()
 {
-    qDebug() << "Cканирование устройств выполнено";
+    //qDebug() << "Cканирование устройств выполнено";
     data = "Cканирование устройств выполнено";
     fw->WriteFromClass(4, data);
 }
