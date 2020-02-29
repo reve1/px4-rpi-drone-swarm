@@ -32,7 +32,7 @@ void FileWrite::WriteFromClass(int flag, QString data)
         name = "bluetoothdiscovery.txt";
         break;
     case 5:
-        name = "mavlink.txt";
+        name = "mav.txt";
         break;
     default:
         break;
@@ -41,7 +41,7 @@ void FileWrite::WriteFromClass(int flag, QString data)
     QFile file(path + QDateTime::currentDateTime().toString("dd.MM.yyyy") + "_" + name);
     if (!file.open(QIODevice::Append))
     {
-        qCritical() << "ERROR";
+        qCritical() << "Ошибка записи в файл";
     }
     else
     {
