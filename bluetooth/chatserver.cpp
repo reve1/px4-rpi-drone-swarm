@@ -79,7 +79,8 @@ void ChatServer::startServer(const QBluetoothAddress& localAdapter)
 
     serviceInfo.registerService(localAdapter);
 
-    data = "Старт сервера Bluetooth.";
+    qWarning() << "Старт сервера на " << localAdapter.toString();
+    data = "Старт сервера на " + localAdapter.toString();
     fw->WriteFromClass(1, data);
 
 }

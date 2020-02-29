@@ -8,7 +8,7 @@ TimerRSSI::TimerRSSI()
 
 void TimerRSSI::Timer()
 {
-    qDebug() << "=/=/=/=/=/=/=/=/=/=/=/ " << "RSSItimer!   " << " =/=/=/=/=/=/=/=/=/=/=/";
+    //qDebug() << "=/=/=/=/=/=/=/=/=/=/=/ " << "RSSItimer!   " << " =/=/=/=/=/=/=/=/=/=/=/";
     emit doTimer();
 }
 

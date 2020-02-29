@@ -15,9 +15,12 @@ sudo rfcomm connect hci0 B8:27:EB:89:C5:44 8
 #include <bluetooth/chat.h>
 #include <bluetooth/bluetoothdiscovery.h>
 
+#if !defined (Q_OS_WIN)
+#elif !defined (Q_OS_ANDROID)
 #include <mavsdk/include/mavsdk/mavsdk.h>
 #include <mavsdk/include/mavsdk/plugins/action/action.h>
 #include <mavsdk/include/mavsdk/plugins/telemetry/telemetry.h>
+#endif
 
 //#include <vehicle/vehicle.h>
 
@@ -30,16 +33,18 @@ int main(int argc, char *argv[])
     Model *md = new Model;
     FileWrite *fw = new FileWrite;
     Chat *bchat = new Chat;
-    BluetoothDiscovery *bd = new BluetoothDiscovery;
+    //BluetoothDiscovery *bd = new BluetoothDiscovery;
 
-    QObject::connect(bd, SIGNAL(deviceFound(QBluetoothServiceInfo)), bchat, SLOT(connectClicked(QBluetoothServiceInfo)));
-    QObject::connect(bchat, SIGNAL(socketError()), bd, SLOT(StartServiceDiscovery()));
+    //QObject::connect(bd, SIGNAL(deviceFound(QBluetoothServiceInfo)), bchat, SLOT(connectClicked(QBluetoothServiceInfo)));
+    //QObject::connect(bchat, SIGNAL(socketError()), bd, SLOT(StartServiceDiscovery()));
 
 
-    bd->StartServiceDiscovery();
+    //bd->StartServiceDiscovery();
 
     //Vehicle *vh = new Vehicle;
 
+#if !defined (Q_OS_WIN)
+#elif !defined (Q_OS_ANDROID)
     //=====================================================================//
     QString data;
     mavsdk::Mavsdk dc;
@@ -116,6 +121,6 @@ int main(int argc, char *argv[])
     //    qDebug() <<"Vehicle is getting ready to arm";
     //}
     //=====================================================================//
-
+#endif
     return a.exec();
 }

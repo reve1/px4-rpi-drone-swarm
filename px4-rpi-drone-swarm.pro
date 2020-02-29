@@ -26,7 +26,7 @@ SOURCES += \
         streams/filewrite.cpp \
         streams/timermessage.cpp \
         streams/timerrssi.cpp \
-        vehicle/vehicle.cpp
+        #vehicle/vehicle.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -60,24 +60,13 @@ HEADERS += \
     streams/filewrite.h \
     streams/timermessage.h \
     streams/timerrssi.h \
-    vehicle/vehicle.h
+    #vehicle/vehicle.h
 
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/mavsdk/lib/release/ -lmavsdk
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/mavsdk/lib/debug/ -lmavsdk
-else:unix: LIBS += -L$$PWD/mavsdk/lib/ -lmavsdk
+unix:!android:LIBS += -L$$PWD/mavsdk/lib/ -lmavsdk
+unix:!android: LIBS += -L$$PWD/mavsdk/lib/ -lmavsdk_action
+unix:!android: LIBS += -L$$PWD/mavsdk/lib/ -lmavsdk_telemetry
+unix:!android: LIBS += -L$$PWD/mavsdk/lib/ -lmavsdk_offboard
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/mavsdk/lib/release/ -lmavsdk_action
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/mavsdk/lib/debug/ -lmavsdk_action
-else:unix: LIBS += -L$$PWD/mavsdk/lib/ -lmavsdk_action
-
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/mavsdk/lib/release/ -lmavsdk_telemetry
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/mavsdk/lib/debug/ -lmavsdk_telemetry
-else:unix: LIBS += -L$$PWD/mavsdk/lib/ -lmavsdk_telemetry
-
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/mavsdk/lib/release/ -lmavsdk_offboard
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/mavsdk/lib/debug/ -lmavsdk_offboard
-else:unix: LIBS += -L$$PWD/mavsdk/lib/ -lmavsdk_offboard
-
-INCLUDEPATH += $$PWD/mavsdk/include
-DEPENDPATH += $$PWD/mavsdk/include
+unix:!android: INCLUDEPATH += $$PWD/mavsdk/include
+unix:!android: DEPENDPATH += $$PWD/mavsdk/include
