@@ -28,6 +28,7 @@ void ChatServer::startServer(const QBluetoothAddress& localAdapter)
         return;
 
     rfcommServer = new QBluetoothServer(QBluetoothServiceInfo::RfcommProtocol, this);
+    rfcommServer->setSecurityFlags(QBluetooth::Security::NoSecurity);
     connect(rfcommServer, &QBluetoothServer::newConnection,
             this, QOverload<>::of(&ChatServer::clientConnected));
     bool result = rfcommServer->listen(localAdapter);
@@ -78,7 +79,8 @@ void ChatServer::startServer(const QBluetoothAddress& localAdapter)
 
     serviceInfo.registerService(localAdapter);
 
-    data = "Старт сервера Bluetooth.";
+    qWarning() << "Старт сервера на " << localAdapter.toString();
+    data = "Старт сервера на " + localAdapter.toString();
     fw->WriteFromClass(1, data);
 
 }
@@ -119,6 +121,7 @@ void ChatServer::clientConnected()
 
     emit clientConnected(socket->peerName());
 
+    qDebug() << "Подключился клиент: " << socket->peerName() << " адресс: " << socket->peerAddress().toString();
     data = "Подключился клиент " + socket->peerAddress().toString();
     fw->WriteFromClass(1, data);
 }
@@ -132,6 +135,7 @@ void ChatServer::clientDisconnected()
     emit clientDisconnected(socket->peerName());
     clientSockets.removeOne(socket);
     socket->deleteLater();
+    qDebug() << "Отключился клиент: " << socket->peerName() << " адресс: " << socket->peerAddress().toString();
     data = "Отключился клиент " + socket->peerAddress().toString();
     fw->WriteFromClass(1, data);
 }
