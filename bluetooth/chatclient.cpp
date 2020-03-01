@@ -21,6 +21,7 @@ void ChatClient::startClient(const QBluetoothServiceInfo &remoteService)
         return;
 
     socket = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
+    socket->setPreferredSecurityFlags(QBluetooth::NoSecurity);
     qDebug() << "Создан socket";
     data = "Создан socket";
     fw->WriteFromClass(2, data);
@@ -85,5 +86,8 @@ void ChatClient::onSocketErrorOccurred(QBluetoothSocket::SocketError error)
 
 void ChatClient::connected()
 {
+    qDebug() << "Подключен к: " + socket->peerName();
+    data = "Подключен к: " + socket->peerName();
+    fw->WriteFromClass(3, data);
     emit connected(socket->peerName());
 }

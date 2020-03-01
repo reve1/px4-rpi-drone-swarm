@@ -9,7 +9,7 @@ void FileWrite::WriteFromClass(int flag, QString data)
 #if defined (Q_OS_ANDROID)
         QString path = "/storage/emulated/0/";      //Android
 #elif defined (Q_OS_WIN)
-        QString path = "C:\\Users\\qt\\";           //Win
+        QString path = "C:\\Users\\Public\\Documents\\";     //Win
 #else
         QString path = "/var/log/s500/";            //linux-RPi
 #endif
@@ -32,7 +32,7 @@ void FileWrite::WriteFromClass(int flag, QString data)
         name = "bluetoothdiscovery.txt";
         break;
     case 5:
-        name = "mavlink.txt";
+        name = "mav.txt";
         break;
     default:
         break;
@@ -41,7 +41,7 @@ void FileWrite::WriteFromClass(int flag, QString data)
     QFile file(path + QDateTime::currentDateTime().toString("dd.MM.yyyy") + "_" + name);
     if (!file.open(QIODevice::Append))
     {
-        qCritical() << "ERROR";
+        qCritical() << "Ошибка записи в файл";
     }
     else
     {

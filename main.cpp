@@ -15,9 +15,11 @@ sudo rfcomm connect hci0 B8:27:EB:89:C5:44 8
 #include <bluetooth/chat.h>
 #include <bluetooth/bluetoothdiscovery.h>
 
+#if !defined (Q_OS_WIN) || (Q_OS_ANDROID)
 #include <mavsdk/include/mavsdk/mavsdk.h>
 #include <mavsdk/include/mavsdk/plugins/action/action.h>
 #include <mavsdk/include/mavsdk/plugins/telemetry/telemetry.h>
+#endif
 
 //#include <vehicle/vehicle.h>
 
@@ -29,17 +31,20 @@ int main(int argc, char *argv[])
     //QLoggingCategory::setFilterRules(QStringLiteral("qt.bluetooth* = true"));
     Model *md = new Model;
     FileWrite *fw = new FileWrite;
-    Chat *bch = new Chat;
-    BluetoothDiscovery *bd = new BluetoothDiscovery;
+    Chat *bchat = new Chat;
+    //BluetoothDiscovery *bd = new BluetoothDiscovery;
 
-    QObject::connect(bd, SIGNAL(deviceFound(QBluetoothServiceInfo)), bch, SLOT(connectClicked(QBluetoothServiceInfo)));
+    //QObject::connect(bd, SIGNAL(deviceFound(QBluetoothServiceInfo)), bchat, SLOT(connectClicked(QBluetoothServiceInfo)));
+    //QObject::connect(bchat, SIGNAL(socketError()), bd, SLOT(StartServiceDiscovery()));
 
 
-    bd->StartServiceDiscovery();
+    //bd->StartServiceDiscovery();
 
     //Vehicle *vh = new Vehicle;
+#if !defined (Q_OS_WIN) || (Q_OS_ANDROID)
 
     //=====================================================================//
+    QString data;
     mavsdk::Mavsdk dc;
     mavsdk::ConnectionResult connection_result;
     bool discovered_system = false;
@@ -50,6 +55,8 @@ int main(int argc, char *argv[])
     if (connection_result != mavsdk::ConnectionResult::SUCCESS)
     {
         qDebug() << "Результат подключения: " << connection_result_str(connection_result);
+        data = "Результат подключения: УСПЕХ";
+        fw->WriteFromClass(5, data.simplified());
         //return 1;
     }
 
@@ -64,24 +71,38 @@ int main(int argc, char *argv[])
 
     auto action = std::make_shared<mavsdk::Action>(system);
     const mavsdk::Action::Result arm_result = action->arm();
+    if (arm_result != mavsdk::Action::Result::SUCCESS){
+        qDebug() << "Ошибка запуска БВС.";
+        data = "Ошибка запуска БВС.";
+        fw->WriteFromClass(5, data.simplified());
+    }
     const mavsdk::Action::Result takeoff_result = action->takeoff();
     action->set_takeoff_altitude(10);
     if (takeoff_result != mavsdk::Action::Result::SUCCESS){
-        qDebug() << "Taking off error.";
+        qDebug() << "Ошибка набора высоты БВС.";
+        data = "Ошибка набора высоты БВС.";
+        fw->WriteFromClass(5, data.simplified());
     }
 
     const mavsdk::Action::Result goto_location_result = action->goto_location(47.397,8.54559,507.502,0);
+    if (goto_location_result != mavsdk::Action::Result::SUCCESS){
+        qDebug() << "Ошибка движения БВС к заданной точке";
+        data = "Ошибка движения БВС к заданной точке";
+        fw->WriteFromClass(5, data.simplified());
+    }
     //action->return_to_launch();
 
     auto telemetry = std::make_shared<mavsdk::Telemetry>(system);
     const mavsdk::Telemetry::Result set_rate_result = telemetry->set_rate_position(1.0);
     if (set_rate_result != mavsdk::Telemetry::Result::SUCCESS) {
-        qDebug() << "Setting rate failed:" << mavsdk::Telemetry::result_str(set_rate_result);
+        qDebug() << "Ошибка задания частоты телеметрии БВС: " << mavsdk::Telemetry::result_str(set_rate_result);
+        data = "Ошибка задания частоты телеметрии БВС";
+        fw->WriteFromClass(5, data.simplified());
     }
 
     telemetry->gps_info_async([](mavsdk::Telemetry::GPSInfo info) {
-        qDebug() <<"Num_satellites: " << info.num_satellites;
-        qDebug() <<"Coordinates: " << info.fix_type;
+        qDebug() << "Найдено спутников GPS: " << info.num_satellites;
+        qDebug() <<"Координаты БВС: " << info.fix_type;
     });
 
     // Set up callback to monitor altitude while the vehicle is in flight
@@ -98,6 +119,6 @@ int main(int argc, char *argv[])
     //    qDebug() <<"Vehicle is getting ready to arm";
     //}
     //=====================================================================//
-
+#endif
     return a.exec();
 }
