@@ -55,6 +55,16 @@ set_target_properties(MAVSDK::mavsdk_follow_me PROPERTIES
 list(APPEND _IMPORT_CHECK_TARGETS MAVSDK::mavsdk_follow_me )
 list(APPEND _IMPORT_CHECK_FILES_FOR_MAVSDK::mavsdk_follow_me "${_IMPORT_PREFIX}/lib/libmavsdk_follow_me.so" )
 
+# Import target "MAVSDK::mavsdk_geofence" for configuration "Release"
+set_property(TARGET MAVSDK::mavsdk_geofence APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(MAVSDK::mavsdk_geofence PROPERTIES
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib/libmavsdk_geofence.so"
+  IMPORTED_SONAME_RELEASE "libmavsdk_geofence.so"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS MAVSDK::mavsdk_geofence )
+list(APPEND _IMPORT_CHECK_FILES_FOR_MAVSDK::mavsdk_geofence "${_IMPORT_PREFIX}/lib/libmavsdk_geofence.so" )
+
 # Import target "MAVSDK::mavsdk_gimbal" for configuration "Release"
 set_property(TARGET MAVSDK::mavsdk_gimbal APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(MAVSDK::mavsdk_gimbal PROPERTIES
@@ -85,6 +95,16 @@ set_target_properties(MAVSDK::mavsdk_log_files PROPERTIES
 list(APPEND _IMPORT_CHECK_TARGETS MAVSDK::mavsdk_log_files )
 list(APPEND _IMPORT_CHECK_FILES_FOR_MAVSDK::mavsdk_log_files "${_IMPORT_PREFIX}/lib/libmavsdk_log_files.so" )
 
+# Import target "MAVSDK::mavsdk_mavlink_ftp" for configuration "Release"
+set_property(TARGET MAVSDK::mavsdk_mavlink_ftp APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(MAVSDK::mavsdk_mavlink_ftp PROPERTIES
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib/libmavsdk_mavlink_ftp.so"
+  IMPORTED_SONAME_RELEASE "libmavsdk_mavlink_ftp.so"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS MAVSDK::mavsdk_mavlink_ftp )
+list(APPEND _IMPORT_CHECK_FILES_FOR_MAVSDK::mavsdk_mavlink_ftp "${_IMPORT_PREFIX}/lib/libmavsdk_mavlink_ftp.so" )
+
 # Import target "MAVSDK::mavsdk_mission" for configuration "Release"
 set_property(TARGET MAVSDK::mavsdk_mission APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(MAVSDK::mavsdk_mission PROPERTIES
@@ -104,6 +124,16 @@ set_target_properties(MAVSDK::mavsdk_mission_raw PROPERTIES
 
 list(APPEND _IMPORT_CHECK_TARGETS MAVSDK::mavsdk_mission_raw )
 list(APPEND _IMPORT_CHECK_FILES_FOR_MAVSDK::mavsdk_mission_raw "${_IMPORT_PREFIX}/lib/libmavsdk_mission_raw.so" )
+
+# Import target "MAVSDK::mavsdk_mocap" for configuration "Release"
+set_property(TARGET MAVSDK::mavsdk_mocap APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(MAVSDK::mavsdk_mocap PROPERTIES
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib/libmavsdk_mocap.so"
+  IMPORTED_SONAME_RELEASE "libmavsdk_mocap.so"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS MAVSDK::mavsdk_mocap )
+list(APPEND _IMPORT_CHECK_FILES_FOR_MAVSDK::mavsdk_mocap "${_IMPORT_PREFIX}/lib/libmavsdk_mocap.so" )
 
 # Import target "MAVSDK::mavsdk_offboard" for configuration "Release"
 set_property(TARGET MAVSDK::mavsdk_offboard APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
@@ -125,6 +155,16 @@ set_target_properties(MAVSDK::mavsdk_param PROPERTIES
 list(APPEND _IMPORT_CHECK_TARGETS MAVSDK::mavsdk_param )
 list(APPEND _IMPORT_CHECK_FILES_FOR_MAVSDK::mavsdk_param "${_IMPORT_PREFIX}/lib/libmavsdk_param.so" )
 
+# Import target "MAVSDK::mavsdk_shell" for configuration "Release"
+set_property(TARGET MAVSDK::mavsdk_shell APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(MAVSDK::mavsdk_shell PROPERTIES
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib/libmavsdk_shell.so"
+  IMPORTED_SONAME_RELEASE "libmavsdk_shell.so"
+  )
+
+list(APPEND _IMPORT_CHECK_TARGETS MAVSDK::mavsdk_shell )
+list(APPEND _IMPORT_CHECK_FILES_FOR_MAVSDK::mavsdk_shell "${_IMPORT_PREFIX}/lib/libmavsdk_shell.so" )
+
 # Import target "MAVSDK::mavsdk_telemetry" for configuration "Release"
 set_property(TARGET MAVSDK::mavsdk_telemetry APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(MAVSDK::mavsdk_telemetry PROPERTIES
@@ -135,15 +175,15 @@ set_target_properties(MAVSDK::mavsdk_telemetry PROPERTIES
 list(APPEND _IMPORT_CHECK_TARGETS MAVSDK::mavsdk_telemetry )
 list(APPEND _IMPORT_CHECK_FILES_FOR_MAVSDK::mavsdk_telemetry "${_IMPORT_PREFIX}/lib/libmavsdk_telemetry.so" )
 
-# Import target "MAVSDK::mavsdk_geofence" for configuration "Release"
-set_property(TARGET MAVSDK::mavsdk_geofence APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
-set_target_properties(MAVSDK::mavsdk_geofence PROPERTIES
-  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib/libmavsdk_geofence.so"
-  IMPORTED_SONAME_RELEASE "libmavsdk_geofence.so"
+# Import target "MAVSDK::mavsdk_tune" for configuration "Release"
+set_property(TARGET MAVSDK::mavsdk_tune APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(MAVSDK::mavsdk_tune PROPERTIES
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib/libmavsdk_tune.so"
+  IMPORTED_SONAME_RELEASE "libmavsdk_tune.so"
   )
 
-list(APPEND _IMPORT_CHECK_TARGETS MAVSDK::mavsdk_geofence )
-list(APPEND _IMPORT_CHECK_FILES_FOR_MAVSDK::mavsdk_geofence "${_IMPORT_PREFIX}/lib/libmavsdk_geofence.so" )
+list(APPEND _IMPORT_CHECK_TARGETS MAVSDK::mavsdk_tune )
+list(APPEND _IMPORT_CHECK_FILES_FOR_MAVSDK::mavsdk_tune "${_IMPORT_PREFIX}/lib/libmavsdk_tune.so" )
 
 # Commands beyond this point should not need to know the version.
 set(CMAKE_IMPORT_FILE_VERSION)

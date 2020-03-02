@@ -7,7 +7,7 @@ if(NOT ON)
         find_dependency(CURL REQUIRED CONFIG)
     endif()
 
-    find_dependency(json11)
+    find_dependency(jsoncpp)
     find_dependency(tinyxml2)
 
     if(OFF)

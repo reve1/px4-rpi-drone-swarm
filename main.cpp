@@ -20,8 +20,6 @@ sudo rfcomm connect hci0 B8:27:EB:89:C5:44 8
 #include <vehicle/vehicle.h>
 #endif
 
-
-
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);

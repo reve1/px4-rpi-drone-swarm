@@ -40,6 +40,11 @@ public:
     void setGlobalPositionAlt (double GlobalPositionAlt_SET) {GlobalPositionAlt = GlobalPositionAlt_SET; }
     double getGlobalPositionAMSL () {return GlobalPositionAMSL;}
     void setGlobalPositionAMSL (double GlobalPositionAMSL_SET) {GlobalPositionAMSL = GlobalPositionAMSL_SET; }
+
+    ControllerModel *cm = new ControllerModel;
+
+    double CONTROLLERgetGlobalPositionLat () {return cm->GlobalPositionLat;}
+    void CONTROLLERsetGlobalPositionLat (double GlobalPositionLat_SET) {cm->GlobalPositionLat = GlobalPositionLat_SET; }
 };
 
 
