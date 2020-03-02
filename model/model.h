@@ -32,8 +32,14 @@ public:
     float GlobalPositionAlt;
     float GlobalPositionAMSL;
 
-    double getGlobalPositionLat () {return UUID;}
-    void setGlobalPositionLat (double GlobalPositionLat_SET) {UUID = GlobalPositionLat_SET; }
+    double getGlobalPositionLat () {return GlobalPositionLat;}
+    void setGlobalPositionLat (double GlobalPositionLat_SET) {GlobalPositionLat = GlobalPositionLat_SET; }
+    double getGlobalPositionLon () {return GlobalPositionLon;}
+    void setGlobalPositionLon (double GlobalPositionLon_SET) {GlobalPositionLon = GlobalPositionLon_SET; }
+    double getGlobalPositionAlt () {return GlobalPositionAlt;}
+    void setGlobalPositionAlt (double GlobalPositionAlt_SET) {GlobalPositionAlt = GlobalPositionAlt_SET; }
+    double getGlobalPositionAMSL () {return GlobalPositionAMSL;}
+    void setGlobalPositionAMSL (double GlobalPositionAMSL_SET) {GlobalPositionAMSL = GlobalPositionAMSL_SET; }
 };
 
 

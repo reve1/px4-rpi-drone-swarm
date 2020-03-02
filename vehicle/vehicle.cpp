@@ -21,11 +21,10 @@ Vehicle::Vehicle()
     mavsdk::System &system = dc.system();
     dc.register_on_discover([&discovered_system](uint64_t uuid)
     {
-
         qDebug() << "Найдена система: " << uuid;
         discovered_system = true;
         QString data;
-        FileWrite *fw;
+        FileWrite *fw = nullptr;
         data = "Найдена система: " + uuid;
         fw->WriteFromClass(5, data.simplified());
         qDebug() << data;
@@ -72,12 +71,15 @@ Vehicle::Vehicle()
 
     // Set up callback to monitor altitude while the vehicle is in flight
     telemetry->position_async([](mavsdk::Telemetry::Position position) {
-        Model *md;
+        Model *md = nullptr;
         qDebug() <<"Altitude: " << position.relative_altitude_m << " m";
+        md->setGlobalPositionAlt(position.relative_altitude_m);
         qDebug() <<"Latitude: " << position.latitude_deg;
+        md->setGlobalPositionLat(position.latitude_deg);
         qDebug() <<"Longitude: " << position.longitude_deg;
+        md->setGlobalPositionLon(position.longitude_deg);
         qDebug() <<"Altitude AMSL: " << position.absolute_altitude_m << " m";
-        //md->setGlobalPositionLat(position.relative_altitude_m);
+        md->setGlobalPositionAMSL(position.absolute_altitude_m);
     });
 
 
