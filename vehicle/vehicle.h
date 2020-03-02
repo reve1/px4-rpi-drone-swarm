@@ -7,6 +7,8 @@
 #include <mavsdk/include/mavsdk/mavsdk.h>
 #include <mavsdk/include/mavsdk/plugins/action/action.h>
 #include <mavsdk/include/mavsdk/plugins/telemetry/telemetry.h>
+#include <streams/filewrite.h>
+#include <model/model.h>
 
 class Vehicle : public QObject
 {
@@ -14,6 +16,10 @@ class Vehicle : public QObject
 
 public:
     Vehicle();
+
+private:
+    FileWrite *fw;
+    Model *md;
 };
 
 #endif // VEHICLE_H

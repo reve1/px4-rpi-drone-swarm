@@ -20,15 +20,20 @@ public:
 
     struct ControllerModel
     {
-        int GlobalPositionLat;
-        int GlobalPositionLon;
-        int GlobalPositionAlt;
+        double GlobalPositionLat;
+        double GlobalPositionLon;
+        float GlobalPositionAlt;
+        float GlobalPositionAMSL;
     };
 
     int UUID;
+    double GlobalPositionLat;
+    double GlobalPositionLon;
+    float GlobalPositionAlt;
+    float GlobalPositionAMSL;
 
-    int getUUID () {return UUID;}
-    int setUUID (int UUID_SET) {UUID = UUID_SET; }
+    double getGlobalPositionLat () {return UUID;}
+    void setGlobalPositionLat (double GlobalPositionLat_SET) {UUID = GlobalPositionLat_SET; }
 };
 
 
