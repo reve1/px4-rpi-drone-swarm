@@ -15,7 +15,7 @@ sudo rfcomm connect hci0 B8:27:EB:89:C5:44 8
 #include <bluetooth/chat.h>
 #include <bluetooth/bluetoothdiscovery.h>
 
-#if !defined (Q_OS_WIN) || (Q_OS_ANDROID)
+#if !defined (_WIN)
 #include <mavsdk/include/mavsdk/mavsdk.h>
 #include <mavsdk/include/mavsdk/plugins/action/action.h>
 #include <mavsdk/include/mavsdk/plugins/telemetry/telemetry.h>
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     //bd->StartServiceDiscovery();
 
     //Vehicle *vh = new Vehicle;
-#if !defined (Q_OS_WIN) || (Q_OS_ANDROID)
+#if !defined (_WIN)
 
     //=====================================================================//
     QString data;

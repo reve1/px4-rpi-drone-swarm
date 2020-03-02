@@ -24,6 +24,11 @@ public:
         int GlobalPositionLon;
         int GlobalPositionAlt;
     };
+
+    int UUID;
+
+    int getUUID () {return UUID;}
+    int setUUID (int UUID_SET) {UUID = UUID_SET; }
 };
 
 

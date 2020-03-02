@@ -3,7 +3,7 @@
 #include <functional>
 #include <memory>
 
-#include "mavsdk/plugin_base.h"
+#include "mavsdk/include/mavsdk/plugin_base.h"
 
 namespace mavsdk {
 

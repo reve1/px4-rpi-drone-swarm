@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "mavsdk/plugin_base.h"
+#include "mavsdk/include/mavsdk/plugin_base.h"
 
 namespace mavsdk {
 
