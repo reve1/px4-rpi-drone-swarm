@@ -2,40 +2,51 @@
 #include <QDebug>
 #include <QCoreApplication>
 
-TcpServer::TcpServer(QObject *parent) : QObject(parent)
+TcpServer::TcpServer(QObject *parent) :
+    QObject(parent),
+    firstSocket(NULL)
 {
-    mTcpServer = new QTcpServer(this);
-
-    connect(mTcpServer, &QTcpServer::newConnection, this, &TcpServer::slotNewConnection);
-
-    if(!mTcpServer->listen(QHostAddress::Any, 6000)){
-        qDebug() << "TCP сервер не запущен";
-    } else {
-        qDebug() << "TCP сервер запущен";
+    server = new QTcpServer(this);
+    qDebug() << "Запущен TCP сервер = " << server->listen(QHostAddress::Any, 6666);
+    connect(server, SIGNAL(newConnection()), this, SLOT(incommingConnection())); // подключаем сигнал "новое подключение" к нашему обработчику подключений
+}
+void TcpServer::incommingConnection() // обработчик подключений
+{
+    QTcpSocket * socket = server->nextPendingConnection(); // получаем сокет нового входящего подключения
+    connect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(stateChanged(QAbstractSocket::SocketState))); // делаем обработчик изменения статуса сокета
+    if (!firstSocket) { // если у нас нет "вещающего", то данное подключение становится вещающим
+        connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead())); // подключаем входящие сообщения от вещающего на наш обработчик
+        socket->write("server"); // говорим ему что он "вещает"
+        firstSocket = socket; // сохраняем себе"
+        qDebug() << "this one is server";
+    }
+    else { // иначе говорим подключенному что он "получатель"
+        socket->write("client");
+        sockets << socket;
     }
 }
-
-void TcpServer::slotNewConnection()
+void TcpServer::readyRead() // обработчик входящих сообщений от "вещающего"
 {
-    mTcpSocket = mTcpServer->nextPendingConnection();
-
-    mTcpSocket->write("Успешное подключение к серверу PX4\r\n");
-
-    connect(mTcpSocket, &QTcpSocket::readyRead, this, &TcpServer::slotServerRead);
-    connect(mTcpSocket, &QTcpSocket::disconnected, this, &TcpServer::slotClientDisconnected);
-}
-
-void TcpServer::slotServerRead()
-{
-    while(mTcpSocket->bytesAvailable()>0)
-    {
-        QByteArray array = mTcpSocket->readAll();
-        mTcpSocket->write(array);
-        qDebug() << array;
+    QObject * object = QObject::sender(); // далее и ниже до цикла идет преобразования "отправителя сигнала" в сокет, дабы извлечь данные
+    if (!object)
+        return;
+    qDebug() << "[1]";
+    QTcpSocket * socket = static_cast<QTcpSocket *>(object);
+    QByteArray arr =  socket->readAll();
+    qDebug() << arr.simplified();
+    // на самом деле весь верхний код можно было заменить на firstSocket, но я выдирал код из другого проекта, и переписывать мне лень :)
+    foreach(QTcpSocket *socket, sockets) { // пишем входящие данные от "вещающего" получателям
+        if (socket->state() == QTcpSocket::ConnectedState)
+            socket->write(arr);
     }
 }
-
-void TcpServer::slotClientDisconnected()
+void TcpServer::stateChanged(QAbstractSocket::SocketState state) // обработчик статуса, нужен для контроля за "вещающим"
 {
-    mTcpSocket->close();
+    QObject * object = QObject::sender();
+    if (!object)
+        return;
+    QTcpSocket * socket = static_cast<QTcpSocket *>(object);
+    qDebug() << state;
+    if (socket == firstSocket && state == QAbstractSocket::UnconnectedState)
+        firstSocket = NULL;
 }

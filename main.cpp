@@ -24,7 +24,13 @@ int main(int argc, char *argv[])
     FileWrite *fw = new FileWrite;
     Model *md = new Model;
     Chat *bchat = new Chat;
+
     TcpServer server;
+
+    //QTcpSocket client;
+    //QHostAddress addr("127.0.0.1");
+    //client.connectToHost(addr, 6666);
+
 #if !defined (Q_OS_WIN)
     Vehicle *vh = new Vehicle;
 #endif
