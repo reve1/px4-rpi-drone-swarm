@@ -1,6 +1,7 @@
 QT -= gui
 QT += bluetooth
 QT += serialport
+QT += network
 QMAKE_CXXFLAGS += -std=c++11
 CONFIG += c++11 console
 CONFIG -= app_bundle
@@ -21,12 +22,13 @@ SOURCES += \
         bluetooth/chat.cpp \
         bluetooth/chatclient.cpp \
         bluetooth/chatserver.cpp \
+        lan/tcpserver.cpp \
         main.cpp \
         model/model.cpp \
         streams/filewrite.cpp \
         streams/timermessage.cpp \
         streams/timerrssi.cpp \
-        vehicle/vehicle.cpp
+        #vehicle/vehicle.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -37,7 +39,8 @@ HEADERS += \
     bluetooth/bluetoothdiscovery.h \
     bluetooth/chat.h \
     bluetooth/chatclient.h \
-    bluetooth/chatserver.h \ \
+    bluetooth/chatserver.h \
+    lan/tcpserver.h \
     mavsdk/include/mavsdk/connection_result.h \
     mavsdk/include/mavsdk/mavsdk.h \
     mavsdk/include/mavsdk/plugin_base.h \
@@ -60,7 +63,7 @@ HEADERS += \
     streams/filewrite.h \
     streams/timermessage.h \
     streams/timerrssi.h \
-    vehicle/vehicle.h
+    #vehicle/vehicle.h
 
 
 unix:!android: LIBS += -L$$PWD/mavsdk/lib/ -lmavsdk
