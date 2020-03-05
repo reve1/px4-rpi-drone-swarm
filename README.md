@@ -6,11 +6,11 @@
 
 43.0879318,44.0766991,530.00
 
-export PX4_HOME_LAT=28.452386
+export PX4_HOME_LAT=43.0877167
 
-export PX4_HOME_LON=-13.867138
+export PX4_HOME_LON=44.0767085
 
-export PX4_HOME_ALT=28.5
+export PX4_HOME_ALT=530
 
 make px4_sitl_default jmavsim
 
