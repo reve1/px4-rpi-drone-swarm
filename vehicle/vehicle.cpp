@@ -93,7 +93,7 @@ void Vehicle::getTelemetryAlt(std::shared_ptr<mavsdk::Telemetry> telemetry)
     qDebug() <<"Широта: " << telemetry->position().latitude_deg;
     qDebug() <<"Долгота: " << telemetry->position().longitude_deg;
     qDebug() <<"Высота AMSL: " << telemetry->position().absolute_altitude_m << " m";
-    qDebug() << "Спутников GPS: " << telemetry->gps_info().num_satellites;
+    qDebug() <<"Спутников GPS: " << telemetry->gps_info().num_satellites;
     qDebug() <<"Статус GPS: " << telemetry->gps_info().fix_type;
 }
 
