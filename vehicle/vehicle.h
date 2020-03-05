@@ -10,6 +10,9 @@
 #include <streams/filewrite.h>
 #include <model/model.h>
 
+using namespace std::this_thread;
+using namespace std::chrono;
+
 class Vehicle : public QObject
 {
     Q_OBJECT
@@ -20,6 +23,15 @@ public:
 private:
     FileWrite *fw;
     Model *md;
+    void getTelemetryAlt(std::shared_ptr<mavsdk::Telemetry> telemetry);
+    void setTelemetryRate(std::shared_ptr<mavsdk::Telemetry> telemetry);
+    void setTakeOff(std::shared_ptr<mavsdk::Action> action);
+    void setArm(std::shared_ptr<mavsdk::Action> action);
+    void setLand(std::shared_ptr<mavsdk::Action> action);
+
+    mavsdk::Mavsdk dc;
+    mavsdk::ConnectionResult connection_result;
+    mavsdk::System &system = dc.system();
 };
 
 #endif // VEHICLE_H

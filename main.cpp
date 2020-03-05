@@ -27,13 +27,12 @@ int main(int argc, char *argv[])
     FileWrite *fw = new FileWrite;
     Model *md = new Model;
     Chat *bchat = new Chat;
+    Vehicle *vh = new Vehicle;
 
     //BluetoothDiscovery *bd = new BluetoothDiscovery;
     //QObject::connect(bd, SIGNAL(deviceFound(QBluetoothServiceInfo)), bchat, SLOT(connectClicked(QBluetoothServiceInfo)));
     //QObject::connect(bchat, SIGNAL(socketError()), bd, SLOT(StartServiceDiscovery()));
     //bd->StartServiceDiscovery();
-
-    Vehicle *vh = new Vehicle;
 
     return a.exec();
 }
