@@ -43,7 +43,7 @@ BluetoothDiscovery::BluetoothDiscovery(QObject *parent) : QObject(parent)
 void BluetoothDiscovery::SetHostDiscoverable()
 {
 
-#if !defined (Q_OS_WIN) || (Q_OS_ANDROID)
+#if (!defined (_WIN) || !defined (_ANDROID))
     localDevice->setHostMode(QBluetoothLocalDevice::HostPoweredOff);
     localDevice->setHostMode(QBluetoothLocalDevice::HostDiscoverable);
 #endif

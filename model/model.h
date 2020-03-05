@@ -20,10 +20,32 @@ public:
 
     struct ControllerModel
     {
-        int GlobalPositionLat;
-        int GlobalPositionLon;
-        int GlobalPositionAlt;
+        double GlobalPositionLat;
+        double GlobalPositionLon;
+        float GlobalPositionAlt;
+        float GlobalPositionAMSL;
     };
+
+    int UUID;
+    double GlobalPositionLat;
+    double GlobalPositionLon;
+    float GlobalPositionAlt;
+    float GlobalPositionAMSL;
+    int GPSStatus;
+
+    double getGlobalPositionLat () {return GlobalPositionLat;}
+    void setGlobalPositionLat (double GlobalPositionLat_SET) {GlobalPositionLat = GlobalPositionLat_SET; }
+    double getGlobalPositionLon () {return GlobalPositionLon;}
+    void setGlobalPositionLon (double GlobalPositionLon_SET) {GlobalPositionLon = GlobalPositionLon_SET; }
+    double getGlobalPositionAlt () {return GlobalPositionAlt;}
+    void setGlobalPositionAlt (double GlobalPositionAlt_SET) {GlobalPositionAlt = GlobalPositionAlt_SET; }
+    double getGlobalPositionAMSL () {return GlobalPositionAMSL;}
+    void setGlobalPositionAMSL (double GlobalPositionAMSL_SET) {GlobalPositionAMSL = GlobalPositionAMSL_SET; }
+
+    ControllerModel *cm = new ControllerModel;
+
+    double CONTROLLERgetGlobalPositionLat () {return cm->GlobalPositionLat;}
+    void CONTROLLERsetGlobalPositionLat (double GlobalPositionLat_SET) {cm->GlobalPositionLat = GlobalPositionLat_SET; }
 };
 
 
