@@ -22,6 +22,7 @@ public:
 
 private:
     void getTelemetryAlt(std::shared_ptr<mavsdk::Telemetry> telemetry);
+    void setGoToLocation(std::shared_ptr<mavsdk::Action> action);
     void setTelemetryRate(std::shared_ptr<mavsdk::Telemetry> telemetry);
     void setTakeOff(std::shared_ptr<mavsdk::Action> action);
     void setArm(std::shared_ptr<mavsdk::Action> action);

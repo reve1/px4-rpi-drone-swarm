@@ -32,13 +32,6 @@ Vehicle::Vehicle()
     setArm(action);
     setTakeOff(action);
     getTelemetryAlt(telemetry);
-    sleep_for(seconds(20));
-    const mavsdk::Action::Result goto_location_result = action->goto_location(47.397,8.54559,507.502,0);
-    if (goto_location_result != mavsdk::Action::Result::SUCCESS){
-        qDebug() << "Ошибка движения БВС к заданной точке";
-        data = "Ошибка движения БВС к заданной точке";
-        fw->WriteFromClass(5, data.simplified());
-    }
     sleep_for(seconds(120));
     getTelemetryAlt(telemetry);
     setLand(action);
@@ -61,6 +54,9 @@ void Vehicle::setTelemetryRate(std::shared_ptr<mavsdk::Telemetry> telemetry)
         fw->WriteFromClass(5, data.simplified());
         sleep_for(seconds(1));
     }
+    qDebug() << "Отправлен сигнал установки телеметрии";
+    data = "Отправлен сигнал установки телеметрии";
+    fw->WriteFromClass(5, data.simplified());
 }
 
 void Vehicle::setArm(std::shared_ptr<mavsdk::Action> action)
@@ -72,6 +68,9 @@ void Vehicle::setArm(std::shared_ptr<mavsdk::Action> action)
         fw->WriteFromClass(5, data.simplified());
         return;
     }
+    qDebug() << "Отправлен сигнал арминга";
+    data = "Отправлен сигнал арминга";
+    fw->WriteFromClass(5, data.simplified());
 }
 
 void Vehicle::setTakeOff(std::shared_ptr<mavsdk::Action> action)
@@ -83,6 +82,10 @@ void Vehicle::setTakeOff(std::shared_ptr<mavsdk::Action> action)
         fw->WriteFromClass(5, data.simplified());
         return;
     }
+    qDebug() << "Отправлен сигнал взлета";
+    data = "Отправлен сигнал взлета";
+    fw->WriteFromClass(5, data.simplified());
+    sleep_for(seconds(20));
 }
 
 void Vehicle::setLand(std::shared_ptr<mavsdk::Action> action)
@@ -94,6 +97,23 @@ void Vehicle::setLand(std::shared_ptr<mavsdk::Action> action)
         fw->WriteFromClass(5, data.simplified());
         return;
     }
+    qDebug() << "Отправлен сигнал посадки";
+    data = "Отправлен сигнал посадки";
+    fw->WriteFromClass(5, data.simplified());
+
+}
+
+void Vehicle::setGoToLocation(std::shared_ptr<mavsdk::Action> action)
+{
+    mavsdk::Action::Result goto_location_result = action->goto_location(47.397,8.54559,507.502,0);
+    if (goto_location_result != mavsdk::Action::Result::SUCCESS){
+        qDebug() << "Ошибка движения БВС к заданной точке";
+        data = "Ошибка движения БВС к заданной точке";
+        fw->WriteFromClass(5, data.simplified());
+    }
+    qDebug() << "Отправлен сигнал движения БВС к заданной точке";
+    data = "Отправлен сигнал движения БВС к заданной точке";
+    fw->WriteFromClass(5, data.simplified());
 }
 
 void Vehicle::getTelemetryAlt(std::shared_ptr<mavsdk::Telemetry> telemetry)
