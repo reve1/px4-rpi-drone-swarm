@@ -111,10 +111,10 @@ void Vehicle::getTelemetryAlt(std::shared_ptr<mavsdk::Telemetry> telemetry)
     data = "Высота AMSL: " + QString::number(telemetry->position().absolute_altitude_m) + " m";
     fw->WriteFromClass(5, data.simplified());
     qDebug() <<"Спутников GPS: " << telemetry->gps_info().num_satellites;
-    data = "Спутников GPS: " + QString::number(telemetry->gps_info().num_satellites);
+    data = &"Спутников GPS: " [telemetry->gps_info().num_satellites];
     fw->WriteFromClass(5, data.simplified());
     qDebug() <<"Статус GPS: " << telemetry->gps_info().fix_type;
-    data = "Статус GPS: " + QString::number(telemetry->gps_info().fix_type);
+    data = &"Статус GPS: " [telemetry->gps_info().fix_type];
     fw->WriteFromClass(5, data.simplified());
 }
 

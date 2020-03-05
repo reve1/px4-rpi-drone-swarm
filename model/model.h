@@ -31,6 +31,7 @@ public:
     double GlobalPositionLon;
     float GlobalPositionAlt;
     float GlobalPositionAMSL;
+    int GPSStatus;
 
     double getGlobalPositionLat () {return GlobalPositionLat;}
     void setGlobalPositionLat (double GlobalPositionLat_SET) {GlobalPositionLat = GlobalPositionLat_SET; }
