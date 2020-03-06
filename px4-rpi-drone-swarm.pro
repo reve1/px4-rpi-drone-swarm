@@ -29,7 +29,7 @@ SOURCES += \
     streams/filewrite.cpp \
     streams/timermessage.cpp \
     streams/timerrssi.cpp \
-    #vehicle/vehicle.cpp
+    vehicle/vehicle.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -65,7 +65,7 @@ HEADERS += \
     streams/filewrite.h \
     streams/timermessage.h \
     streams/timerrssi.h \
-    #vehicle/vehicle.h
+    vehicle/vehicle.h
 
 
 unix:!android: LIBS += -L$$PWD/mavsdk/lib/ -lmavsdk
