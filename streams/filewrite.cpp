@@ -34,6 +34,12 @@ void FileWrite::WriteFromClass(int flag, QString data)
     case 5:
         name = "mav.txt";
         break;
+    case 6:
+        name = "udpclient.txt";
+        break;
+    case 7:
+        name = "udpserver.txt";
+        break;
     default:
         break;
     }

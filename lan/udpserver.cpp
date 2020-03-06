@@ -15,61 +15,23 @@ void UdpServer::processPendingDatagrams()
         datagram.resize(int(udpSocket->pendingDatagramSize()));
         udpSocket->readDatagram(datagram.data(), datagram.size());
         qDebug() << "Получена датаграмма: " << datagram.constData();
+        QString string = datagram.constData();
+        data = "Получена датаграмма: " + string.simplified();
+        FileWrite::WriteFromClass(7,data);
+        string.chop(1);
+        QStringList list = string.split('/');
+        qDebug() << list.at(0).simplified();
+        data = "1 число: " + list.at(0).simplified();
+        FileWrite::WriteFromClass(7,data);
+        qDebug() << list.at(1).simplified();
+        data = "2 число: " + list.at(1).simplified();
+        FileWrite::WriteFromClass(7,data);
+        qDebug() << list.at(2).simplified();
+        data = "3 число: " + list.at(2).simplified();
+        FileWrite::WriteFromClass(7,data);
+        qDebug() << list.at(3).simplified();
+        data = "4 число: " + list.at(3).simplified();
+        FileWrite::WriteFromClass(7,data);
+        list.clear();
     }
 }
-
-
-
-
-
-
-/*
-TcpServer::TcpServer(QObject *parent) :
-    QObject(parent),
-    firstSocket(NULL)
-{
-    server = new QTcpServer(this);
-    qDebug() << "Запущен TCP сервер = " << server->listen(QHostAddress::Any, 6666);
-    connect(server, SIGNAL(newConnection()), this, SLOT(incommingConnection())); // подключаем сигнал "новое подключение" к нашему обработчику подключений
-}
-void TcpServer::incommingConnection() // обработчик подключений
-{
-    QTcpSocket * socket = server->nextPendingConnection(); // получаем сокет нового входящего подключения
-    connect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(stateChanged(QAbstractSocket::SocketState))); // делаем обработчик изменения статуса сокета
-    if (!firstSocket) { // если у нас нет "вещающего", то данное подключение становится вещающим
-        connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead())); // подключаем входящие сообщения от вещающего на наш обработчик
-        socket->write("server"); // говорим ему что он "вещает"
-        firstSocket = socket; // сохраняем себе"
-        qDebug() << "this one is server";
-    }
-    else { // иначе говорим подключенному что он "получатель"
-        socket->write("client");
-        sockets << socket;
-    }
-}
-void TcpServer::readyRead() // обработчик входящих сообщений от "вещающего"
-{
-    QObject * object = QObject::sender(); // далее и ниже до цикла идет преобразования "отправителя сигнала" в сокет, дабы извлечь данные
-    if (!object)
-        return;
-    qDebug() << "[1]";
-    QTcpSocket * socket = static_cast<QTcpSocket *>(object);
-    QByteArray arr =  socket->readAll();
-    qDebug() << arr.simplified();
-    // на самом деле весь верхний код можно было заменить на firstSocket, но я выдирал код из другого проекта, и переписывать мне лень :)
-    foreach(QTcpSocket *socket, sockets) { // пишем входящие данные от "вещающего" получателям
-        if (socket->state() == QTcpSocket::ConnectedState)
-            socket->write(arr);
-    }
-}
-void TcpServer::stateChanged(QAbstractSocket::SocketState state) // обработчик статуса, нужен для контроля за "вещающим"
-{
-    QObject * object = QObject::sender();
-    if (!object)
-        return;
-    QTcpSocket * socket = static_cast<QTcpSocket *>(object);
-    qDebug() << state;
-    if (socket == firstSocket && state == QAbstractSocket::UnconnectedState)
-        firstSocket = NULL;
-}
-*/

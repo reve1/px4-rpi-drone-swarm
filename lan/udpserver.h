@@ -3,6 +3,8 @@
 #include <QObject>
 #include <QtNetwork>
 
+#include <streams/filewrite.h>
+
 class QUdpSocket;
 class UdpServer : public QObject
 {
@@ -13,6 +15,7 @@ private slots:
     void processPendingDatagrams();
 private:
     QUdpSocket *udpSocket = nullptr;
+    QString data;
 };
 #endif // UDPSERVER_H
 

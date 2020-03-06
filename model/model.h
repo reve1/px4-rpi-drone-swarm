@@ -33,6 +33,8 @@ public:
     float GlobalPositionAMSL;
     int GPSStatus;
 
+    int getUUID () {return UUID;}
+    void setGlobalPositionLat (int UUID_SET) {UUID = UUID_SET; }
     double getGlobalPositionLat () {return GlobalPositionLat;}
     void setGlobalPositionLat (double GlobalPositionLat_SET) {GlobalPositionLat = GlobalPositionLat_SET; }
     double getGlobalPositionLon () {return GlobalPositionLon;}

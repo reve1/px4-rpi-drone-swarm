@@ -4,6 +4,8 @@
 #include <QtNetwork>
 #include <QTimer>
 
+#include <streams/filewrite.h>
+
 class QUdpSocket;
 class UdpClient : public QObject
 {
@@ -16,11 +18,7 @@ private slots:
 private:
     QUdpSocket *udpSocket = nullptr;
     QTimer timer;
+    QString data;
     int messageNo = 1;
 };
 #endif // UDPCLIENT_H
-
-
-
-
-
