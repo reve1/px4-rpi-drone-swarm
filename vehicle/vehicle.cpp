@@ -47,17 +47,17 @@ void Vehicle::setTelemetryRate(std::shared_ptr<mavsdk::Telemetry> telemetry)
     if (set_rate_result != mavsdk::Telemetry::Result::SUCCESS) {
         qDebug() << "Ошибка установки телеметрии";
         data = "Ошибка установки телеметрии";
-        fw->WriteFromClass(5, data.simplified());
+        FileWrite::WriteFromClass(5, data.simplified());
     }
     while (telemetry->health_all_ok() != true) {
         qDebug() << "БВС не готов к запуску";
         data = "БВС не готов к запуску";
-        fw->WriteFromClass(5, data.simplified());
+        FileWrite::WriteFromClass(5, data.simplified());
         sleep_for(seconds(1));
     }
     qDebug() << "Отправлен сигнал установки телеметрии";
     data = "Отправлен сигнал установки телеметрии";
-    fw->WriteFromClass(5, data.simplified());
+    FileWrite::WriteFromClass(5, data.simplified());
 }
 
 void Vehicle::setArm(std::shared_ptr<mavsdk::Action> action)
@@ -66,12 +66,12 @@ void Vehicle::setArm(std::shared_ptr<mavsdk::Action> action)
     if (arm != mavsdk::Action::Result::SUCCESS) {
         qDebug() << "Ошибка арминга";
         data = "Ошибка арминга";
-        fw->WriteFromClass(5, data.simplified());
+        FileWrite::WriteFromClass(5, data.simplified());
         return;
     }
     qDebug() << "Отправлен сигнал арминга";
     data = "Отправлен сигнал арминга";
-    fw->WriteFromClass(5, data.simplified());
+    FileWrite::WriteFromClass(5, data.simplified());
 }
 
 void Vehicle::setTakeOff(std::shared_ptr<mavsdk::Action> action)
@@ -80,12 +80,12 @@ void Vehicle::setTakeOff(std::shared_ptr<mavsdk::Action> action)
     if (takeoff != mavsdk::Action::Result::SUCCESS) {
         qDebug() << "Ошибка взлета";
         data = "Ошибка взлета";
-        fw->WriteFromClass(5, data.simplified());
+        FileWrite::WriteFromClass(5, data.simplified());
         return;
     }
     qDebug() << "Отправлен сигнал взлета";
     data = "Отправлен сигнал взлета";
-    fw->WriteFromClass(5, data.simplified());
+    FileWrite::WriteFromClass(5, data.simplified());
     sleep_for(seconds(20));
 }
 
@@ -95,12 +95,12 @@ void Vehicle::setLand(std::shared_ptr<mavsdk::Action> action)
     if (land != mavsdk::Action::Result::SUCCESS) {
         qDebug() << "Ошибка посадки";
         data = "Ошибка посадки";
-        fw->WriteFromClass(5, data.simplified());
+        FileWrite::WriteFromClass(5, data.simplified());
         return;
     }
     qDebug() << "Отправлен сигнал посадки";
     data = "Отправлен сигнал посадки";
-    fw->WriteFromClass(5, data.simplified());
+    FileWrite::WriteFromClass(5, data.simplified());
 }
 
 void Vehicle::setGoToLocation(std::shared_ptr<mavsdk::Action> action)
@@ -109,33 +109,33 @@ void Vehicle::setGoToLocation(std::shared_ptr<mavsdk::Action> action)
     if (goto_location_result != mavsdk::Action::Result::SUCCESS){
         qDebug() << "Ошибка движения БВС к заданной точке";
         data = "Ошибка движения БВС к заданной точке";
-        fw->WriteFromClass(5, data.simplified());
+        FileWrite::WriteFromClass(5, data.simplified());
     }
     qDebug() << "Отправлен сигнал движения БВС к заданной точке";
     data = "Отправлен сигнал движения БВС к заданной точке";
-    fw->WriteFromClass(5, data.simplified());
+    FileWrite::WriteFromClass(5, data.simplified());
 }
 
 void Vehicle::getTelemetryAlt(std::shared_ptr<mavsdk::Telemetry> telemetry)
 {
     qDebug() <<"Высота: " << telemetry->position().relative_altitude_m << " m";
     data = "Высота: " + QString::number(telemetry->position().relative_altitude_m) + " m";
-    fw->WriteFromClass(5, data.simplified());
+    FileWrite::WriteFromClass(5, data.simplified());
     qDebug() <<"Широта: " << telemetry->position().latitude_deg;
     data = "Широта: " + QString::number(telemetry->position().latitude_deg);
-    fw->WriteFromClass(5, data.simplified());
+    FileWrite::WriteFromClass(5, data.simplified());
     qDebug() <<"Долгота: " << telemetry->position().longitude_deg;
     data = "Долгота: " + QString::number(telemetry->position().longitude_deg);
-    fw->WriteFromClass(5, data.simplified());
+    FileWrite::WriteFromClass(5, data.simplified());
     qDebug() <<"Высота AMSL: " << telemetry->position().absolute_altitude_m << " m";
     data = "Высота AMSL: " + QString::number(telemetry->position().absolute_altitude_m) + " m";
-    fw->WriteFromClass(5, data.simplified());
+    FileWrite::WriteFromClass(5, data.simplified());
     qDebug() <<"Спутников GPS: " << telemetry->gps_info().num_satellites;
     data = &"Спутников GPS: " [telemetry->gps_info().num_satellites];
-    fw->WriteFromClass(5, data.simplified());
+    FileWrite::WriteFromClass(5, data.simplified());
     qDebug() <<"Статус GPS: " << telemetry->gps_info().fix_type;
     data = &"Статус GPS: " [telemetry->gps_info().fix_type];
-    fw->WriteFromClass(5, data.simplified());
+    FileWrite::WriteFromClass(5, data.simplified());
 }
 
 

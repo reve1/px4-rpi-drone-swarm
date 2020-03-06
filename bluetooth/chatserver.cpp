@@ -11,14 +11,14 @@ ChatServer::ChatServer(QObject *parent)
 {
     connect(this, SIGNAL(messageReceived_reply(QString)), this, SLOT(sendMessage(QString)));
     data = "Отработал конструктор класса ChatServer.";
-    fw->WriteFromClass(1, data);
+    FileWrite::WriteFromClass(1, data);
 }
 
 ChatServer::~ChatServer()
 {
     stopServer();
     data = "Отработал деструктор класса ChatServer.";
-    fw->WriteFromClass(1, data);
+    FileWrite::WriteFromClass(1, data);
 }
 
 void ChatServer::startServer(const QBluetoothAddress& localAdapter)
@@ -35,7 +35,7 @@ void ChatServer::startServer(const QBluetoothAddress& localAdapter)
     if (!result) {
         qWarning() << "Невозможно привязать сервер к " << localAdapter.toString();
         data = "Невозможно привязать сервер к " + localAdapter.toString();
-        fw->WriteFromClass(1, data);
+        FileWrite::WriteFromClass(1, data);
         return;
     }
 
@@ -81,7 +81,7 @@ void ChatServer::startServer(const QBluetoothAddress& localAdapter)
 
     qWarning() << "Старт сервера на " << localAdapter.toString();
     data = "Старт сервера на " + localAdapter.toString();
-    fw->WriteFromClass(1, data);
+    FileWrite::WriteFromClass(1, data);
 
 }
 
@@ -92,7 +92,7 @@ void ChatServer::stopServer()
     delete rfcommServer;
     rfcommServer = nullptr;
     data = "Стоп сервера Bluetooth.";
-    fw->WriteFromClass(1, data);
+    FileWrite::WriteFromClass(1, data);
 }
 
 void ChatServer::sendMessage(const QString &message)
@@ -103,7 +103,7 @@ void ChatServer::sendMessage(const QString &message)
     {
         qCritical() << "Отправлено на " << socket->peerName() <<  " сообщение: "  << message.simplified();
         data = "Отправлено на: " + socket->peerName() +" сообщение: " + message;
-        fw->WriteFromClass(3, data);
+        FileWrite::WriteFromClass(3, data);
         socket->write(text);
     }
 
@@ -123,7 +123,7 @@ void ChatServer::clientConnected()
 
     qDebug() << "Подключился клиент: " << socket->peerName() << " адресс: " << socket->peerAddress().toString();
     data = "Подключился клиент " + socket->peerAddress().toString();
-    fw->WriteFromClass(1, data);
+    FileWrite::WriteFromClass(1, data);
 }
 
 void ChatServer::clientDisconnected()
@@ -137,7 +137,7 @@ void ChatServer::clientDisconnected()
     socket->deleteLater();
     qDebug() << "Отключился клиент: " << socket->peerName() << " адресс: " << socket->peerAddress().toString();
     data = "Отключился клиент " + socket->peerAddress().toString();
-    fw->WriteFromClass(1, data);
+    FileWrite::WriteFromClass(1, data);
 }
 
 void ChatServer::readSocket()
@@ -152,6 +152,6 @@ void ChatServer::readSocket()
         emit messageReceived_reply("REPLY");
         qCritical() << "Получено от " << socket->peerName() <<  " сообщение: " << line.simplified();
         data = "Получено от: " + socket->peerName() +" сообщение: " + line.simplified();
-        fw->WriteFromClass(3, data.simplified());
+        FileWrite::WriteFromClass(3, data.simplified());
     }
 }

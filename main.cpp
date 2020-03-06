@@ -23,10 +23,11 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     //QLoggingCategory::setFilterRules(QStringLiteral("qt.bluetooth* = true"));
-    FileWrite *fw = new FileWrite;
+
     Model *md = new Model;
     Chat *bchat = new Chat;
 
+    FileWrite fw;
     UdpServer server;
     UdpClient client;
 

@@ -28,7 +28,6 @@ private:
     void setArm(std::shared_ptr<mavsdk::Action> action);
     void setLand(std::shared_ptr<mavsdk::Action> action);
 
-    FileWrite *fw;
     QString data;
     mavsdk::Mavsdk dc;
     mavsdk::ConnectionResult connection_result;

@@ -39,7 +39,6 @@ private:
     QBluetoothLocalDevice *localDevice = new QBluetoothLocalDevice(this);
 
     Model *md;
-    FileWrite *fw;
     QString data;
 
 };
