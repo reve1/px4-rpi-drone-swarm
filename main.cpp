@@ -10,7 +10,8 @@
 #include <streams/timermessage.h>
 #include <bluetooth/chat.h>
 #include <bluetooth/bluetoothdiscovery.h>
-#include <lan/tcpserver.h>
+#include <lan/udpserver.h>
+#include <lan/udpclient.h>
 #include <model/model.h>
 
 #if !defined (Q_OS_WIN)
@@ -25,7 +26,8 @@ int main(int argc, char *argv[])
     Model *md = new Model;
     Chat *bchat = new Chat;
 
-    TcpServer server;
+    UdpServer server;
+    UdpClient client;
 
     //QTcpSocket client;
     //QHostAddress addr("127.0.0.1");

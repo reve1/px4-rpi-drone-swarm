@@ -1,7 +1,29 @@
-#include "tcpserver.h"
-#include <QDebug>
-#include <QCoreApplication>
+#include "udpserver.h"
 
+UdpServer::UdpServer(QObject *parent): QObject(parent)
+{
+    udpSocket = new QUdpSocket(this);
+    udpSocket->bind(6666, QUdpSocket::ShareAddress);
+    connect(udpSocket, SIGNAL(readyRead()),
+            this, SLOT(processPendingDatagrams()));
+}
+
+void UdpServer::processPendingDatagrams()
+{
+    QByteArray datagram;
+    while (udpSocket->hasPendingDatagrams()) {
+        datagram.resize(int(udpSocket->pendingDatagramSize()));
+        udpSocket->readDatagram(datagram.data(), datagram.size());
+        qDebug() << "Получена датаграмма: " << datagram.constData();
+    }
+}
+
+
+
+
+
+
+/*
 TcpServer::TcpServer(QObject *parent) :
     QObject(parent),
     firstSocket(NULL)
@@ -50,3 +72,4 @@ void TcpServer::stateChanged(QAbstractSocket::SocketState state) // обрабо
     if (socket == firstSocket && state == QAbstractSocket::UnconnectedState)
         firstSocket = NULL;
 }
+*/
