@@ -2,6 +2,9 @@
 
 Vehicle::Vehicle()
 {
+}
+void Vehicle::Run()
+{
     bool discovered_system = false;
     connection_result = dc.add_udp_connection( "localhost", 14550);
     //connection_result = dc.add_serial_connection("/dev/ttyS0", 57600);
@@ -118,24 +121,36 @@ void Vehicle::setGoToLocation(std::shared_ptr<mavsdk::Action> action)
 
 void Vehicle::getTelemetryAlt(std::shared_ptr<mavsdk::Telemetry> telemetry)
 {
-    qDebug() <<"Высота: " << telemetry->position().relative_altitude_m << " m";
-    data = "Высота: " + QString::number(telemetry->position().relative_altitude_m) + " m";
+    unsigned long UUID = system.get_uuid();
+    double LON = telemetry->position().longitude_deg;
+    double LAT = telemetry->position().latitude_deg;
+    float ALT = telemetry->position().relative_altitude_m;
+    float AMSL = telemetry->position().absolute_altitude_m;
+    int GPS = telemetry->gps_info().num_satellites;
+    int GPS_fix_type = telemetry->gps_info().fix_type;
+    //telemetry->battery().remaining_percent;
+
+    qDebug() << "Высота: " << ALT << " m";
+    data = "Высота: " + QString::number(ALT) + " m";
     FileWrite::WriteFromClass(5, data.simplified());
-    qDebug() <<"Широта: " << telemetry->position().latitude_deg;
-    data = "Широта: " + QString::number(telemetry->position().latitude_deg);
+    qDebug() <<"Широта: " << LAT;
+    data = "Широта: " + QString::number(LAT);
     FileWrite::WriteFromClass(5, data.simplified());
-    qDebug() <<"Долгота: " << telemetry->position().longitude_deg;
-    data = "Долгота: " + QString::number(telemetry->position().longitude_deg);
+    qDebug() <<"Долгота: " << LON;
+    data = "Долгота: " + QString::number(LON);
     FileWrite::WriteFromClass(5, data.simplified());
-    qDebug() <<"Высота AMSL: " << telemetry->position().absolute_altitude_m << " m";
-    data = "Высота AMSL: " + QString::number(telemetry->position().absolute_altitude_m) + " m";
+    qDebug() <<"Высота AMSL: " << AMSL << " m";
+    data = "Высота AMSL: " + QString::number(AMSL) + " m";
     FileWrite::WriteFromClass(5, data.simplified());
-    qDebug() <<"Спутников GPS: " << telemetry->gps_info().num_satellites;
-    data = &"Спутников GPS: " [telemetry->gps_info().num_satellites];
+    qDebug() <<"Спутников GPS: " << GPS;
+    data = &"Спутников GPS: " [GPS];
     FileWrite::WriteFromClass(5, data.simplified());
-    qDebug() <<"Статус GPS: " << telemetry->gps_info().fix_type;
-    data = &"Статус GPS: " [telemetry->gps_info().fix_type];
+    qDebug() <<"Статус GPS: " << GPS_fix_type;
+    data = &"Статус GPS: " [GPS_fix_type];
     FileWrite::WriteFromClass(5, data.simplified());
+    qDebug() <<"Статус GPS: " << telemetry->battery().remaining_percent;
+
+    emit LocalVehicleInfo(UUID,LAT,LON,ALT,AMSL,GPS,GPS_fix_type);
 }
 
 

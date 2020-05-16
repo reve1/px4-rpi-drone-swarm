@@ -19,7 +19,11 @@ class Vehicle : public QObject
 
 public:
     Vehicle();
-
+signals:
+    //void LocalVehicleInfo();
+    void LocalVehicleInfo(unsigned long,double,double,float,float,int,int);
+public slots:
+    void Run();
 private:
     void getTelemetryAlt(std::shared_ptr<mavsdk::Telemetry> telemetry);
     void setGoToLocation(std::shared_ptr<mavsdk::Action> action);

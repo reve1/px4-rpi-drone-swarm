@@ -1,4 +1,5 @@
 #include <QCoreApplication>
+#include <QThread>
 #include <QtNetwork>
 #include <QLoggingCategory>
 #include <QBluetoothLocalDevice>
@@ -26,13 +27,17 @@ int main(int argc, char *argv[])
 
     Model *md = new Model;
     Chat *bchat = new Chat;
-
     FileWrite fw;
     UdpServer server;
-    UdpClient client;
+    //UdpClient client;
 
 #if !defined (Q_OS_WIN)
     Vehicle *vh = new Vehicle;
+    QThread *VhThred = new QThread;
+    vh->moveToThread(VhThred);
+    VhThred->start();
+    QObject::connect(vh, SIGNAL(LocalVehicleInfo(unsigned long,double,double,float,float,int,int)), md, SLOT(setLocalVehicleInfo(unsigned long,double,double,float,float,int,int)));
+    QObject::connect(VhThred, SIGNAL(started()), vh, SLOT(Run()));
 #endif
 
     //BluetoothDiscovery *bd = new BluetoothDiscovery;

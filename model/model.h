@@ -11,20 +11,11 @@ class Model : public QObject
 public:
     Model();
 
-    struct DeviceModel
-    {
-        QList<QString> BluetoothParametrsName;
-        QList<int> BluetoothParametrsRSSI;
-        //QList<int> ControllerParametrs;
-    };
-
-    struct ControllerModel
-    {
-        double GlobalPositionLat;
-        double GlobalPositionLon;
-        float GlobalPositionAlt;
-        float GlobalPositionAMSL;
-    };
+    QMultiMap <unsigned long,double> VehicleGPLat;
+    QMultiMap <unsigned long,double> VehicleGPLon;
+    QMultiMap <unsigned long,float> VehicleGPAlt;
+    QMultiMap <unsigned long,float> VehicleGPAMSL;
+    QMultiMap <unsigned long,int> VehicleGPSStatus;
 
     int UUID;
     double GlobalPositionLat;
@@ -44,10 +35,12 @@ public:
     double getGlobalPositionAMSL () {return GlobalPositionAMSL;}
     void setGlobalPositionAMSL (double GlobalPositionAMSL_SET) {GlobalPositionAMSL = GlobalPositionAMSL_SET; }
 
-    ControllerModel *cm = new ControllerModel;
+public slots:
+    void setLocalVehicleInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL,const int &GPS, const int &GPS_fix_type);
+    void setRemoteVehicleInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL,const int &GPS, const int &GPS_fix_type);
 
-    double CONTROLLERgetGlobalPositionLat () {return cm->GlobalPositionLat;}
-    void CONTROLLERsetGlobalPositionLat (double GlobalPositionLat_SET) {cm->GlobalPositionLat = GlobalPositionLat_SET; }
+    //double CONTROLLERgetGlobalPositionLat () {return cm->GlobalPositionLat;}
+    //void CONTROLLERsetGlobalPositionLat (double GlobalPositionLat_SET) {cm->GlobalPositionLat = GlobalPositionLat_SET; }
 };
 
 

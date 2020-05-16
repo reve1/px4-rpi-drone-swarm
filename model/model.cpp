@@ -2,5 +2,26 @@
 
 Model::Model()
 {
-    new ControllerModel;
+}
+
+void Model::setLocalVehicleInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL, const int &GPS ,const int &GPS_fix_type)
+{
+    VehicleGPAlt.insert(UUID,Alt);
+    VehicleGPLat.insert(UUID,Lat);
+    VehicleGPLon.insert(UUID,Lon);
+    VehicleGPAMSL.insert(UUID,AMSL);
+    VehicleGPSStatus.insert(UUID,GPS);
+    VehicleGPSStatus.insert(UUID,GPS_fix_type);
+    qDebug() << VehicleGPAlt.value(UUID);
+}
+
+void Model::setRemoteVehicleInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL,const int &GPS,const int &GPS_fix_type)
+{
+    VehicleGPAlt.insert(UUID,Alt);
+    VehicleGPLat.insert(UUID,Lat);
+    VehicleGPLon.insert(UUID,Lon);
+    VehicleGPAMSL.insert(UUID,AMSL);
+    VehicleGPSStatus.insert(UUID,GPS);
+    VehicleGPSStatus.insert(UUID,GPS_fix_type);
+    qDebug() << VehicleGPAlt.value(UUID);
 }
