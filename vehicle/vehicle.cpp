@@ -6,7 +6,8 @@ Vehicle::Vehicle()
 void Vehicle::Run()
 {
     bool discovered_system = false;
-    connection_result = dc.add_udp_connection( "localhost", 14550);
+    //connection_result = dc.add_udp_connection( "localhost", 14541); // MAV_2
+    connection_result = dc.add_udp_connection( "localhost", 14540); // MAV_1
     //connection_result = dc.add_serial_connection("/dev/ttyS0", 57600);
     //connection_result = dc.add_serial_connection("/dev/ttyUSB0", 57600);
 

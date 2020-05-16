@@ -11,7 +11,8 @@ UdpServer::UdpServer(QObject *parent): QObject(parent)
 void UdpServer::processPendingDatagrams()
 {
     QByteArray datagram;
-    while (udpSocket->hasPendingDatagrams()) {
+    while (udpSocket->hasPendingDatagrams())
+    {
         datagram.resize(int(udpSocket->pendingDatagramSize()));
         udpSocket->readDatagram(datagram.data(), datagram.size());
         qDebug() << "Получена датаграмма: " << datagram.constData();
@@ -21,16 +22,16 @@ void UdpServer::processPendingDatagrams()
         string.chop(1);
         QStringList list = string.split('/');
         qDebug() << list.at(0).simplified();
-        data = "1 число: " + list.at(0).simplified();
+        data = "1 параметр: " + list.at(0).simplified();
         FileWrite::WriteFromClass(7,data);
         qDebug() << list.at(1).simplified();
-        data = "2 число: " + list.at(1).simplified();
+        data = "2 параметр: " + list.at(1).simplified();
         FileWrite::WriteFromClass(7,data);
         qDebug() << list.at(2).simplified();
-        data = "3 число: " + list.at(2).simplified();
+        data = "3 параметр: " + list.at(2).simplified();
         FileWrite::WriteFromClass(7,data);
         qDebug() << list.at(3).simplified();
-        data = "4 число: " + list.at(3).simplified();
+        data = "4 параметр: " + list.at(3).simplified();
         FileWrite::WriteFromClass(7,data);
         list.clear();
     }

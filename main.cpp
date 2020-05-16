@@ -28,8 +28,8 @@ int main(int argc, char *argv[])
     Model *md = new Model;
     Chat *bchat = new Chat;
     FileWrite fw;
-    UdpServer server;
-    //UdpClient client;
+    UdpServer *server = new UdpServer;
+    UdpClient *client = new UdpClient;
 
 #if !defined (Q_OS_WIN)
     Vehicle *vh = new Vehicle;
@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
     vh->moveToThread(VhThred);
     VhThred->start();
     QObject::connect(vh, SIGNAL(LocalVehicleInfo(unsigned long,double,double,float,float,int,int)), md, SLOT(setLocalVehicleInfo(unsigned long,double,double,float,float,int,int)));
+    QObject::connect(vh, SIGNAL(LocalVehicleInfo(unsigned long,double,double,float,float,int,int)), client, SLOT(sendLocalVehicleInfo(unsigned long,double,double,float,float,int,int)));
     QObject::connect(VhThred, SIGNAL(started()), vh, SLOT(Run()));
 #endif
 

@@ -15,10 +15,14 @@ public:
 private slots:
     void startBroadcasting();
     void broadcastDatagram();
+    void sendLocalVehicleInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL,const int &GPS, const int &GPS_fix_type);
+
 private:
     QUdpSocket *udpSocket = nullptr;
     QTimer timer;
     QString data;
     int messageNo = 1;
+
+
 };
 #endif // UDPCLIENT_H

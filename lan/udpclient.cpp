@@ -23,3 +23,23 @@ void UdpClient::broadcastDatagram()
     FileWrite::WriteFromClass(6,data);
     ++messageNo;
 }
+
+void UdpClient::sendLocalVehicleInfo(const unsigned long &UUID,
+                                     const double &Lat,
+                                     const double &Lon,
+                                     const float &Alt,
+                                     const float &AMSL,
+                                     const int &GPS,
+                                     const int &GPS_fix_type)
+{
+    QString x = QString::number(UUID);
+    QByteArray datagram = x.toUtf8() + "/"
+            + QByteArray::number(Lat) + "/"
+            + QByteArray::number(Lon) + "/"
+            + QByteArray::number(Alt) + "/"
+            + QByteArray::number(AMSL) + "/"
+            + QByteArray::number(GPS) + "/"
+            + QByteArray::number(GPS_fix_type) + "/";
+    udpSocket->writeDatagram(datagram, QHostAddress::Broadcast, 6666);
+    qDebug() << "Отправлена датаграмма: " << datagram;
+}
