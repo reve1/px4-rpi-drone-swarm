@@ -5,8 +5,8 @@ UdpClient::UdpClient(QObject *parent): QObject(parent)
     udpSocket = new QUdpSocket(this);
     //connect(startButton, &QPushButton::clicked, this, &UdpClient::startBroadcasting);
     //connect(quitButton, &QPushButton::clicked, this, &UdpClient::close);
-    connect(&timer, &QTimer::timeout, this, &UdpClient::broadcastDatagram);
-    startBroadcasting();
+    //connect(&timer, &QTimer::timeout, this, &UdpClient::broadcastDatagram);
+    //startBroadcasting();
 }
 
 void UdpClient::startBroadcasting()

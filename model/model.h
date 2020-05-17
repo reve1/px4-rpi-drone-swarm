@@ -16,6 +16,7 @@ public:
     QMultiMap <unsigned long,float> VehicleGPAlt;
     QMultiMap <unsigned long,float> VehicleGPAMSL;
     QMultiMap <unsigned long,int> VehicleGPSStatus;
+    QMultiMap <unsigned long,int> VehicleLocalFlag;
 
     int UUID;
     double GlobalPositionLat;
