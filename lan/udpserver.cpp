@@ -44,8 +44,8 @@ void UdpServer::processPendingDatagrams()
         //qDebug() << list.at(3).simplified();
         //data = "4 параметр: " + list.at(3).simplified();
         //FileWrite::WriteFromClass(7,data);
-        list.clear();
 
+        list.clear();
         emit ReceivedRemoteVehicleInfo(UUID,LAT,LON,ALT,AMSL,GPS,GPS_fix_type);
     }
 }

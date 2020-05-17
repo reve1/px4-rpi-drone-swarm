@@ -15,6 +15,7 @@ void Model::setLocalVehicleInfo(const unsigned long &UUID,const double &Lat,cons
     VehicleGPSStatus.insert(UUID,GPS_fix_type);
     VehicleLocalFlag.insert(UUID,1);
     qDebug() << VehicleGPAlt.value(UUID);
+    qDebug() << "Локальное значение";
 }
 
 void Model::setRemoteVehicleInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL,const int &GPS,const int &GPS_fix_type)
@@ -30,5 +31,4 @@ void Model::setRemoteVehicleInfo(const unsigned long &UUID,const double &Lat,con
         qDebug() << "Сетевое значение";
         return;
     }
-    qDebug() << "Локальное значение";
 }
