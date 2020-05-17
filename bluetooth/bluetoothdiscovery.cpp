@@ -37,7 +37,7 @@ BluetoothDiscovery::BluetoothDiscovery(QObject *parent) : QObject(parent)
     StartDeviceDiscovery();
     qDebug() << "Отработал конструктор класса BluetoothDiscovery.";
     data = "Отработал конструктор класса BluetoothDiscovery.";
-    fw->WriteFromClass(4, data);
+    FileWrite::WriteFromClass(4, data);
 }
 
 void BluetoothDiscovery::SetHostDiscoverable()
@@ -50,7 +50,7 @@ void BluetoothDiscovery::SetHostDiscoverable()
     localDevice->setHostMode(QBluetoothLocalDevice::HostDiscoverable);
     qDebug() << "Устройство " << localDevice->name() << " обнаружимо в сети";
     data = "Устройство " + localDevice->name() + " обнаружимо в сети";
-    fw->WriteFromClass(4, data);
+    FileWrite::WriteFromClass(4, data);
 }
 
 void BluetoothDiscovery::StartServiceDiscovery()
@@ -69,7 +69,7 @@ void BluetoothDiscovery::StartServiceDiscovery()
     discoveryServiceAgent->start(QBluetoothServiceDiscoveryAgent::FullDiscovery);
     qDebug() << "Начато сканирование сервисов";
     data = "Начато сканирование сервисов";
-    fw->WriteFromClass(4, data);
+    FileWrite::WriteFromClass(4, data);
 }
 
 void BluetoothDiscovery::StartDeviceDiscovery()
@@ -78,7 +78,7 @@ void BluetoothDiscovery::StartDeviceDiscovery()
     discoveryDeviceAgent->start();
     qDebug() << "Начато сканирование устройств";
     data = "Начато сканирование устройств";
-    fw->WriteFromClass(4, data);
+    FileWrite::WriteFromClass(4, data);
 }
 
 void BluetoothDiscovery::UpdateRSSI()
@@ -89,7 +89,7 @@ void BluetoothDiscovery::UpdateRSSI()
         {
             qDebug() << "Устройство" << discoveryDeviceAgent->discoveredDevices().at(i).name() << "RSSI" << discoveryDeviceAgent->discoveredDevices().at(i).rssi();
             data = "Устройство " + discoveryDeviceAgent->discoveredDevices().at(i).name() + "RSSI " + QString::number(discoveryDeviceAgent->discoveredDevices().at(i).rssi());
-            fw->WriteFromClass(4, data);
+            FileWrite::WriteFromClass(4, data);
         }
     }
 }
@@ -99,7 +99,7 @@ void BluetoothDiscovery::discoveryService_finished()
 #if !defined (Q_OS_ANDROID)
     qDebug() << "Cканирование сервисов выполнено";
     data = "Cканирование сервисов выполнено";
-    fw->WriteFromClass(4, data);
+    FileWrite::WriteFromClass(4, data);
 #endif
 }
 
@@ -107,7 +107,7 @@ void BluetoothDiscovery::discoveryService_discovered()
 {
     qDebug() << "Обнаружен нужный сервис";
     data = "Обнаружен нужный сервис";
-    fw->WriteFromClass(4, data);
+    FileWrite::WriteFromClass(4, data);
 }
 
 void BluetoothDiscovery::discoveryDevice_finished()
@@ -115,7 +115,7 @@ void BluetoothDiscovery::discoveryDevice_finished()
 #if !defined (Q_OS_ANDROID)
     qDebug() << "Cканирование устройств выполнено";
     data = "Cканирование устройств выполнено";
-    fw->WriteFromClass(4, data);
+    FileWrite::WriteFromClass(4, data);
 #endif
 }
 
@@ -124,7 +124,7 @@ void BluetoothDiscovery::discoveryDevice_stoped()
     discoveryDeviceAgent->stop();
     qDebug() << "Cканирование устройств остановлено";
     data = "Cканирование устройств остановлено";
-    fw->WriteFromClass(4, data);
+    FileWrite::WriteFromClass(4, data);
 }
 
 void BluetoothDiscovery::discoveryService_stoped()
@@ -132,5 +132,5 @@ void BluetoothDiscovery::discoveryService_stoped()
     discoveryServiceAgent->stop();
     qDebug() << "Cканирование сервисов остановлено";
     data = "Cканирование сервисов остановлено";
-    fw->WriteFromClass(4, data);
+    FileWrite::WriteFromClass(4, data);
 }

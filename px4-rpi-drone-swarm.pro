@@ -1,6 +1,7 @@
 QT -= gui
 QT += bluetooth
 QT += serialport
+QT += network
 QMAKE_CXXFLAGS += -std=c++11
 CONFIG += c++11 console
 CONFIG -= app_bundle
@@ -17,16 +18,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        bluetooth/bluetoothdiscovery.cpp \
-        bluetooth/chat.cpp \
-        bluetooth/chatclient.cpp \
-        bluetooth/chatserver.cpp \
-        main.cpp \
-        model/model.cpp \
-        streams/filewrite.cpp \
-        streams/timermessage.cpp \
-        streams/timerrssi.cpp \
-        vehicle/vehicle.cpp
+    bluetooth/bluetoothdiscovery.cpp \
+    bluetooth/chat.cpp \
+    bluetooth/chatclient.cpp \
+    bluetooth/chatserver.cpp \
+    lan/udpserver.cpp \
+    lan/udpclient.cpp \
+    main.cpp \
+    model/model.cpp \
+    streams/filewrite.cpp \
+    streams/timermessage.cpp \
+    streams/timerrssi.cpp \
+    vehicle/vehicle.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -37,7 +40,9 @@ HEADERS += \
     bluetooth/bluetoothdiscovery.h \
     bluetooth/chat.h \
     bluetooth/chatclient.h \
-    bluetooth/chatserver.h \ \
+    bluetooth/chatserver.h \
+    lan/udpserver.h \
+    lan/udpclient.h \
     mavsdk/include/mavsdk/connection_result.h \
     mavsdk/include/mavsdk/mavsdk.h \
     mavsdk/include/mavsdk/plugin_base.h \

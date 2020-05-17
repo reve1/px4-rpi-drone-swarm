@@ -43,7 +43,6 @@ private:
     QBluetoothServiceInfo serviceInfo;
     QList<QBluetoothSocket *> clientSockets;
 
-    FileWrite *fw;
     QString data;
 };
 

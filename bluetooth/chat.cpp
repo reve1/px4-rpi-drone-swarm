@@ -24,7 +24,7 @@ Chat::Chat(QObject *parent)
 
     qDebug() << "Отработал конструктор класса Chat";
     data = "Отработал конструктор класса Chat.";
-    fw->WriteFromClass(3, data);
+    FileWrite::WriteFromClass(3, data);
 }
 
 Chat::~Chat()
@@ -32,28 +32,28 @@ Chat::~Chat()
     qDeleteAll(clients);
     delete server;
     data = "Отработал деструктор класса Chat.";
-    fw->WriteFromClass(3, data);
+    FileWrite::WriteFromClass(3, data);
 }
 
 void Chat::clientConnected(const QString &name)
 {
     //qDebug() << "Подключился клиент: " + name;
     //data = "Подключился клиент: " + name;
-    //fw->WriteFromClass(3, data);
+    //FileWrite::WriteFromClass(3, data);
 }
 
 void Chat::clientDisconnected(const QString &name)
 {
     //qDebug() << "Отключился клиент: " + name;
     //data = "Отключился клиент: " + name;
-    //fw->WriteFromClass(3, data);
+    //FileWrite::WriteFromClass(3, data);
 }
 
 void Chat::connected(const QString &name)
 {
     //qDebug() << "Подключен к: " + name;
     //data = "Подключен к: " + name;
-    //fw->WriteFromClass(3, data);
+    //FileWrite::WriteFromClass(3, data);
     emit SEND(); //убрать эту хрень после потока
 }
 
@@ -61,7 +61,7 @@ void Chat::reactOnSocketError(const QString &error)
 {
     qDebug() << "Ошибка: " + error;
     data = "Ошибка: " + error;
-    fw->WriteFromClass(3, data);
+    FileWrite::WriteFromClass(3, data);
     emit socketError();
     tm->timer.stop();
 }

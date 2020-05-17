@@ -53,7 +53,6 @@ private:
 
     QString localName;
 
-    FileWrite *fw;
     TimerMessage *tm = new TimerMessage;
     QString data;
 
