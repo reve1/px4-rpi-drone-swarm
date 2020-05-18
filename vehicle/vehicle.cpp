@@ -2,7 +2,7 @@
 
 Vehicle::Vehicle()
 {
-    connect(this, &Vehicle::newCoordSet, this, &Vehicle::folowMeSetTarget);
+    //connect(this, &Vehicle::newCoordSet, this, &Vehicle::folowMeSetTarget);
 }
 void Vehicle::Run()
 {
@@ -157,16 +157,18 @@ void Vehicle::getTelemetryAlt(std::shared_ptr<mavsdk::Telemetry> telemetry)
 
 void Vehicle::folowMeSetTarget(std::shared_ptr<mavsdk::FollowMe> follow_me)
 {
-    follow_me->set_target_location(target_location);
+
 }
 
 void Vehicle::folowMeStart()
 {
     auto follow_me = std::make_shared<mavsdk::FollowMe>(system);
+    folowMeStop(follow_me);
     mavsdk::FollowMe::Config config;
     config.min_height_m = 10.0;
     config.follow_direction = mavsdk::FollowMe::Config::FollowDirection::BEHIND;
     mavsdk::FollowMe::Result follow_me_result = follow_me->set_config(config);
+    follow_me->set_target_location(target_location);
     follow_me_result = follow_me->start();
     if (follow_me_result != mavsdk::FollowMe::Result::SUCCESS){
         qDebug() << "Ошибка следования БВС";
@@ -189,5 +191,5 @@ void Vehicle::folowMeSetCoord(const double &coord_lat,const double &coord_lon)
 {
     target_location.latitude_deg = coord_lat;
     target_location.longitude_deg = coord_lon;
-    emit newCoordSet();
+    folowMeStart();
 }

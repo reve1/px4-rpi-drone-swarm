@@ -39,15 +39,19 @@ private:
 
     void folowMeStop(std::shared_ptr<mavsdk::FollowMe> follow_me);
 
+mavsdk::FollowMe::TargetLocation target_location{};
+
+QString data;
+mavsdk::Mavsdk dc;
+mavsdk::ConnectionResult connection_result;
+mavsdk::System &system = dc.system();
+
 private slots:
     void folowMeSetTarget(std::shared_ptr<mavsdk::FollowMe> follow_me);
 
-    mavsdk::FollowMe::TargetLocation target_location{};
+    //
 
-    QString data;
-    mavsdk::Mavsdk dc;
-    mavsdk::ConnectionResult connection_result;
-    mavsdk::System &system = dc.system();
+
 };
 
 #endif // VEHICLE_H

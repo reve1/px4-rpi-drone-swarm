@@ -6,7 +6,7 @@
 #include <cmath>
 #include <functional>
 
-#include "plugin_base.h"
+#include "mavsdk/plugin_base.h"
 
 namespace mavsdk {
 
