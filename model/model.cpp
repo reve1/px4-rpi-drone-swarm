@@ -16,7 +16,7 @@ void Model::TimeStampCheck()
     foreach (unsigned long key, VehicleTimeStamp.keys())
     {
         QDateTime value=VehicleTimeStamp.value(key);
-        if (value.addSecs(20) < QDateTime::currentDateTime())
+        if (value.addSecs(5) < QDateTime::currentDateTime())
         {
             VehicleTimeStamp.remove(key);
             VehicleGPAlt.remove(key);
