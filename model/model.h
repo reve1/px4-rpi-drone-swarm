@@ -18,6 +18,7 @@ public:
     QMap <unsigned long,float> VehicleGPAlt;
     QMap <unsigned long,float> VehicleGPAMSL;
     QMap <unsigned long,int> VehicleGPSStatus;
+    QMap <unsigned long,int> VehicleGPS_fix_type;
     QMap <unsigned long,int> VehicleLocalFlag;
     QMap <unsigned long,QDateTime> VehicleTimeStamp;
 
