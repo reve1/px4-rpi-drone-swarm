@@ -26,7 +26,7 @@ void Model::TimeStampCheck()
             VehicleGPSStatus.remove(key);
             VehicleGPS_fix_type.remove(key);
             VehicleLocalFlag.insert(UUID,1);
-            qDebug() << "удалено устаревшее значение UUID = " << key ;
+            qDebug() << "Кеш очищен, удалены устаревшие значение UUID = " << key ;
         }
     }
 }
@@ -58,6 +58,7 @@ void Model::setRemoteVehicleInfo(const unsigned long &UUID,const double &Lat,con
         VehicleTimeStamp.insert(UUID,QDateTime::currentDateTime());
         qDebug() << VehicleGPAlt.value(UUID);
         qDebug() << "Сетевое значение";
+        newCoordSet(Lat, Lon);
         return;
     }
 }

@@ -72,6 +72,7 @@ unix:!android: LIBS += -L$$PWD/mavsdk/lib/ -lmavsdk
 unix:!android: LIBS += -L$$PWD/mavsdk/lib/ -lmavsdk_action
 unix:!android: LIBS += -L$$PWD/mavsdk/lib/ -lmavsdk_telemetry
 unix:!android: LIBS += -L$$PWD/mavsdk/lib/ -lmavsdk_offboard
+unix:!android: LIBS += -L$$PWD/mavsdk/lib/ -lmavsdk_follow_me
 
 unix:!android: INCLUDEPATH += $$PWD/mavsdk/include
 unix:!android: DEPENDPATH += $$PWD/mavsdk/include

@@ -42,6 +42,9 @@ public:
     double getGlobalPositionAMSL () {return GlobalPositionAMSL;}
     void setGlobalPositionAMSL (double GlobalPositionAMSL_SET) {GlobalPositionAMSL = GlobalPositionAMSL_SET; }
 
+signals:
+    void newCoordSet(double, double);
+
 public slots:
     void setLocalVehicleInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL,const int &GPS, const int &GPS_fix_type);
     void setRemoteVehicleInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL,const int &GPS, const int &GPS_fix_type);
