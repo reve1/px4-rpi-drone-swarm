@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QDebug>
+#include <QDateTime>
+#include <QTimer>
 
 class Model : public QObject
 {
@@ -11,12 +13,13 @@ class Model : public QObject
 public:
     Model();
 
-    QMultiMap <unsigned long,double> VehicleGPLat;
-    QMultiMap <unsigned long,double> VehicleGPLon;
-    QMultiMap <unsigned long,float> VehicleGPAlt;
-    QMultiMap <unsigned long,float> VehicleGPAMSL;
-    QMultiMap <unsigned long,int> VehicleGPSStatus;
-    QMultiMap <unsigned long,int> VehicleLocalFlag;
+    QMap <unsigned long,double> VehicleGPLat;
+    QMap <unsigned long,double> VehicleGPLon;
+    QMap <unsigned long,float> VehicleGPAlt;
+    QMap <unsigned long,float> VehicleGPAMSL;
+    QMap <unsigned long,int> VehicleGPSStatus;
+    QMap <unsigned long,int> VehicleLocalFlag;
+    QMap <unsigned long,QDateTime> VehicleTimeStamp;
 
     int UUID;
     double GlobalPositionLat;
@@ -24,6 +27,8 @@ public:
     float GlobalPositionAlt;
     float GlobalPositionAMSL;
     int GPSStatus;
+
+    QTimer timer;
 
     int getUUID () {return UUID;}
     void setGlobalPositionLat (int UUID_SET) {UUID = UUID_SET; }
@@ -40,6 +45,9 @@ public slots:
     void setLocalVehicleInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL,const int &GPS, const int &GPS_fix_type);
     void setRemoteVehicleInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL,const int &GPS, const int &GPS_fix_type);
 
+private slots:
+    void startTimerTimeStampCheck();
+    void TimeStampCheck();
     //double CONTROLLERgetGlobalPositionLat () {return cm->GlobalPositionLat;}
     //void CONTROLLERsetGlobalPositionLat (double GlobalPositionLat_SET) {cm->GlobalPositionLat = GlobalPositionLat_SET; }
 };
