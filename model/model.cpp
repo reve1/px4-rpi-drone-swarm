@@ -33,16 +33,23 @@ void Model::TimeStampCheck()
 
 void Model::setLocalVehiclePositionInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL)
 {
-    VehicleGPAlt.insert(UUID,Alt);
     VehicleGPLat.insert(UUID,Lat);
     VehicleGPLon.insert(UUID,Lon);
+    VehicleGPAlt.insert(UUID,Alt);
     VehicleGPAMSL.insert(UUID,AMSL);
-    //VehicleGPSStatus.insert(UUID,GPS);
-    //VehicleGPS_fix_type.insert(UUID,GPS_fix_type);
     VehicleLocalFlag.insert(UUID,1);
     VehicleTimeStamp.insert(UUID,QDateTime::currentDateTime());
-    qDebug() << VehicleGPAlt.value(UUID);
     qDebug() << "Локальное значение";
+}
+
+void Model::setLocalVehicleGPSInfo(const unsigned long &UUID,const int &GPS_num,const int &GPS_fix_type)
+{
+    VehicleGPSStatus.insert(UUID,GPS_num);
+    VehicleGPS_fix_type.insert(UUID,GPS_fix_type);
+}
+void Model::setLocalVehicleBatteryInfo(const unsigned long &UUID,const float &Battery)
+{
+    VehicleBattery.insert(UUID,Battery);
 }
 
 void Model::setRemoteVehicleInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL,const int &GPS,const int &GPS_fix_type)
@@ -56,7 +63,6 @@ void Model::setRemoteVehicleInfo(const unsigned long &UUID,const double &Lat,con
         VehicleGPSStatus.insert(UUID,GPS);
         VehicleGPS_fix_type.insert(UUID,GPS_fix_type);
         VehicleTimeStamp.insert(UUID,QDateTime::currentDateTime());
-        qDebug() << VehicleGPAlt.value(UUID);
         qDebug() << "Сетевое значение";
         newCoordSet(Lat, Lon);
         return;

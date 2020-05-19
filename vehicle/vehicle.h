@@ -22,6 +22,8 @@ public:
     Vehicle();
 signals:
     void LocalVehiclePositionInfo(unsigned long,double,double,float,float);
+    void LocalVehicleGPSInfo(unsigned long,int,int);
+    void LocalVehicleBatteryInfo(unsigned long,float);
     void newCoordSet();
 public slots:
     void Run();

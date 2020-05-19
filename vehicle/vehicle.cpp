@@ -152,23 +152,24 @@ void Vehicle::getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry)
     telemetry->gps_info_async([this](mavsdk::Telemetry::GPSInfo gpsinfo)
     {
         unsigned long UUID = system.get_uuid();
-        int GPS = gpsinfo.num_satellites;
+        int GPS_num = gpsinfo.num_satellites;
         int GPS_fix_type = gpsinfo.fix_type;
         //qDebug() <<"Спутников GPS: " << GPS;
-        data = &"Спутников GPS: " [GPS];
+        data = &"Спутников GPS: " [GPS_num];
         FileWrite::WriteFromClass(5, data.simplified());
         //qDebug() <<"Статус GPS: " << GPS_fix_type;
         data = &"Статус GPS: " [GPS_fix_type];
-        //emit LocalVehicleInfo(UUID,LAT,LON,ALT,AMSL,0,0);
+        emit LocalVehicleGPSInfo(UUID,GPS_num,GPS_fix_type);
     });
 
     telemetry->battery_async([this](mavsdk::Telemetry::Battery battery)
     {
         unsigned long UUID = system.get_uuid();
-        data = battery.remaining_percent;
+        float battery_remaining_percent = battery.remaining_percent;
+        data = "Оставшийся заряд батареи: " + QString::number(battery_remaining_percent);
         FileWrite::WriteFromClass(5, data.simplified());
         //qDebug() <<"Оставшийся заряд батареи: " << battery.remaining_percent;
-        //emit LocalVehicleInfo(UUID,LAT,LON,ALT,AMSL,0,0);
+        emit LocalVehicleBatteryInfo(UUID,battery_remaining_percent);
     });
 }
 

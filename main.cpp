@@ -37,6 +37,8 @@ int main(int argc, char *argv[])
     vh->moveToThread(VhThred);
     VhThred->start();
     QObject::connect(vh, SIGNAL(LocalVehiclePositionInfo(unsigned long,double,double,float,float)), md, SLOT(setLocalVehiclePositionInfo(unsigned long,double,double,float,float)));
+    QObject::connect(vh, SIGNAL(LocalVehicleGPSInfo(unsigned long,int,int)), md, SLOT (setLocalVehicleGPSInfo(unsigned long,int,int)));
+    QObject::connect(vh, SIGNAL(LocalVehicleBatteryInfo(unsigned long,float)), md, SLOT (setLocalVehicleBatteryInfo(unsigned long,float)));
     //QObject::connect(vh, SIGNAL(LocalVehicleInfo(unsigned long,double,double,float,float,int,int)), client, SLOT(sendLocalVehicleInfo(unsigned long,double,double,float,float,int,int)));
     QObject::connect(server, SIGNAL(ReceivedRemoteVehicleInfo(unsigned long,double,double,float,float,int,int)), md, SLOT(setRemoteVehicleInfo(unsigned long,double,double,float,float,int,int)));
     QObject::connect(VhThred, SIGNAL(started()), vh, SLOT(Run()));

@@ -19,6 +19,7 @@ public:
     QMap <unsigned long,float> VehicleGPAMSL;
     QMap <unsigned long,int> VehicleGPSStatus;
     QMap <unsigned long,int> VehicleGPS_fix_type;
+    QMap <unsigned long,float> VehicleBattery;
     QMap <unsigned long,int> VehicleLocalFlag;
     QMap <unsigned long,QDateTime> VehicleTimeStamp;
 
@@ -47,6 +48,8 @@ signals:
 
 public slots:
     void setLocalVehiclePositionInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL);
+    void setLocalVehicleGPSInfo(const unsigned long &UUID,const int &GPS_num,const int &GPS_fix_type);
+    void setLocalVehicleBatteryInfo(const unsigned long &UUID,const float &Battery);
     void setRemoteVehicleInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL,const int &GPS, const int &GPS_fix_type);
 
 private slots:
