@@ -46,7 +46,7 @@ signals:
     void newCoordSet(double, double);
 
 public slots:
-    void setLocalVehicleInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL,const int &GPS, const int &GPS_fix_type);
+    void setLocalVehiclePositionInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL);
     void setRemoteVehicleInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL,const int &GPS, const int &GPS_fix_type);
 
 private slots:

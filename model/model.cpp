@@ -31,14 +31,14 @@ void Model::TimeStampCheck()
     }
 }
 
-void Model::setLocalVehicleInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL, const int &GPS ,const int &GPS_fix_type)
+void Model::setLocalVehiclePositionInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL)
 {
     VehicleGPAlt.insert(UUID,Alt);
     VehicleGPLat.insert(UUID,Lat);
     VehicleGPLon.insert(UUID,Lon);
     VehicleGPAMSL.insert(UUID,AMSL);
-    VehicleGPSStatus.insert(UUID,GPS);
-    VehicleGPS_fix_type.insert(UUID,GPS_fix_type);
+    //VehicleGPSStatus.insert(UUID,GPS);
+    //VehicleGPS_fix_type.insert(UUID,GPS_fix_type);
     VehicleLocalFlag.insert(UUID,1);
     VehicleTimeStamp.insert(UUID,QDateTime::currentDateTime());
     qDebug() << VehicleGPAlt.value(UUID);

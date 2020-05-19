@@ -4,11 +4,12 @@ Vehicle::Vehicle()
 {
     //connect(this, &Vehicle::newCoordSet, this, &Vehicle::folowMeSetTarget);
 }
+
 void Vehicle::Run()
 {
     bool discovered_system = false;
-    //connection_result = dc.add_udp_connection( "localhost", 14541); // MAV_2
     connection_result = dc.add_udp_connection( "localhost", 14540); // MAV_1
+    //connection_result = dc.add_udp_connection( "localhost", 14541); // MAV_2
     //connection_result = dc.add_serial_connection("/dev/ttyS0", 57600);
     //connection_result = dc.add_serial_connection("/dev/ttyUSB0", 57600);
 
@@ -33,17 +34,18 @@ void Vehicle::Run()
     }
 
     setTelemetryRate(telemetry);
-    getTelemetryAlt(telemetry);
+    getTelemetry(telemetry);
     setArm(action);
     setTakeOff(action);
-    getTelemetryAlt(telemetry);
-    setGoToLocation(action);
+    getTelemetry(telemetry);
+    fly();
+    //setGoToLocation(action);
     sleep_for(seconds(120));
-    getTelemetryAlt(telemetry);
+    getTelemetry(telemetry);
     setLand(action);
     sleep_for(seconds(2));
-    getTelemetryAlt(telemetry);
-    //action->return_to_launch();
+    getTelemetry(telemetry);
+    action->return_to_launch();
 }
 
 void Vehicle::setTelemetryRate(std::shared_ptr<mavsdk::Telemetry> telemetry)
@@ -121,75 +123,58 @@ void Vehicle::setGoToLocation(std::shared_ptr<mavsdk::Action> action)
     FileWrite::WriteFromClass(5, data.simplified());
 }
 
-void Vehicle::getTelemetryAlt(std::shared_ptr<mavsdk::Telemetry> telemetry)
+void Vehicle::getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry)
 {
-    unsigned long UUID = system.get_uuid();
-    double LON = telemetry->position().longitude_deg;
-    double LAT = telemetry->position().latitude_deg;
-    float ALT = telemetry->position().relative_altitude_m;
-    float AMSL = telemetry->position().absolute_altitude_m;
-    int GPS = telemetry->gps_info().num_satellites;
-    int GPS_fix_type = telemetry->gps_info().fix_type;
-    //telemetry->battery().remaining_percent;
+    telemetry->position_async([this](mavsdk::Telemetry::Position position)
+    {
+        unsigned long UUID = system.get_uuid();
+        double LON = position.longitude_deg;
+        double LAT = position.latitude_deg;
+        float ALT = position.relative_altitude_m;
+        float AMSL = position.absolute_altitude_m;
 
-    qDebug() << "Высота: " << ALT << " m";
-    data = "Высота: " + QString::number(ALT) + " m";
-    FileWrite::WriteFromClass(5, data.simplified());
-    qDebug() <<"Широта: " << LAT;
-    data = "Широта: " + QString::number(LAT);
-    FileWrite::WriteFromClass(5, data.simplified());
-    qDebug() <<"Долгота: " << LON;
-    data = "Долгота: " + QString::number(LON);
-    FileWrite::WriteFromClass(5, data.simplified());
-    qDebug() <<"Высота AMSL: " << AMSL << " m";
-    data = "Высота AMSL: " + QString::number(AMSL) + " m";
-    FileWrite::WriteFromClass(5, data.simplified());
-    qDebug() <<"Спутников GPS: " << GPS;
-    data = &"Спутников GPS: " [GPS];
-    FileWrite::WriteFromClass(5, data.simplified());
-    qDebug() <<"Статус GPS: " << GPS_fix_type;
-    data = &"Статус GPS: " [GPS_fix_type];
-    FileWrite::WriteFromClass(5, data.simplified());
-    qDebug() <<"Статус GPS: " << telemetry->battery().remaining_percent;
-
-    emit LocalVehicleInfo(UUID,LAT,LON,ALT,AMSL,GPS,GPS_fix_type);
-}
-
-void Vehicle::folowMeSetTarget(std::shared_ptr<mavsdk::FollowMe> follow_me)
-{
-
-}
-
-void Vehicle::folowMeStart()
-{
-    auto follow_me = std::make_shared<mavsdk::FollowMe>(system);
-    folowMeStop(follow_me);
-    mavsdk::FollowMe::Config config;
-    config.min_height_m = 10.0;
-    config.follow_direction = mavsdk::FollowMe::Config::FollowDirection::BEHIND;
-    mavsdk::FollowMe::Result follow_me_result = follow_me->set_config(config);
-    follow_me->set_target_location(target_location);
-    follow_me_result = follow_me->start();
-    if (follow_me_result != mavsdk::FollowMe::Result::SUCCESS){
-        qDebug() << "Ошибка следования БВС";
-        data = "Ошибка следования БВС";
+        qDebug() << "Высота: " << ALT << " m";
+        data = "Высота: " + QString::number(ALT) + " m";
         FileWrite::WriteFromClass(5, data.simplified());
-    }
-}
-
-void Vehicle::folowMeStop(std::shared_ptr<mavsdk::FollowMe> follow_me)
-{
-    mavsdk::FollowMe::Result follow_me_result = follow_me->stop();
-    if (follow_me_result != mavsdk::FollowMe::Result::SUCCESS){
-        qDebug() << "Ошибка следования БВС";
-        data = "Ошибка следования БВС";
+        qDebug() <<"Широта: " << LAT;
+        data = "Широта: " + QString::number(LAT);
         FileWrite::WriteFromClass(5, data.simplified());
-    }
+        qDebug() <<"Долгота: " << LON;
+        data = "Долгота: " + QString::number(LON);
+        FileWrite::WriteFromClass(5, data.simplified());
+        qDebug() <<"Высота AMSL: " << AMSL << " m";
+        data = "Высота AMSL: " + QString::number(AMSL) + " m";
+        FileWrite::WriteFromClass(5, data.simplified());
+
+        emit LocalVehiclePositionInfo(UUID,LAT,LON,ALT,AMSL);
+    });
+
+    telemetry->gps_info_async([this](mavsdk::Telemetry::GPSInfo gpsinfo)
+    {
+        unsigned long UUID = system.get_uuid();
+        int GPS = gpsinfo.num_satellites;
+        int GPS_fix_type = gpsinfo.fix_type;
+        //qDebug() <<"Спутников GPS: " << GPS;
+        data = &"Спутников GPS: " [GPS];
+        FileWrite::WriteFromClass(5, data.simplified());
+        //qDebug() <<"Статус GPS: " << GPS_fix_type;
+        data = &"Статус GPS: " [GPS_fix_type];
+        //emit LocalVehicleInfo(UUID,LAT,LON,ALT,AMSL,0,0);
+    });
+
+    telemetry->battery_async([this](mavsdk::Telemetry::Battery battery)
+    {
+        unsigned long UUID = system.get_uuid();
+        data = battery.remaining_percent;
+        FileWrite::WriteFromClass(5, data.simplified());
+        //qDebug() <<"Оставшийся заряд батареи: " << battery.remaining_percent;
+        //emit LocalVehicleInfo(UUID,LAT,LON,ALT,AMSL,0,0);
+    });
 }
 
-void Vehicle::folowMeSetCoord(const double &coord_lat,const double &coord_lon)
+void Vehicle::fly()
 {
-    target_location.latitude_deg = coord_lat;
-    target_location.longitude_deg = coord_lon;
-    folowMeStart();
+    auto action = std::make_shared<mavsdk::Action>(system);
+    action->goto_location(44.0769288,43.0879335,540,0);
 }
+
