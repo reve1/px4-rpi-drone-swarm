@@ -31,7 +31,7 @@ void UdpServer::processPendingDatagrams()
         float AMSL = list.at(4).simplified().toFloat();
         int GPS = list.at(5).simplified().toInt();
         int GPS_fix_type = list.at(6).simplified().toInt();
-
+        float Battery = list.at(7).simplified().toFloat();
         //qDebug() << list.at(0).simplified();
         //data = "1 параметр: " + list.at(0).simplified();
         //FileWrite::WriteFromClass(7,data);
@@ -46,6 +46,6 @@ void UdpServer::processPendingDatagrams()
         //FileWrite::WriteFromClass(7,data);
 
         list.clear();
-        emit ReceivedRemoteVehicleInfo(UUID,LAT,LON,ALT,AMSL,GPS,GPS_fix_type);
+        emit ReceivedRemoteVehicleInfo(UUID,LAT,LON,ALT,AMSL,GPS,GPS_fix_type,Battery);
     }
 }

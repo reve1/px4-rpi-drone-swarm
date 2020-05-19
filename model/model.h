@@ -30,6 +30,8 @@ public:
     float GlobalPositionAMSL;
     int GPSStatus;
 
+    unsigned long local_UUID;
+
     QTimer timer;
 
     int getUUID () {return UUID;}
@@ -45,15 +47,16 @@ public:
 
 signals:
     void newCoordSet(double, double);
+    void sendLocalVehicleInfo(unsigned long, double, double,float,float,int,int,float);
 
 public slots:
     void setLocalVehiclePositionInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL);
     void setLocalVehicleGPSInfo(const unsigned long &UUID,const int &GPS_num,const int &GPS_fix_type);
     void setLocalVehicleBatteryInfo(const unsigned long &UUID,const float &Battery);
-    void setRemoteVehicleInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL,const int &GPS, const int &GPS_fix_type);
+    void setRemoteVehicleInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL,const int &GPS, const int &GPS_fix_type,const float &Battery);
 
 private slots:
-    void startTimerTimeStampCheck();
+    void sendTimer();
     void TimeStampCheck();
     //double CONTROLLERgetGlobalPositionLat () {return cm->GlobalPositionLat;}
     //void CONTROLLERsetGlobalPositionLat (double GlobalPositionLat_SET) {cm->GlobalPositionLat = GlobalPositionLat_SET; }
