@@ -24,19 +24,22 @@ signals:
     void LocalVehiclePositionInfo(unsigned long,double,double,float,float);
     void LocalVehicleGPSInfo(unsigned long,int,int);
     void LocalVehicleBatteryInfo(unsigned long,float);
+    void LocalVehicleAngle(unsigned long,float);
     void newCoordSet();
 public slots:
     void Run();
+    void fly(const double &LAT,
+             const double &LON,
+             const float &AMSL,
+             const float &angle_yaw);
 
 private:
     void getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry);
     void setTelemetryRate(std::shared_ptr<mavsdk::Telemetry> telemetry);
-
     void setArm(std::shared_ptr<mavsdk::Action> action);
     void setLand(std::shared_ptr<mavsdk::Action> action);
     void setTakeOff(std::shared_ptr<mavsdk::Action> action);
     void setGoToLocation(std::shared_ptr<mavsdk::Action> action);
-    void fly();
 
     QString data;
     mavsdk::ConnectionResult connection_result;

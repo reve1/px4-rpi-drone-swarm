@@ -38,7 +38,9 @@ void Vehicle::Run()
     setArm(action);
     setTakeOff(action);
     getTelemetry(telemetry);
-    fly();
+    double targetLat = 44.0769288 + 00.0000125 * 2; //x
+    double targetLon = 43.0879335 + 00.0000010 * 2; //y
+    fly(targetLat,targetLon,540,0);
     //setGoToLocation(action);
     sleep_for(seconds(120));
     getTelemetry(telemetry);
@@ -133,18 +135,18 @@ void Vehicle::getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry)
         float ALT = position.relative_altitude_m;
         float AMSL = position.absolute_altitude_m;
 
-        qDebug() << "Высота: " << ALT << " m";
-        data = "Высота: " + QString::number(ALT) + " m";
-        FileWrite::WriteFromClass(5, data.simplified());
-        qDebug() <<"Широта: " << LAT;
-        data = "Широта: " + QString::number(LAT);
-        FileWrite::WriteFromClass(5, data.simplified());
-        qDebug() <<"Долгота: " << LON;
-        data = "Долгота: " + QString::number(LON);
-        FileWrite::WriteFromClass(5, data.simplified());
-        qDebug() <<"Высота AMSL: " << AMSL << " m";
-        data = "Высота AMSL: " + QString::number(AMSL) + " m";
-        FileWrite::WriteFromClass(5, data.simplified());
+        //qDebug() << "Высота: " << ALT << " m";
+        //data = "Высота: " + QString::number(ALT) + " m";
+        //FileWrite::WriteFromClass(5, data.simplified());
+        //qDebug() <<"Широта: " << LAT;
+        //data = "Широта: " + QString::number(LAT);
+        //FileWrite::WriteFromClass(5, data.simplified());
+        //qDebug() <<"Долгота: " << LON;
+        //data = "Долгота: " + QString::number(LON);
+        //FileWrite::WriteFromClass(5, data.simplified());
+        //qDebug() <<"Высота AMSL: " << AMSL << " m";
+        //data = "Высота AMSL: " + QString::number(AMSL) + " m";
+        //FileWrite::WriteFromClass(5, data.simplified());
 
         emit LocalVehiclePositionInfo(UUID,LAT,LON,ALT,AMSL);
     });
@@ -155,10 +157,10 @@ void Vehicle::getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry)
         int GPS_num = gpsinfo.num_satellites;
         int GPS_fix_type = gpsinfo.fix_type;
         //qDebug() <<"Спутников GPS: " << GPS;
-        data = &"Спутников GPS: " [GPS_num];
-        FileWrite::WriteFromClass(5, data.simplified());
+        //data = &"Спутников GPS: " [GPS_num];
+        //FileWrite::WriteFromClass(5, data.simplified());
         //qDebug() <<"Статус GPS: " << GPS_fix_type;
-        data = &"Статус GPS: " [GPS_fix_type];
+        //data = &"Статус GPS: " [GPS_fix_type];
         emit LocalVehicleGPSInfo(UUID,GPS_num,GPS_fix_type);
     });
 
@@ -166,16 +168,26 @@ void Vehicle::getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry)
     {
         unsigned long UUID = system.get_uuid();
         float battery_remaining_percent = battery.remaining_percent;
-        data = "Оставшийся заряд батареи: " + QString::number(battery_remaining_percent);
-        FileWrite::WriteFromClass(5, data.simplified());
+        //data = "Оставшийся заряд батареи: " + QString::number(battery_remaining_percent);
+        //FileWrite::WriteFromClass(5, data.simplified());
         //qDebug() <<"Оставшийся заряд батареи: " << battery.remaining_percent;
         emit LocalVehicleBatteryInfo(UUID,battery_remaining_percent);
     });
+
+    telemetry->attitude_euler_angle_async([this](mavsdk::Telemetry::EulerAngle euler_angle)
+    {
+        unsigned long UUID = system.get_uuid();
+        float angle_yaw = euler_angle.yaw_deg;
+        //data = "Угол отклонения: " + QString::number(angle_yaw);
+        //FileWrite::WriteFromClass(5, data.simplified());
+        //qDebug() <<"Угол отклонения: " << angle_yaw;
+        emit LocalVehicleAngle(UUID,angle_yaw);
+    });
 }
 
-void Vehicle::fly()
+void Vehicle::fly(const double &LAT, const double &LON, const float &AMSL, const float &angle_yaw)
 {
     auto action = std::make_shared<mavsdk::Action>(system);
-    action->goto_location(44.0769288,43.0879335,540,0);
+    action->goto_location(LAT,LON,AMSL,angle_yaw);
 }
 

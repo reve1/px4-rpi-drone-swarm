@@ -4,6 +4,7 @@ Model::Model()
 {
     connect(&timer, &QTimer::timeout, this, &Model::TimeStampCheck);
     connect(&timer, &QTimer::timeout, this, &Model::sendTimer);
+    connect(&timer, &QTimer::timeout, this, &Model::checkPossition);
     timer.start(1000);
 }
 
@@ -16,7 +17,11 @@ void Model::sendTimer()
                               VehicleGPAMSL.value(local_UUID),
                               VehicleGPSStatus.value(local_UUID),
                               VehicleGPS_fix_type.value(local_UUID),
-                              VehicleBattery.value(local_UUID));
+                              VehicleBattery.value(local_UUID),
+                              VehicleLiderFlag.value(local_UUID),
+                              VehicleNumber.value(local_UUID),
+                              VehicleFormation.value(local_UUID),
+                              VehicleAngle.value(local_UUID));
 }
 
 void Model::TimeStampCheck()
@@ -69,6 +74,12 @@ void Model::setLocalVehicleBatteryInfo(const unsigned long &UUID,
     VehicleBattery.insert(UUID,Battery);
 }
 
+void Model::setLocalVehicleAngle(const unsigned long &UUID,
+                                 const float &angle_yaw)
+{
+    VehicleAngle.insert(UUID,angle_yaw);
+}
+
 void Model::setRemoteVehicleInfo(const unsigned long &UUID,
                                  const double &Lat,
                                  const double &Lon,
@@ -76,10 +87,19 @@ void Model::setRemoteVehicleInfo(const unsigned long &UUID,
                                  const float &AMSL,
                                  const int &GPS_num,
                                  const int &GPS_fix_type,
-                                 const float &Battery)
+                                 const float &Battery,
+                                 const int &Lider,
+                                 const int &Number,
+                                 const int &Formation,
+                                 const float &angle_yaw)
 {
     if (VehicleLocalFlag.value(UUID)!= 1)
     {
+        if (Lider == 1)
+        {
+            lider_UUID = UUID;
+            VehicleLiderFlag.insert(UUID,Lider);
+        }
         VehicleGPAlt.insert(UUID,Alt);
         VehicleGPLat.insert(UUID,Lat);
         VehicleGPLon.insert(UUID,Lon);
@@ -87,9 +107,27 @@ void Model::setRemoteVehicleInfo(const unsigned long &UUID,
         VehicleGPSStatus.insert(UUID,GPS_num);
         VehicleGPS_fix_type.insert(UUID,GPS_fix_type);
         VehicleBattery.insert(UUID,Battery);
+        VehicleLiderFlag.insert(UUID,Lider);
+        VehicleNumber.insert(UUID,Number);
+        VehicleFormation.insert(UUID,Formation);
+        VehicleAngle.insert(UUID,angle_yaw);
         VehicleTimeStamp.insert(UUID,QDateTime::currentDateTime());
         qDebug() << "Сетевое значение";
         newCoordSet(Lat, Lon);
         return;
     }
+}
+
+void Model::checkPossition()
+{
+    //targetLat = VehicleGPLat.value(lider_UUID)
+    //targetLat = VehicleGPLon.value(lider_UUID)
+    //targetAMSL = VehicleGPAMSL.value(lider_UUID)
+    double targetLat = VehicleGPLat.value(lider_UUID) + (00.0000125 * 2) * qCos(VehicleAngle.value(lider_UUID)); //x
+    double targetLon = VehicleGPLon.value(lider_UUID) + (00.0000010 * 2) * qCos(VehicleAngle.value(lider_UUID)); //y
+    float targetAMSL = VehicleGPAMSL.value(lider_UUID); //z
+    float targetYaw = VehicleAngle.value(lider_UUID); //yaw
+    emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
+    //00,0000125 x
+    //00,0000010 y
 }

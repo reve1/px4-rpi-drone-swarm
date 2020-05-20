@@ -24,7 +24,11 @@ private slots:
                               const float &AMSL,
                               const int &GPS_num,
                               const int &GPS_fix_type,
-                              const float &Battery);
+                              const float &Battery,
+                              const int &Lider,
+                              const int &Number,
+                              const int &Formation,
+                              const float &angle_yaw);
 
 private:
     QUdpSocket *udpSocket = nullptr;

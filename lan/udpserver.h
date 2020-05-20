@@ -12,7 +12,7 @@ class UdpServer : public QObject
 public:
     explicit UdpServer(QObject *parent = nullptr);
 signals:
-    void ReceivedRemoteVehicleInfo(unsigned long,double,double,float,float,int,int,float);
+    void ReceivedRemoteVehicleInfo(unsigned long,double,double,float,float,int,int,float,int,int,int,float);
 private slots:
     void processPendingDatagrams();
 private:
