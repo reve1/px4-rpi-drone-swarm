@@ -11,7 +11,6 @@ UdpServer::UdpServer(QObject *parent): QObject(parent)
 void UdpServer::processPendingDatagrams()
 {
     QByteArray datagram;
-    qDebug() << udpSocket->peerAddress().toIPv4Address();
     while (udpSocket->hasPendingDatagrams())
     {
         datagram.resize(int(udpSocket->pendingDatagramSize()));
@@ -22,7 +21,6 @@ void UdpServer::processPendingDatagrams()
         FileWrite::WriteFromClass(7,data);
         string.chop(1);
         QStringList list = string.split('/');
-
 
         unsigned long UUID = list.at(0).simplified().toLong();
         double LON = list.at(1).simplified().toDouble();

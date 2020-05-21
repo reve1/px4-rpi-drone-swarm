@@ -5,7 +5,9 @@ Model::Model()
     connect(&timer, &QTimer::timeout, this, &Model::TimeStampCheck);
     connect(&timer, &QTimer::timeout, this, &Model::sendTimer);
     connect(&timer, &QTimer::timeout, this, &Model::checkPossition);
+    //connect(&timer_to_go, &QTimer::timeout, this, &Model::checkPossition);
     timer.start(1000);
+    //timer_to_go.start(20000);
 }
 
 void Model::sendTimer()
@@ -40,6 +42,10 @@ void Model::TimeStampCheck()
             VehicleGPS_fix_type.remove(key);
             VehicleBattery.remove(key);
             VehicleLocalFlag.remove(key);
+            VehicleLiderFlag.remove(key);
+            VehicleNumber.remove(key);
+            VehicleFormation.remove(key);
+            VehicleAngle.remove(key);
             qDebug() << "Кеш очищен, удалены устаревшие значение UUID = " << key ;
         }
     }
@@ -55,9 +61,9 @@ void Model::setLocalVehiclePositionInfo(const unsigned long &UUID,
     VehicleGPLon.insert(UUID,Lon);
     VehicleGPAlt.insert(UUID,Alt);
     VehicleGPAMSL.insert(UUID,AMSL);
-    local_UUID = UUID;
-    VehicleLocalFlag.insert(UUID,1);
-    VehicleTimeStamp.insert(UUID,QDateTime::currentDateTime());
+
+
+
     qDebug() << "Локальное значение";
 }
 
@@ -78,6 +84,9 @@ void Model::setLocalVehicleAngle(const unsigned long &UUID,
                                  const float &angle_yaw)
 {
     VehicleAngle.insert(UUID,angle_yaw);
+    local_UUID = UUID;
+    VehicleLocalFlag.insert(UUID,1);
+    VehicleTimeStamp.insert(UUID,QDateTime::currentDateTime());
 }
 
 void Model::setRemoteVehicleInfo(const unsigned long &UUID,
@@ -93,16 +102,16 @@ void Model::setRemoteVehicleInfo(const unsigned long &UUID,
                                  const int &Formation,
                                  const float &angle_yaw)
 {
-    if (VehicleLocalFlag.value(UUID)!= 1)
+    if (local_UUID != UUID)
     {
         if (Lider == 1)
         {
             lider_UUID = UUID;
             VehicleLiderFlag.insert(UUID,Lider);
         }
-        VehicleGPAlt.insert(UUID,Alt);
         VehicleGPLat.insert(UUID,Lat);
         VehicleGPLon.insert(UUID,Lon);
+        VehicleGPAlt.insert(UUID,Alt);
         VehicleGPAMSL.insert(UUID,AMSL);
         VehicleGPSStatus.insert(UUID,GPS_num);
         VehicleGPS_fix_type.insert(UUID,GPS_fix_type);
@@ -111,23 +120,29 @@ void Model::setRemoteVehicleInfo(const unsigned long &UUID,
         VehicleNumber.insert(UUID,Number);
         VehicleFormation.insert(UUID,Formation);
         VehicleAngle.insert(UUID,angle_yaw);
+
         VehicleTimeStamp.insert(UUID,QDateTime::currentDateTime());
         qDebug() << "Сетевое значение";
-        newCoordSet(Lat, Lon);
-        return;
+
+
+        //newCoordSet(Lat, Lon); //?????
+        //return; //????
     }
 }
 
 void Model::checkPossition()
 {
-    //targetLat = VehicleGPLat.value(lider_UUID)
-    //targetLat = VehicleGPLon.value(lider_UUID)
-    //targetAMSL = VehicleGPAMSL.value(lider_UUID)
-    double targetLat = VehicleGPLat.value(lider_UUID) + (00.0000125 * 2) * qCos(VehicleAngle.value(lider_UUID)); //x
-    double targetLon = VehicleGPLon.value(lider_UUID) + (00.0000010 * 2) * qCos(VehicleAngle.value(lider_UUID)); //y
-    float targetAMSL = VehicleGPAMSL.value(lider_UUID); //z
-    float targetYaw = VehicleAngle.value(lider_UUID); //yaw
-    emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
-    //00,0000125 x
-    //00,0000010 y
+    if (local_UUID != lider_UUID && local_UUID != 0)
+    {
+        double targetLat = VehicleGPLat.value(lider_UUID) + (00.0000125 * 2) * qCos(VehicleAngle.value(lider_UUID)); //x
+        double targetLon = VehicleGPLon.value(lider_UUID) + (00.0000010 * 2) * qCos(VehicleAngle.value(lider_UUID)); //y
+        //double targetLat = 44.0769288 + (00.0000125 * 2) * qCos(VehicleAngle.value(lider_UUID)); //x
+        //double targetLon = 43.0879335 + (00.0000010 * 2) * qCos(VehicleAngle.value(lider_UUID)); //y
+        float targetAMSL = VehicleGPAMSL.value(lider_UUID); //z
+        float targetYaw = VehicleAngle.value(lider_UUID); //yaw
+        emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
+        qDebug () << "Начал движение: " << targetLat << targetLon << targetAMSL << targetYaw;
+        //00,0000125 x
+        //00,0000010 y
+    }
 }

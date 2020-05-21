@@ -34,20 +34,25 @@ void Vehicle::Run()
     }
 
     setTelemetryRate(telemetry);
+
     getTelemetry(telemetry);
-    setArm(action);
-    setTakeOff(action);
-    getTelemetry(telemetry);
-    double targetLat = 44.0769288 + 00.0000125 * 2; //x
-    double targetLon = 43.0879335 + 00.0000010 * 2; //y
-    fly(targetLat,targetLon,540,0);
+       sleep_for(seconds(100));
+    //setArm(action);
+    //setTakeOff(action);
+    //getTelemetry(telemetry);
+    double targetLat = 44.0769288; //x
+    double targetLon = 43.0879335; //y
+
+    //fly(targetLat,targetLon,540,0);
     //setGoToLocation(action);
-    sleep_for(seconds(120));
-    getTelemetry(telemetry);
-    setLand(action);
-    sleep_for(seconds(2));
-    getTelemetry(telemetry);
-    action->return_to_launch();
+
+
+    //sleep_for(seconds(120));
+    //getTelemetry(telemetry);
+    //setLand(action);
+    //sleep_for(seconds(2));
+    //getTelemetry(telemetry);
+    //action->return_to_launch();
 }
 
 void Vehicle::setTelemetryRate(std::shared_ptr<mavsdk::Telemetry> telemetry)

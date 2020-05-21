@@ -36,9 +36,10 @@ public:
     int GPSStatus;
 
     unsigned long local_UUID;
-    unsigned long lider_UUID;
+    unsigned long lider_UUID = 5283920058631409231;
 
     QTimer timer;
+    QTimer timer_to_go;
 
     int getUUID () {return UUID;}
     void setGlobalPositionLat (int UUID_SET) {UUID = UUID_SET; }
