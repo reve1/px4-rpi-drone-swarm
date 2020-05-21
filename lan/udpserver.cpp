@@ -23,8 +23,8 @@ void UdpServer::processPendingDatagrams()
         QStringList list = string.split('/');
 
         unsigned long UUID = list.at(0).simplified().toLong();
-        double LON = list.at(1).simplified().toDouble();
-        double LAT = list.at(2).simplified().toDouble();
+        double LAT = list.at(1).simplified().toDouble();
+        double LON = list.at(2).simplified().toDouble();
         float ALT = list.at(3).simplified().toFloat();
         float AMSL = list.at(4).simplified().toFloat();
         int GPS = list.at(5).simplified().toInt();

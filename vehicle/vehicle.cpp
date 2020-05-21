@@ -3,14 +3,19 @@
 Vehicle::Vehicle()
 {
     //connect(this, &Vehicle::newCoordSet, this, &Vehicle::folowMeSetTarget);
+}
+
+void Vehicle::Run()
+{
     bool discovered_system = false;
     connection_result = dc.add_udp_connection( "localhost", 14540); // MAV_1
     //connection_result = dc.add_udp_connection( "localhost", 14541); // MAV_2
+    //connection_result = dc.add_udp_connection( "localhost", 14542); // MAV_3
     //connection_result = dc.add_serial_connection("/dev/ttyS0", 57600);
     //connection_result = dc.add_serial_connection("/dev/ttyUSB0", 57600);
 
-    if (connection_result != mavsdk::ConnectionResult::SUCCESS) {
-        qDebug() << "Результат подключения: " << connection_result_str(connection_result);
+    if (connection_result != mavsdk::ConnectionResult::Success) {
+        //qDebug() << "Результат подключения: " << connection_result;
         //return 1;
     }
 
@@ -31,23 +36,18 @@ Vehicle::Vehicle()
 
     setTelemetryRate(telemetry);
     getTelemetry(telemetry);
-}
+    setArm(action);
+    setTakeOff(action);
+    //fly(44.076928,43.0879335,540,0);
+    getTelemetry(telemetry);
+    sleep_for(seconds(12000));
 
-void Vehicle::Run()
-{
-
-    sleep_for(seconds(100));
-    //setArm(action);
-    //setTakeOff(action);
     //getTelemetry(telemetry);
-    double targetLat = 44.0769288; //x
-    double targetLon = 43.0879335; //y
+    //double targetLat = 44.0769288 + 00.0000125 * 2; //x
+    //double targetLon = 43.0879335 + 00.0000010 * 2; //y
 
-    //fly(targetLat,targetLon,540,0);
     //setGoToLocation(action);
 
-
-    //sleep_for(seconds(120));
     //getTelemetry(telemetry);
     //setLand(action);
     //sleep_for(seconds(2));
@@ -58,7 +58,7 @@ void Vehicle::Run()
 void Vehicle::setTelemetryRate(std::shared_ptr<mavsdk::Telemetry> telemetry)
 {
     const mavsdk::Telemetry::Result set_rate_result = telemetry->set_rate_position(1.0);
-    if (set_rate_result != mavsdk::Telemetry::Result::SUCCESS) {
+    if (set_rate_result != mavsdk::Telemetry::Result::Success) {
         qDebug() << "Ошибка установки телеметрии";
         data = "Ошибка установки телеметрии";
         FileWrite::WriteFromClass(5, data.simplified());
@@ -77,7 +77,7 @@ void Vehicle::setTelemetryRate(std::shared_ptr<mavsdk::Telemetry> telemetry)
 void Vehicle::setArm(std::shared_ptr<mavsdk::Action> action)
 {
     mavsdk::Action::Result arm = action->arm();
-    if (arm != mavsdk::Action::Result::SUCCESS) {
+    if (arm != mavsdk::Action::Result::Success) {
         qDebug() << "Ошибка арминга";
         data = "Ошибка арминга";
         FileWrite::WriteFromClass(5, data.simplified());
@@ -91,7 +91,7 @@ void Vehicle::setArm(std::shared_ptr<mavsdk::Action> action)
 void Vehicle::setTakeOff(std::shared_ptr<mavsdk::Action> action)
 {
     mavsdk::Action::Result takeoff = action->takeoff();
-    if (takeoff != mavsdk::Action::Result::SUCCESS) {
+    if (takeoff != mavsdk::Action::Result::Success) {
         qDebug() << "Ошибка взлета";
         data = "Ошибка взлета";
         FileWrite::WriteFromClass(5, data.simplified());
@@ -106,7 +106,7 @@ void Vehicle::setTakeOff(std::shared_ptr<mavsdk::Action> action)
 void Vehicle::setLand(std::shared_ptr<mavsdk::Action> action)
 {
     mavsdk::Action::Result land = action->land();
-    if (land != mavsdk::Action::Result::SUCCESS) {
+    if (land != mavsdk::Action::Result::Success) {
         qDebug() << "Ошибка посадки";
         data = "Ошибка посадки";
         FileWrite::WriteFromClass(5, data.simplified());
@@ -120,7 +120,7 @@ void Vehicle::setLand(std::shared_ptr<mavsdk::Action> action)
 void Vehicle::setGoToLocation(std::shared_ptr<mavsdk::Action> action)
 {
     mavsdk::Action::Result goto_location_result = action->goto_location(44.0769288,43.0879335,540,0);
-    if (goto_location_result != mavsdk::Action::Result::SUCCESS){
+    if (goto_location_result != mavsdk::Action::Result::Success){
         qDebug() << "Ошибка движения БВС к заданной точке";
         data = "Ошибка движения БВС к заданной точке";
         FileWrite::WriteFromClass(5, data.simplified());
@@ -132,7 +132,7 @@ void Vehicle::setGoToLocation(std::shared_ptr<mavsdk::Action> action)
 
 void Vehicle::getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry)
 {
-    telemetry->position_async([this](mavsdk::Telemetry::Position position)
+    telemetry->subscribe_position([this](mavsdk::Telemetry::Position position)
     {
         unsigned long UUID = system.get_uuid();
         double LON = position.longitude_deg;
@@ -156,11 +156,11 @@ void Vehicle::getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry)
         emit LocalVehiclePositionInfo(UUID,LAT,LON,ALT,AMSL);
     });
 
-    telemetry->gps_info_async([this](mavsdk::Telemetry::GPSInfo gpsinfo)
+    telemetry->subscribe_gps_info([this](mavsdk::Telemetry::GpsInfo gpsinfo)
     {
         unsigned long UUID = system.get_uuid();
         int GPS_num = gpsinfo.num_satellites;
-        int GPS_fix_type = gpsinfo.fix_type;
+        int GPS_fix_type = 0;
         //qDebug() <<"Спутников GPS: " << GPS;
         //data = &"Спутников GPS: " [GPS_num];
         //FileWrite::WriteFromClass(5, data.simplified());
@@ -169,7 +169,7 @@ void Vehicle::getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry)
         emit LocalVehicleGPSInfo(UUID,GPS_num,GPS_fix_type);
     });
 
-    telemetry->battery_async([this](mavsdk::Telemetry::Battery battery)
+    telemetry->subscribe_battery([this](mavsdk::Telemetry::Battery battery)
     {
         unsigned long UUID = system.get_uuid();
         float battery_remaining_percent = battery.remaining_percent;
@@ -179,7 +179,7 @@ void Vehicle::getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry)
         emit LocalVehicleBatteryInfo(UUID,battery_remaining_percent);
     });
 
-    telemetry->attitude_euler_angle_async([this](mavsdk::Telemetry::EulerAngle euler_angle)
+    telemetry->subscribe_attitude_euler([this](mavsdk::Telemetry::EulerAngle euler_angle)
     {
         unsigned long UUID = system.get_uuid();
         float angle_yaw = euler_angle.yaw_deg;
@@ -192,7 +192,9 @@ void Vehicle::getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry)
 
 void Vehicle::fly(const double &LAT, const double &LON, const float &AMSL, const float &angle_yaw)
 {
+    qDebug () << "Начал движение: " << LAT << LON << AMSL << angle_yaw;
     auto action = std::make_shared<mavsdk::Action>(system);
-    action->goto_location(LAT,LON,AMSL,angle_yaw);
+    action->goto_location_async(LAT,LON,AMSL,angle_yaw,nullptr);
+    //action->goto_location(LAT,LON,AMSL,angle_yaw);
 }
 
