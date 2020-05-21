@@ -32,10 +32,10 @@ int main(int argc, char *argv[])
     UdpClient *client = new UdpClient;
 
 #if !defined (Q_OS_WIN)
-    Vehicle *vh = new Vehicle;
     QThread *VhThred = new QThread;
-    vh->moveToThread(VhThred);
     VhThred->start();
+    Vehicle *vh = new Vehicle;
+    vh->moveToThread(VhThred);
     QObject::connect(vh, SIGNAL(LocalVehiclePositionInfo(unsigned long,double,double,float,float)), md, SLOT(setLocalVehiclePositionInfo(unsigned long,double,double,float,float)));
     QObject::connect(vh, SIGNAL(LocalVehicleGPSInfo(unsigned long,int,int)), md, SLOT (setLocalVehicleGPSInfo(unsigned long,int,int)));
     QObject::connect(vh, SIGNAL(LocalVehicleBatteryInfo(unsigned long,float)), md, SLOT (setLocalVehicleBatteryInfo(unsigned long,float)));
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     //QObject::connect(vh, SIGNAL(LocalVehicleInfo(unsigned long,double,double,float,float,int,int)), client, SLOT(sendLocalVehicleInfo(unsigned long,double,double,float,float,int,int)));
     QObject::connect(server, SIGNAL(ReceivedRemoteVehicleInfo(unsigned long,double,double,float,float,int,int,float,int,int,int,float)), md, SLOT(setRemoteVehicleInfo(unsigned long,double,double,float,float,int,int,float,int,int,int,float)));
     QObject::connect(md, SIGNAL(goToPosition(double,double,float,float)),vh, SLOT(fly(double,double,float,float)),Qt::DirectConnection);
-    QObject::connect(VhThred, SIGNAL(started()), vh, SLOT(Run()));
+    //QObject::connect(VhThred, SIGNAL(started()), vh, SLOT(Run()));
 
 #endif
 

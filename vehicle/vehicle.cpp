@@ -3,10 +3,6 @@
 Vehicle::Vehicle()
 {
     //connect(this, &Vehicle::newCoordSet, this, &Vehicle::folowMeSetTarget);
-}
-
-void Vehicle::Run()
-{
     bool discovered_system = false;
     connection_result = dc.add_udp_connection( "localhost", 14540); // MAV_1
     //connection_result = dc.add_udp_connection( "localhost", 14541); // MAV_2
@@ -34,9 +30,13 @@ void Vehicle::Run()
     }
 
     setTelemetryRate(telemetry);
-
     getTelemetry(telemetry);
-       sleep_for(seconds(100));
+}
+
+void Vehicle::Run()
+{
+
+    sleep_for(seconds(100));
     //setArm(action);
     //setTakeOff(action);
     //getTelemetry(telemetry);
