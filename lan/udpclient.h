@@ -10,12 +10,25 @@ class QUdpSocket;
 class UdpClient : public QObject
 {
     Q_OBJECT
+
 public:
     explicit UdpClient(QObject *parent = nullptr);
+
 private slots:
     void startBroadcasting();
     void broadcastDatagram();
-    void sendLocalVehicleInfo(const unsigned long &UUID,const double &Lat,const double &Lon,const float &Alt,const float &AMSL,const int &GPS, const int &GPS_fix_type);
+    void sendLocalVehicleInfo(const unsigned long &UUID,
+                              const double &Lat,
+                              const double &Lon,
+                              const float &Alt,
+                              const float &AMSL,
+                              const int &GPS_num,
+                              const int &GPS_fix_type,
+                              const float &Battery,
+                              const int &Lider,
+                              const int &Number,
+                              const int &Formation,
+                              const float &angle_yaw);
 
 private:
     QUdpSocket *udpSocket = nullptr;

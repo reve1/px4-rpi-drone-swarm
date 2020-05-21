@@ -16,7 +16,7 @@ set(CMAKE_IMPORT_FILE_VERSION 1)
 set(_targetsDefined)
 set(_targetsNotDefined)
 set(_expectedTargets)
-foreach(_expectedTarget MAVSDK::mavsdk MAVSDK::mavsdk_action MAVSDK::mavsdk_calibration MAVSDK::mavsdk_camera MAVSDK::mavsdk_follow_me MAVSDK::mavsdk_geofence MAVSDK::mavsdk_gimbal MAVSDK::mavsdk_info MAVSDK::mavsdk_log_files MAVSDK::mavsdk_mavlink_ftp MAVSDK::mavsdk_mission MAVSDK::mavsdk_mission_raw MAVSDK::mavsdk_mocap MAVSDK::mavsdk_offboard MAVSDK::mavsdk_param MAVSDK::mavsdk_shell MAVSDK::mavsdk_telemetry MAVSDK::mavsdk_tune)
+foreach(_expectedTarget MAVSDK::mavsdk MAVSDK::mavsdk_action MAVSDK::mavsdk_calibration MAVSDK::mavsdk_camera MAVSDK::mavsdk_follow_me MAVSDK::mavsdk_geofence MAVSDK::mavsdk_gimbal MAVSDK::mavsdk_info MAVSDK::mavsdk_log_files MAVSDK::mavsdk_ftp MAVSDK::mavsdk_mission MAVSDK::mavsdk_mission_raw MAVSDK::mavsdk_mocap MAVSDK::mavsdk_offboard MAVSDK::mavsdk_param MAVSDK::mavsdk_shell MAVSDK::mavsdk_telemetry MAVSDK::mavsdk_tune)
   list(APPEND _expectedTargets ${_expectedTarget})
   if(NOT TARGET ${_expectedTarget})
     list(APPEND _targetsNotDefined ${_expectedTarget})
@@ -121,10 +121,10 @@ set_target_properties(MAVSDK::mavsdk_log_files PROPERTIES
   INTERFACE_LINK_LIBRARIES "MAVSDK::mavsdk"
 )
 
-# Create imported target MAVSDK::mavsdk_mavlink_ftp
-add_library(MAVSDK::mavsdk_mavlink_ftp SHARED IMPORTED)
+# Create imported target MAVSDK::mavsdk_ftp
+add_library(MAVSDK::mavsdk_ftp SHARED IMPORTED)
 
-set_target_properties(MAVSDK::mavsdk_mavlink_ftp PROPERTIES
+set_target_properties(MAVSDK::mavsdk_ftp PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include/mavsdk"
   INTERFACE_LINK_LIBRARIES "MAVSDK::mavsdk"
 )

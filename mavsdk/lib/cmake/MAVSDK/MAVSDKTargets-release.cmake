@@ -95,15 +95,15 @@ set_target_properties(MAVSDK::mavsdk_log_files PROPERTIES
 list(APPEND _IMPORT_CHECK_TARGETS MAVSDK::mavsdk_log_files )
 list(APPEND _IMPORT_CHECK_FILES_FOR_MAVSDK::mavsdk_log_files "${_IMPORT_PREFIX}/lib/libmavsdk_log_files.so" )
 
-# Import target "MAVSDK::mavsdk_mavlink_ftp" for configuration "Release"
-set_property(TARGET MAVSDK::mavsdk_mavlink_ftp APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
-set_target_properties(MAVSDK::mavsdk_mavlink_ftp PROPERTIES
-  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib/libmavsdk_mavlink_ftp.so"
-  IMPORTED_SONAME_RELEASE "libmavsdk_mavlink_ftp.so"
+# Import target "MAVSDK::mavsdk_ftp" for configuration "Release"
+set_property(TARGET MAVSDK::mavsdk_ftp APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+set_target_properties(MAVSDK::mavsdk_ftp PROPERTIES
+  IMPORTED_LOCATION_RELEASE "${_IMPORT_PREFIX}/lib/libmavsdk_ftp.so"
+  IMPORTED_SONAME_RELEASE "libmavsdk_ftp.so"
   )
 
-list(APPEND _IMPORT_CHECK_TARGETS MAVSDK::mavsdk_mavlink_ftp )
-list(APPEND _IMPORT_CHECK_FILES_FOR_MAVSDK::mavsdk_mavlink_ftp "${_IMPORT_PREFIX}/lib/libmavsdk_mavlink_ftp.so" )
+list(APPEND _IMPORT_CHECK_TARGETS MAVSDK::mavsdk_ftp )
+list(APPEND _IMPORT_CHECK_FILES_FOR_MAVSDK::mavsdk_ftp "${_IMPORT_PREFIX}/lib/libmavsdk_ftp.so" )
 
 # Import target "MAVSDK::mavsdk_mission" for configuration "Release"
 set_property(TARGET MAVSDK::mavsdk_mission APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)

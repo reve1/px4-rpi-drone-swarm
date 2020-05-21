@@ -11,7 +11,6 @@ UdpServer::UdpServer(QObject *parent): QObject(parent)
 void UdpServer::processPendingDatagrams()
 {
     QByteArray datagram;
-    qDebug() << udpSocket->peerAddress().toIPv4Address();
     while (udpSocket->hasPendingDatagrams())
     {
         datagram.resize(int(udpSocket->pendingDatagramSize()));
@@ -23,15 +22,18 @@ void UdpServer::processPendingDatagrams()
         string.chop(1);
         QStringList list = string.split('/');
 
-
         unsigned long UUID = list.at(0).simplified().toLong();
-        double LON = list.at(1).simplified().toDouble();
-        double LAT = list.at(2).simplified().toDouble();
+        double LAT = list.at(1).simplified().toDouble();
+        double LON = list.at(2).simplified().toDouble();
         float ALT = list.at(3).simplified().toFloat();
         float AMSL = list.at(4).simplified().toFloat();
         int GPS = list.at(5).simplified().toInt();
         int GPS_fix_type = list.at(6).simplified().toInt();
-
+        float Battery = list.at(7).simplified().toFloat();
+        int Lider = list.at(8).simplified().toInt();
+        int Number = list.at(9).simplified().toInt();
+        int Formation = list.at(10).simplified().toInt();
+        float angle_yaw = list.at(11).simplified().toFloat();
         //qDebug() << list.at(0).simplified();
         //data = "1 параметр: " + list.at(0).simplified();
         //FileWrite::WriteFromClass(7,data);
@@ -46,6 +48,6 @@ void UdpServer::processPendingDatagrams()
         //FileWrite::WriteFromClass(7,data);
 
         list.clear();
-        emit ReceivedRemoteVehicleInfo(UUID,LAT,LON,ALT,AMSL,GPS,GPS_fix_type);
+        emit ReceivedRemoteVehicleInfo(UUID,LAT,LON,ALT,AMSL,GPS,GPS_fix_type,Battery,Lider,Number,Formation,angle_yaw);
     }
 }

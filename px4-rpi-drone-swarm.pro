@@ -2,6 +2,8 @@ QT -= gui
 QT += bluetooth
 QT += serialport
 QT += network
+QT += concurrent
+
 QMAKE_CXXFLAGS += -std=c++11
 CONFIG += c++11 console
 CONFIG -= app_bundle
@@ -55,7 +57,6 @@ HEADERS += \
     mavsdk/include/mavsdk/plugins/info/info.h \
     mavsdk/include/mavsdk/plugins/log_files/log_files.h \
     mavsdk/include/mavsdk/plugins/mission/mission.h \
-    mavsdk/include/mavsdk/plugins/mission/mission_item.h \
     mavsdk/include/mavsdk/plugins/mission_raw/mission_raw.h \
     mavsdk/include/mavsdk/plugins/offboard/offboard.h \
     mavsdk/include/mavsdk/plugins/param/param.h \
