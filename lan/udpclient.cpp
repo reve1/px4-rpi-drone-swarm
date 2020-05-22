@@ -18,7 +18,7 @@ void UdpClient::broadcastDatagram()
 {
     QByteArray datagram = "1/23/-1,047/" + QByteArray::number(messageNo)+"/";
     udpSocket->writeDatagram(datagram, QHostAddress::Broadcast, 6666);
-    qDebug() << "Отправлена датаграмма: " << messageNo;
+    //qDebug() << "Отправлена датаграмма: " << messageNo;
     data = "Отправлена датаграмма: " + messageNo;
     FileWrite::WriteFromClass(6,data);
     ++messageNo;
@@ -51,5 +51,5 @@ void UdpClient::sendLocalVehicleInfo(const unsigned long &UUID,
             + QByteArray::number(Formation) + "/"
             + QByteArray::number(angle_yaw) + "/";
     udpSocket->writeDatagram(datagram, QHostAddress::Broadcast, 6666);
-    qDebug() << "Отправлена датаграмма: " << datagram;
+    //qDebug() << "Отправлена датаграмма: " << datagram;
 }

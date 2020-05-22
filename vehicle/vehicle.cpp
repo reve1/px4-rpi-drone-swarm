@@ -3,13 +3,14 @@
 Vehicle::Vehicle()
 {
     //connect(this, &Vehicle::newCoordSet, this, &Vehicle::folowMeSetTarget);
+
 }
 
 void Vehicle::Run()
 {
     bool discovered_system = false;
-    connection_result = dc.add_udp_connection( "localhost", 14540); // MAV_1
-    //connection_result = dc.add_udp_connection( "localhost", 14541); // MAV_2
+    //connection_result = dc.add_udp_connection( "localhost", 14540); // MAV_1
+    connection_result = dc.add_udp_connection( "localhost", 14541); // MAV_2
     //connection_result = dc.add_udp_connection( "localhost", 14542); // MAV_3
     //connection_result = dc.add_serial_connection("/dev/ttyS0", 57600);
     //connection_result = dc.add_serial_connection("/dev/ttyUSB0", 57600);
@@ -35,6 +36,12 @@ void Vehicle::Run()
     }
 
     setTelemetryRate(telemetry);
+
+    ground_truth_latitude_deg = telemetry->ground_truth().latitude_deg;
+    ground_truth_longitude_deg = telemetry->ground_truth().longitude_deg;
+    qDebug () << "ground_truth_latitude_deg: " << ground_truth_latitude_deg;
+    qDebug () << "ground_truth_longitude_deg: " << ground_truth_longitude_deg;
+
     getTelemetry(telemetry);
     setArm(action);
     setTakeOff(action);
@@ -188,13 +195,44 @@ void Vehicle::getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry)
         //qDebug() <<"Угол отклонения: " << angle_yaw;
         emit LocalVehicleAngle(UUID,angle_yaw);
     });
+
+    telemetry->subscribe_ground_truth([this](mavsdk::Telemetry::GroundTruth ground_truth)
+    {
+        ground_truth_latitude_deg = ground_truth.latitude_deg;
+        ground_truth_longitude_deg = ground_truth.longitude_deg;
+
+    });
 }
 
 void Vehicle::fly(const double &LAT, const double &LON, const float &AMSL, const float &angle_yaw)
 {
-    qDebug () << "Начал движение: " << LAT << LON << AMSL << angle_yaw;
+
+
+    //using GlobalCoordinate = mavsdk::geometry::CoordinateTransformation::GlobalCoordinate;
+    //using LocalCoordinate = mavsdk::geometry::CoordinateTransformation::LocalCoordinate;
+    //mavsdk::geometry::CoordinateTransformation ct(GlobalCoordinate{ground_truth_latitude_deg,ground_truth_longitude_deg});
+    //LocalCoordinate local_pos = ct.local_from_global(GlobalCoordinate{LAT, LON});
+    //GlobalCoordinate global_pos = ct.global_from_local(LocalCoordinate{local_pos.east_m - 10, local_pos.north_m - 10});
+    //qDebug () << "Настоящее 1" << ground_truth_latitude_deg;
+    //qDebug () << "Настоящее 2" << ground_truth_longitude_deg;
+    //qDebug () << "Начал движение: " << global_pos.latitude_deg << global_pos.longitude_deg << AMSL << angle_yaw << ground_truth_latitude_deg << ground_truth_longitude_deg;
     auto action = std::make_shared<mavsdk::Action>(system);
     action->goto_location_async(LAT,LON,AMSL,angle_yaw,nullptr);
+    //action->goto_location_async(global_pos.latitude_deg,global_pos.longitude_deg,AMSL,angle_yaw,nullptr);
     //action->goto_location(LAT,LON,AMSL,angle_yaw);
+
+    /*
+    mavsdk::geometry::CoordinateTransformation::GlobalCoordinate GlobalCoord;
+    GlobalCoord.latitude_deg=44.0768;
+    GlobalCoord.longitude_deg= 43.0877;
+    mavsdk::geometry::CoordinateTransformation::LocalCoordinate LocalCoord;
+    mavsdk::geometry::CoordinateTransformation *myobj = new mavsdk::geometry::CoordinateTransformation(GlobalCoord);
+    mavsdk::geometry::CoordinateTransformation::GlobalCoordinate GlobalCoord_;
+    GlobalCoord_.latitude_deg=205;
+    GlobalCoord_.longitude_deg= 207;
+    LocalCoord = myobj->local_from_global(GlobalCoord_);
+    double a = LocalCoord.north_m;
+    qDebug () << LocalCoord.north_m;*
+*/
 }
 

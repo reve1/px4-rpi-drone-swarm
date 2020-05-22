@@ -15,7 +15,7 @@ void UdpServer::processPendingDatagrams()
     {
         datagram.resize(int(udpSocket->pendingDatagramSize()));
         udpSocket->readDatagram(datagram.data(), datagram.size());
-        qDebug() << "Получена датаграмма: " << datagram.constData();
+        //qDebug() << "Получена датаграмма: " << datagram.constData();
         QString string = datagram.constData();
         data = "Получена датаграмма: " + string.simplified();
         FileWrite::WriteFromClass(7,data);

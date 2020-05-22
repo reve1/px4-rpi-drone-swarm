@@ -64,7 +64,7 @@ void Model::setLocalVehiclePositionInfo(const unsigned long &UUID,
 
 
 
-    qDebug() << "Локальное значение";
+    //qDebug() << "Локальное значение";
 }
 
 void Model::setLocalVehicleGPSInfo(const unsigned long &UUID,
@@ -122,7 +122,7 @@ void Model::setRemoteVehicleInfo(const unsigned long &UUID,
         VehicleAngle.insert(UUID,angle_yaw);
 
         VehicleTimeStamp.insert(UUID,QDateTime::currentDateTime());
-        qDebug() << "Сетевое значение";
+        //qDebug() << "Сетевое значение";
 
 
         //newCoordSet(Lat, Lon); //?????
@@ -134,14 +134,73 @@ void Model::checkPossition()
 {
     if (local_UUID != lider_UUID && local_UUID != 0)
     {
+        if (180 > VehicleAngle.value(lider_UUID) && VehicleAngle.value(lider_UUID) >= 0)
+        {
+            if (VehicleAngle.value(lider_UUID ) + 225 > 360)
+            {
+                double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - 3.93;
+                double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * 10);
+                double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
+                float targetAMSL = VehicleGPAMSL.value(lider_UUID); //z
+                float targetYaw = VehicleAngle.value(lider_UUID); //yaw
+                emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
+                return;
+            }
+            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 3.93;
+            double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * 10);
+            double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
+            float targetAMSL = VehicleGPAMSL.value(lider_UUID); //z
+            float targetYaw = VehicleAngle.value(lider_UUID); //yaw
+            emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
+            return;
+        };
+
+
+        if (-180 < VehicleAngle.value(lider_UUID) && VehicleAngle.value(lider_UUID) < 0)
+        {
+
+            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 3.93;
+            double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * 10);
+            double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
+            float targetAMSL = VehicleGPAMSL.value(lider_UUID); //z
+            float targetYaw = VehicleAngle.value(lider_UUID); //yaw
+            emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
+            return;
+        };
+
+        //qDebug() << "Угол лидера:" << VehicleAngle.value(lider_UUID);
+        //qDebug() << "Угол расчета:" << VehicleAngle.value(lider_UUID) + 225;
+
+        //qDebug() << "Угол лидера:" << VehicleAngle.value(lider_UUID);
+
+
+
+        /*
+        qDebug() << "Угол лидера:" << VehicleAngle.value(lider_UUID);
+        if (VehicleAngle.value(lider_UUID ) + 225 > 180)
+        {
+            double x = 180 - VehicleAngle.value(lider_UUID + 225);
+            qDebug() << "Угол разницы:" << x;
+            double targetLat = VehicleGPLat.value(lider_UUID) - qCos(x)*(00.0000125 * 10);
+            double targetLon = VehicleGPLon.value(lider_UUID) - qSin(x)*(00.0000125 * 10);
+            float targetAMSL = VehicleGPAMSL.value(lider_UUID); //z
+            float targetYaw = VehicleAngle.value(lider_UUID); //yaw
+            emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
+            return;
+        }
+        qDebug() << "Угол расчета:" << VehicleAngle.value(lider_UUID) + 225;
+        double targetLat = VehicleGPLat.value(lider_UUID) - qCos(VehicleAngle.value(lider_UUID + 225))*(00.0000125 * 10);
+        double targetLon = VehicleGPLon.value(lider_UUID) - qSin(VehicleAngle.value(lider_UUID + 225))*(00.0000125 * 10);
+        */
+
         //double targetLat = VehicleGPLat.value(lider_UUID) - (00.0000125 * 10) * qSin(VehicleAngle.value(lider_UUID)); //x
         //double targetLon = VehicleGPLon.value(lider_UUID) + (00.0000010 * 10) * qCos(VehicleAngle.value(lider_UUID)); //y
 
         //double targetLat = VehicleGPLat.value(lider_UUID) + (00.0000125 * 10) * qCos(VehicleAngle.value(lider_UUID)); //x
         //double targetLon = VehicleGPLon.value(lider_UUID) + (00.0000010 * 10) * qSin(VehicleAngle.value(lider_UUID)); //y
 
-        double targetLat = VehicleGPLat.value(lider_UUID) + (00.0000100 * 10) * qCos(VehicleAngle.value(lider_UUID) - qDegreesToRadians(225.0));
-        double targetLon = VehicleGPLon.value(lider_UUID) + (00.0000100 * 10) * qSin(VehicleAngle.value(lider_UUID) - qDegreesToRadians(225.0));
+        //double targetLat = VehicleGPLat.value(lider_UUID); //+ (00.0000100 * 10) * qCos(VehicleAngle.value(lider_UUID) - qDegreesToRadians(225.0));
+        //double targetLon = VehicleGPLon.value(lider_UUID); //+ (00.0000100 * 10) * qSin(VehicleAngle.value(lider_UUID) - qDegreesToRadians(225.0));
 
         //double targetLat = VehicleGPLat.value(lider_UUID) - (00.0000125 * 10) * qSin(VehicleAngle.value(lider_UUID)); //x
         //double targetLon = VehicleGPLon.value(lider_UUID) - (00.0000010 * 10) * qCos(VehicleAngle.value(lider_UUID)); //y
@@ -151,9 +210,11 @@ void Model::checkPossition()
 
         //double targetLat = 44.0769288 + (00.0000125 * 2) * qCos(VehicleAngle.value(lider_UUID)); //x
         //double targetLon = 43.0879335 + (00.0000010 * 2) * qCos(VehicleAngle.value(lider_UUID)); //y
-        float targetAMSL = VehicleGPAMSL.value(lider_UUID); //z
-        float targetYaw = VehicleAngle.value(lider_UUID); //yaw
-        emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
+
+        //float targetAMSL = VehicleGPAMSL.value(lider_UUID); //z
+        //float targetYaw = VehicleAngle.value(lider_UUID); //yaw
+        //emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
+
         //00,0000125 x
         //00,0000010 y
     }

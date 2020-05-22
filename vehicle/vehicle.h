@@ -9,9 +9,10 @@
 #include <mavsdk/include/mavsdk/plugins/action/action.h>
 #include <mavsdk/include/mavsdk/plugins/telemetry/telemetry.h>
 #include <mavsdk/include/mavsdk/plugins/follow_me/follow_me.h>
+#include <mavsdk/geometry.h>
 #include <streams/filewrite.h>
 #include <model/model.h>
-
+#include <iostream>
 
 using namespace std::this_thread;
 using namespace std::chrono;
@@ -47,6 +48,8 @@ private:
     void setGoToLocation(std::shared_ptr<mavsdk::Action> action);
 
 
+    double ground_truth_latitude_deg;
+    double ground_truth_longitude_deg;
 
     QString data;
     mavsdk::ConnectionResult connection_result;
