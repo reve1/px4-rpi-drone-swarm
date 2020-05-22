@@ -34,18 +34,6 @@ void UdpServer::processPendingDatagrams()
         int Number = list.at(9).simplified().toInt();
         int Formation = list.at(10).simplified().toInt();
         float angle_yaw = list.at(11).simplified().toFloat();
-        //qDebug() << list.at(0).simplified();
-        //data = "1 параметр: " + list.at(0).simplified();
-        //FileWrite::WriteFromClass(7,data);
-        //qDebug() << list.at(1).simplified();
-        //data = "2 параметр: " + list.at(1).simplified();
-        //FileWrite::WriteFromClass(7,data);
-        //qDebug() << list.at(2).simplified();
-        //data = "3 параметр: " + list.at(2).simplified();
-        //FileWrite::WriteFromClass(7,data);
-        //qDebug() << list.at(3).simplified();
-        //data = "4 параметр: " + list.at(3).simplified();
-        //FileWrite::WriteFromClass(7,data);
 
         list.clear();
         emit ReceivedRemoteVehicleInfo(UUID,LAT,LON,ALT,AMSL,GPS,GPS_fix_type,Battery,Lider,Number,Formation,angle_yaw);

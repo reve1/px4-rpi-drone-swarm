@@ -52,9 +52,7 @@ void Vehicle::Run()
     //getTelemetry(telemetry);
     //double targetLat = 44.0769288 + 00.0000125 * 2; //x
     //double targetLon = 43.0879335 + 00.0000010 * 2; //y
-
     //setGoToLocation(action);
-
     //getTelemetry(telemetry);
     //setLand(action);
     //sleep_for(seconds(2));
@@ -206,20 +204,8 @@ void Vehicle::getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry)
 
 void Vehicle::fly(const double &LAT, const double &LON, const float &AMSL, const float &angle_yaw)
 {
-
-
-    //using GlobalCoordinate = mavsdk::geometry::CoordinateTransformation::GlobalCoordinate;
-    //using LocalCoordinate = mavsdk::geometry::CoordinateTransformation::LocalCoordinate;
-    //mavsdk::geometry::CoordinateTransformation ct(GlobalCoordinate{ground_truth_latitude_deg,ground_truth_longitude_deg});
-    //LocalCoordinate local_pos = ct.local_from_global(GlobalCoordinate{LAT, LON});
-    //GlobalCoordinate global_pos = ct.global_from_local(LocalCoordinate{local_pos.east_m - 10, local_pos.north_m - 10});
-    //qDebug () << "Настоящее 1" << ground_truth_latitude_deg;
-    //qDebug () << "Настоящее 2" << ground_truth_longitude_deg;
-    //qDebug () << "Начал движение: " << global_pos.latitude_deg << global_pos.longitude_deg << AMSL << angle_yaw << ground_truth_latitude_deg << ground_truth_longitude_deg;
     auto action = std::make_shared<mavsdk::Action>(system);
     action->goto_location_async(LAT,LON,AMSL,angle_yaw,nullptr);
-    //action->goto_location_async(global_pos.latitude_deg,global_pos.longitude_deg,AMSL,angle_yaw,nullptr);
-    //action->goto_location(LAT,LON,AMSL,angle_yaw);
 
     /*
     mavsdk::geometry::CoordinateTransformation::GlobalCoordinate GlobalCoord;
@@ -232,7 +218,13 @@ void Vehicle::fly(const double &LAT, const double &LON, const float &AMSL, const
     GlobalCoord_.longitude_deg= 207;
     LocalCoord = myobj->local_from_global(GlobalCoord_);
     double a = LocalCoord.north_m;
-    qDebug () << LocalCoord.north_m;*
-*/
+    qDebug () << LocalCoord.north_m;
+
+    //using GlobalCoordinate = mavsdk::geometry::CoordinateTransformation::GlobalCoordinate;
+    //using LocalCoordinate = mavsdk::geometry::CoordinateTransformation::LocalCoordinate;
+    //mavsdk::geometry::CoordinateTransformation ct(GlobalCoordinate{ground_truth_latitude_deg,ground_truth_longitude_deg});
+    //LocalCoordinate local_pos = ct.local_from_global(GlobalCoordinate{LAT, LON});
+    //GlobalCoordinate global_pos = ct.global_from_local(LocalCoordinate{local_pos.east_m - 10, local_pos.north_m - 10});
+    */
 }
 
