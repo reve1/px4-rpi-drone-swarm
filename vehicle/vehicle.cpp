@@ -9,8 +9,8 @@ Vehicle::Vehicle()
 void Vehicle::Run()
 {
     bool discovered_system = false;
-    //connection_result = dc.add_udp_connection( "localhost", 14540); // MAV_1
-    connection_result = dc.add_udp_connection( "localhost", 14541); // MAV_2
+    connection_result = dc.add_udp_connection( "localhost", 14540); // MAV_1
+    //connection_result = dc.add_udp_connection( "localhost", 14541); // MAV_2
     //connection_result = dc.add_udp_connection( "localhost", 14542); // MAV_3
     //connection_result = dc.add_serial_connection("/dev/ttyS0", 57600);
     //connection_result = dc.add_serial_connection("/dev/ttyUSB0", 57600);
@@ -194,11 +194,38 @@ void Vehicle::getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry)
         emit LocalVehicleAngle(UUID,angle_yaw);
     });
 
-    telemetry->subscribe_ground_truth([this](mavsdk::Telemetry::GroundTruth ground_truth)
-    {
-        ground_truth_latitude_deg = ground_truth.latitude_deg;
-        ground_truth_longitude_deg = ground_truth.longitude_deg;
-
+    telemetry->subscribe_flight_mode([this](mavsdk::Telemetry::FlightMode flightMode) {
+        unsigned long UUID = system.get_uuid();
+        if (oldFlightMode != flightMode) {
+            oldFlightMode = flightMode;
+            switch(flightMode)
+            {
+            case mavsdk::Telemetry::FlightMode::Unknown:
+                qDebug() << "Изменен полетный режим, новый режим - Неизвестен.";
+                emit LocalVehicleFlightMode(UUID,0);
+                break;
+            case mavsdk::Telemetry::FlightMode::Takeoff:
+                qDebug() << "Изменен полетный режим, новый режим - Взлет.";
+                emit LocalVehicleFlightMode(UUID,1);
+                break;
+            case mavsdk::Telemetry::FlightMode::ReturnToLaunch:
+                qDebug() << "Изменен полетный режим, новый режим - Возврат в точку взлета.";
+                emit LocalVehicleFlightMode(UUID,2);
+                break;
+            case mavsdk::Telemetry::FlightMode::Land:
+                qDebug() << "Изменен полетный режим, новый режим - Приземление.";
+                emit LocalVehicleFlightMode(UUID,3);
+                break;
+            case mavsdk::Telemetry::FlightMode::Ready:
+                qDebug() << "Изменен полетный режим, новый режим - Готовность.";
+                emit LocalVehicleFlightMode(UUID,4);
+                break;
+            default:
+                qDebug() << "Изменен полетный режим, новый режим - Полетный.";
+                emit LocalVehicleFlightMode(UUID,5);
+                break;
+            }
+        }
     });
 }
 

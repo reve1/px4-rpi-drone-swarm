@@ -30,6 +30,7 @@ signals:
     void LocalVehicleGPSInfo(unsigned long,int,int);
     void LocalVehicleBatteryInfo(unsigned long,float);
     void LocalVehicleAngle(unsigned long,float);
+    void LocalVehicleFlightMode(unsigned long,int);
     void newCoordSet();
 public slots:
     void Run();
@@ -52,6 +53,7 @@ private:
     double ground_truth_longitude_deg;
 
     QString data;
+    mavsdk::Telemetry::FlightMode oldFlightMode = mavsdk::Telemetry::FlightMode::Unknown;
     mavsdk::ConnectionResult connection_result;
     mavsdk::Mavsdk dc;
 

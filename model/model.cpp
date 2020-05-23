@@ -131,6 +131,7 @@ void Model::checkPossition()
             {
                 double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - 3.93;
                 double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * 10);
+                //double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
                 double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
                 float targetAMSL = VehicleGPAMSL.value(lider_UUID); //z
                 float targetYaw = VehicleAngle.value(lider_UUID); //yaw
@@ -139,6 +140,7 @@ void Model::checkPossition()
             }
             double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 3.93;
             double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * 10);
+            //double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
             double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
             float targetAMSL = VehicleGPAMSL.value(lider_UUID); //z
             float targetYaw = VehicleAngle.value(lider_UUID); //yaw
@@ -149,11 +151,18 @@ void Model::checkPossition()
         {
             double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 3.93;
             double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * 10);
+            //double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
             double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
             float targetAMSL = VehicleGPAMSL.value(lider_UUID); //z
             float targetYaw = VehicleAngle.value(lider_UUID); //yaw
             emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
             return;
         };
+    }
+    if (local_UUID == lider_UUID && VehicleNumber.value(local_UUID) != 1)
+    {
+        VehicleNumber.insert(local_UUID,1);
+        qDebug() << VehicleNumber.values(local_UUID); // убрать после отладки
+        return;
     }
 }
