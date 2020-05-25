@@ -23,7 +23,8 @@ void Model::sendTimer()
                               VehicleLiderFlag.value(local_UUID),
                               VehicleNumber.value(local_UUID),
                               VehicleFormation.value(local_UUID),
-                              VehicleAngle.value(local_UUID));
+                              VehicleAngle.value(local_UUID),
+                              VehicleFlightMode.value(local_UUID));
 }
 
 void Model::TimeStampCheck()
@@ -46,6 +47,7 @@ void Model::TimeStampCheck()
             VehicleNumber.remove(key);
             VehicleFormation.remove(key);
             VehicleAngle.remove(key);
+            VehicleFlightMode.remove(key);
             qDebug() << "Кеш очищен, удалены устаревшие значение UUID = " << key ;
         }
     }
@@ -86,6 +88,12 @@ void Model::setLocalVehicleAngle(const unsigned long &UUID,
     VehicleTimeStamp.insert(UUID,QDateTime::currentDateTime());
 }
 
+void Model::setLocalVehicleFlightMode(const unsigned long &UUID,
+                                      const int &flightMode)
+{
+    VehicleFlightMode.insert(UUID,flightMode);
+}
+
 void Model::setRemoteVehicleInfo(const unsigned long &UUID,
                                  const double &Lat,
                                  const double &Lon,
@@ -97,7 +105,8 @@ void Model::setRemoteVehicleInfo(const unsigned long &UUID,
                                  const int &Lider,
                                  const int &Number,
                                  const int &Formation,
-                                 const float &angle_yaw)
+                                 const float &angle_yaw,
+                                 const int &flightMode)
 {
     if (local_UUID != UUID)
     {
@@ -117,6 +126,7 @@ void Model::setRemoteVehicleInfo(const unsigned long &UUID,
         VehicleNumber.insert(UUID,Number);
         VehicleFormation.insert(UUID,Formation);
         VehicleAngle.insert(UUID,angle_yaw);
+        VehicleFlightMode.insert(UUID,flightMode);
         VehicleTimeStamp.insert(UUID,QDateTime::currentDateTime());
     }
 }
@@ -163,6 +173,5 @@ void Model::checkPossition()
     {
         VehicleNumber.insert(local_UUID,1);
         qDebug() << VehicleNumber.values(local_UUID); // убрать после отладки
-        return;
     }
 }

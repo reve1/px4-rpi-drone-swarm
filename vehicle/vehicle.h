@@ -23,8 +23,6 @@ class Vehicle : public QObject
 
 public:
     Vehicle();
-
-
 signals:
     void LocalVehiclePositionInfo(unsigned long,double,double,float,float);
     void LocalVehicleGPSInfo(unsigned long,int,int);
@@ -38,8 +36,6 @@ public slots:
              const double &LON,
              const float &AMSL,
              const float &angle_yaw);
-
-
 private:
     void getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry);
     void setTelemetryRate(std::shared_ptr<mavsdk::Telemetry> telemetry);
@@ -47,16 +43,10 @@ private:
     void setLand(std::shared_ptr<mavsdk::Action> action);
     void setTakeOff(std::shared_ptr<mavsdk::Action> action);
     void setGoToLocation(std::shared_ptr<mavsdk::Action> action);
-
-
-    double ground_truth_latitude_deg;
-    double ground_truth_longitude_deg;
-
     QString data;
     mavsdk::Telemetry::FlightMode oldFlightMode = mavsdk::Telemetry::FlightMode::Unknown;
     mavsdk::ConnectionResult connection_result;
     mavsdk::Mavsdk dc;
-
     mavsdk::System &system = dc.system();
 };
 

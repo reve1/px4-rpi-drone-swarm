@@ -15,7 +15,7 @@ void UdpServer::processPendingDatagrams()
     {
         datagram.resize(int(udpSocket->pendingDatagramSize()));
         udpSocket->readDatagram(datagram.data(), datagram.size());
-        //qDebug() << "Получена датаграмма: " << datagram.constData();
+        qDebug() << "Получена датаграмма: " << datagram.constData();
         QString string = datagram.constData();
         data = "Получена датаграмма: " + string.simplified();
         FileWrite::WriteFromClass(7,data);
@@ -34,8 +34,9 @@ void UdpServer::processPendingDatagrams()
         int Number = list.at(9).simplified().toInt();
         int Formation = list.at(10).simplified().toInt();
         float angle_yaw = list.at(11).simplified().toFloat();
+        int flightMode = list.at(12).simplified().toFloat();
 
         list.clear();
-        emit ReceivedRemoteVehicleInfo(UUID,LAT,LON,ALT,AMSL,GPS,GPS_fix_type,Battery,Lider,Number,Formation,angle_yaw);
+        emit ReceivedRemoteVehicleInfo(UUID,LAT,LON,ALT,AMSL,GPS,GPS_fix_type,Battery,Lider,Number,Formation,angle_yaw,flightMode);
     }
 }

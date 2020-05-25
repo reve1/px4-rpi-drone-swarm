@@ -26,7 +26,8 @@ private slots:
                               const int &Lider,
                               const int &Number,
                               const int &Formation,
-                              const float &angle_yaw);
+                              const float &angle_yaw,
+                              const int &flightMode);
 
 private:
     QUdpSocket *udpSocket = nullptr;

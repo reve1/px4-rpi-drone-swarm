@@ -26,6 +26,7 @@ public:
     QMap <unsigned long,int> VehicleLiderFlag;
     QMap <unsigned long,int> VehicleNumber;
     QMap <unsigned long,int> VehicleFormation;
+    QMap <unsigned long,int> VehicleFlightMode;
     QMap <unsigned long,QDateTime> VehicleTimeStamp;
 
     int UUID;
@@ -54,7 +55,7 @@ public:
 
 signals:
     void newCoordSet(double, double);
-    void sendLocalVehicleInfo(unsigned long, double, double,float,float,int,int,float,int,int,int,float);
+    void sendLocalVehicleInfo(unsigned long, double, double,float,float,int,int,float,int,int,int,float,int);
     void goToPosition(double,double,float,float);
 
 public slots:
@@ -73,6 +74,8 @@ public slots:
 
     void setLocalVehicleAngle(const unsigned long &UUID,
                               const float &angle_yaw);
+    void setLocalVehicleFlightMode(const unsigned long &UUID,
+                                   const int &flightMode);
 
     void setRemoteVehicleInfo(const unsigned long &UUID,
                               const double &Lat,
@@ -85,7 +88,8 @@ public slots:
                               const int &Lider,
                               const int &Number,
                               const int &Formation,
-                              const float &angle_yaw);
+                              const float &angle_yaw,
+                              const int &flightMode);
 
 private slots:
     void sendTimer();

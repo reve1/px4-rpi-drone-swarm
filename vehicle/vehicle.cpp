@@ -9,8 +9,8 @@ Vehicle::Vehicle()
 void Vehicle::Run()
 {
     bool discovered_system = false;
-    connection_result = dc.add_udp_connection( "localhost", 14540); // MAV_1
-    //connection_result = dc.add_udp_connection( "localhost", 14541); // MAV_2
+    //connection_result = dc.add_udp_connection( "localhost", 14540); // MAV_1
+    connection_result = dc.add_udp_connection( "localhost", 14541); // MAV_2
     //connection_result = dc.add_udp_connection( "localhost", 14542); // MAV_3
     //connection_result = dc.add_serial_connection("/dev/ttyS0", 57600);
     //connection_result = dc.add_serial_connection("/dev/ttyUSB0", 57600);
@@ -36,11 +36,6 @@ void Vehicle::Run()
     }
 
     setTelemetryRate(telemetry);
-
-    ground_truth_latitude_deg = telemetry->ground_truth().latitude_deg;
-    ground_truth_longitude_deg = telemetry->ground_truth().longitude_deg;
-    qDebug () << "ground_truth_latitude_deg: " << ground_truth_latitude_deg;
-    qDebug () << "ground_truth_longitude_deg: " << ground_truth_longitude_deg;
 
     getTelemetry(telemetry);
     setArm(action);

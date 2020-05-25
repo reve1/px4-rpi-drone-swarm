@@ -16,7 +16,8 @@ void UdpClient::sendLocalVehicleInfo(const unsigned long &UUID,
                                      const int &Lider,
                                      const int &Number,
                                      const int &Formation,
-                                     const float &angle_yaw)
+                                     const float &angle_yaw,
+                                     const int &flightMode)
 {
     QString x = QString::number(UUID);
     QByteArray datagram = x.toUtf8() + "/"
@@ -30,7 +31,8 @@ void UdpClient::sendLocalVehicleInfo(const unsigned long &UUID,
             + QByteArray::number(Lider) + "/"
             + QByteArray::number(Number) + "/"
             + QByteArray::number(Formation) + "/"
-            + QByteArray::number(angle_yaw) + "/";
+            + QByteArray::number(angle_yaw) + "/"
+            + QByteArray::number(flightMode) + "/";
     udpSocket->writeDatagram(datagram, QHostAddress::Broadcast, 6666);
     //qDebug() << "Отправлена датаграмма: " << datagram;
 }
