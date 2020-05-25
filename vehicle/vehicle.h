@@ -9,9 +9,10 @@
 #include <mavsdk/include/mavsdk/plugins/action/action.h>
 #include <mavsdk/include/mavsdk/plugins/telemetry/telemetry.h>
 #include <mavsdk/include/mavsdk/plugins/follow_me/follow_me.h>
+#include <mavsdk/geometry.h>
 #include <streams/filewrite.h>
 #include <model/model.h>
-
+#include <iostream>
 
 using namespace std::this_thread;
 using namespace std::chrono;
@@ -22,13 +23,12 @@ class Vehicle : public QObject
 
 public:
     Vehicle();
-
-
 signals:
     void LocalVehiclePositionInfo(unsigned long,double,double,float,float);
     void LocalVehicleGPSInfo(unsigned long,int,int);
     void LocalVehicleBatteryInfo(unsigned long,float);
     void LocalVehicleAngle(unsigned long,float);
+    void LocalVehicleFlightMode(unsigned long,int);
     void newCoordSet();
 public slots:
     void Run();
@@ -36,22 +36,20 @@ public slots:
              const double &LON,
              const float &AMSL,
              const float &angle_yaw);
-
+    void setReturnToLaunch();
+    void setLand();
+    void setTakeOff();
 
 private:
     void getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry);
     void setTelemetryRate(std::shared_ptr<mavsdk::Telemetry> telemetry);
-    void setArm(std::shared_ptr<mavsdk::Action> action);
-    void setLand(std::shared_ptr<mavsdk::Action> action);
-    void setTakeOff(std::shared_ptr<mavsdk::Action> action);
+    void setArm();
+
     void setGoToLocation(std::shared_ptr<mavsdk::Action> action);
-
-
-
     QString data;
+    mavsdk::Telemetry::FlightMode oldFlightMode = mavsdk::Telemetry::FlightMode::Unknown;
     mavsdk::ConnectionResult connection_result;
     mavsdk::Mavsdk dc;
-
     mavsdk::System &system = dc.system();
 };
 

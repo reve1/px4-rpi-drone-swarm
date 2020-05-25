@@ -23,7 +23,8 @@ void Model::sendTimer()
                               VehicleLiderFlag.value(local_UUID),
                               VehicleNumber.value(local_UUID),
                               VehicleFormation.value(local_UUID),
-                              VehicleAngle.value(local_UUID));
+                              VehicleAngle.value(local_UUID),
+                              VehicleFlightMode.value(local_UUID));
 }
 
 void Model::TimeStampCheck()
@@ -46,6 +47,7 @@ void Model::TimeStampCheck()
             VehicleNumber.remove(key);
             VehicleFormation.remove(key);
             VehicleAngle.remove(key);
+            VehicleFlightMode.remove(key);
             qDebug() << "Кеш очищен, удалены устаревшие значение UUID = " << key ;
         }
     }
@@ -61,10 +63,7 @@ void Model::setLocalVehiclePositionInfo(const unsigned long &UUID,
     VehicleGPLon.insert(UUID,Lon);
     VehicleGPAlt.insert(UUID,Alt);
     VehicleGPAMSL.insert(UUID,AMSL);
-
-
-
-    qDebug() << "Локальное значение";
+    //qDebug() << "Локальное значение";
 }
 
 void Model::setLocalVehicleGPSInfo(const unsigned long &UUID,
@@ -89,6 +88,12 @@ void Model::setLocalVehicleAngle(const unsigned long &UUID,
     VehicleTimeStamp.insert(UUID,QDateTime::currentDateTime());
 }
 
+void Model::setLocalVehicleFlightMode(const unsigned long &UUID,
+                                      const int &flightMode)
+{
+    VehicleFlightMode.insert(UUID,flightMode);
+}
+
 void Model::setRemoteVehicleInfo(const unsigned long &UUID,
                                  const double &Lat,
                                  const double &Lon,
@@ -100,7 +105,8 @@ void Model::setRemoteVehicleInfo(const unsigned long &UUID,
                                  const int &Lider,
                                  const int &Number,
                                  const int &Formation,
-                                 const float &angle_yaw)
+                                 const float &angle_yaw,
+                                 const int &flightMode)
 {
     if (local_UUID != UUID)
     {
@@ -120,41 +126,82 @@ void Model::setRemoteVehicleInfo(const unsigned long &UUID,
         VehicleNumber.insert(UUID,Number);
         VehicleFormation.insert(UUID,Formation);
         VehicleAngle.insert(UUID,angle_yaw);
-
+        VehicleFlightMode.insert(UUID,flightMode);
         VehicleTimeStamp.insert(UUID,QDateTime::currentDateTime());
-        qDebug() << "Сетевое значение";
-
-
-        //newCoordSet(Lat, Lon); //?????
-        //return; //????
     }
 }
 
 void Model::checkPossition()
 {
+    if (local_UUID == lider_UUID && VehicleNumber.value(local_UUID) != 1)
+    {
+        VehicleNumber.insert(local_UUID,1);
+        //qDebug() << VehicleNumber.values(local_UUID); // убрать после отладки
+    }
+
     if (local_UUID != lider_UUID && local_UUID != 0)
     {
-        //double targetLat = VehicleGPLat.value(lider_UUID) - (00.0000125 * 10) * qSin(VehicleAngle.value(lider_UUID)); //x
-        //double targetLon = VehicleGPLon.value(lider_UUID) + (00.0000010 * 10) * qCos(VehicleAngle.value(lider_UUID)); //y
+        if (VehicleFlightMode.value(local_UUID) != VehicleFlightMode.value(lider_UUID)) {
+            VehicleFlightMode.insert(local_UUID, VehicleFlightMode.value(lider_UUID));
+            switch(VehicleFlightMode.value(lider_UUID))
+            {
+            case 0:
+                qDebug() << "Изменен полетный режим лидера, установлен новый режим - Неизвестен.";
+                break;
+            case 1:
+                qDebug() << "Изменен полетный режим лидера, установлен новый режим - Взлет.";
+                emit Takeoff();
+                break;
+            case 2:
+                qDebug() << "Изменен полетный режим лидера, установлен новый режим - Возврат в точку взлета.";
+                emit ReturnToLaunch();
+                break;
+            case 3:
+                qDebug() << "Изменен полетный режим лидера, установлен новый режим - Приземление.";
+                emit Land();
+                break;
+            case 4:
+                qDebug() << "Изменен полетный режим лидера, установлен новый режим - Готовность.";
+                break;
+            default:
+                qDebug() << "Изменен полетный режим лидера, установлен новый режим - Полетный.";
+                break;
+            }
+        }
 
-        //double targetLat = VehicleGPLat.value(lider_UUID) + (00.0000125 * 10) * qCos(VehicleAngle.value(lider_UUID)); //x
-        //double targetLon = VehicleGPLon.value(lider_UUID) + (00.0000010 * 10) * qSin(VehicleAngle.value(lider_UUID)); //y
+        if (180 > VehicleAngle.value(lider_UUID) && VehicleAngle.value(lider_UUID) >= 0)
+        {
+            if (VehicleAngle.value(lider_UUID ) + 225 > 360)
+            {
+                double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - 3.93;
+                double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * 10);
+                //double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
+                double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
+                float targetAMSL = VehicleGPAMSL.value(lider_UUID); //z
+                float targetYaw = VehicleAngle.value(lider_UUID); //yaw
+                emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
+                return;
+            }
+            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 3.93;
+            double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * 10);
+            //double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
+            double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
+            float targetAMSL = VehicleGPAMSL.value(lider_UUID); //z
+            float targetYaw = VehicleAngle.value(lider_UUID); //yaw
+            emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
+            return;
+        };
 
-        double targetLat = VehicleGPLat.value(lider_UUID) + (00.0000100 * 10) * qCos(VehicleAngle.value(lider_UUID) - qDegreesToRadians(225.0));
-        double targetLon = VehicleGPLon.value(lider_UUID) + (00.0000100 * 10) * qSin(VehicleAngle.value(lider_UUID) - qDegreesToRadians(225.0));
-
-        //double targetLat = VehicleGPLat.value(lider_UUID) - (00.0000125 * 10) * qSin(VehicleAngle.value(lider_UUID)); //x
-        //double targetLon = VehicleGPLon.value(lider_UUID) - (00.0000010 * 10) * qCos(VehicleAngle.value(lider_UUID)); //y
-
-        //double targetLat = VehicleGPLat.value(lider_UUID)*qCos(VehicleAngle.value(lider_UUID))-VehicleGPLon.value(lider_UUID)*qSin(VehicleAngle.value(lider_UUID));
-        //double targetLon = VehicleGPLat.value(lider_UUID)*qSin(VehicleAngle.value(lider_UUID))+VehicleGPLon.value(lider_UUID)*qCos(VehicleAngle.value(lider_UUID));
-
-        //double targetLat = 44.0769288 + (00.0000125 * 2) * qCos(VehicleAngle.value(lider_UUID)); //x
-        //double targetLon = 43.0879335 + (00.0000010 * 2) * qCos(VehicleAngle.value(lider_UUID)); //y
-        float targetAMSL = VehicleGPAMSL.value(lider_UUID); //z
-        float targetYaw = VehicleAngle.value(lider_UUID); //yaw
-        emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
-        //00,0000125 x
-        //00,0000010 y
+        if (-180 < VehicleAngle.value(lider_UUID) && VehicleAngle.value(lider_UUID) < 0)
+        {
+            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 3.93;
+            double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * 10);
+            //double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
+            double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
+            float targetAMSL = VehicleGPAMSL.value(lider_UUID); //z
+            float targetYaw = VehicleAngle.value(lider_UUID); //yaw
+            emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
+            return;
+        };
     }
 }

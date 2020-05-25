@@ -15,8 +15,6 @@ public:
     explicit UdpClient(QObject *parent = nullptr);
 
 private slots:
-    void startBroadcasting();
-    void broadcastDatagram();
     void sendLocalVehicleInfo(const unsigned long &UUID,
                               const double &Lat,
                               const double &Lon,
@@ -28,11 +26,11 @@ private slots:
                               const int &Lider,
                               const int &Number,
                               const int &Formation,
-                              const float &angle_yaw);
+                              const float &angle_yaw,
+                              const int &flightMode);
 
 private:
     QUdpSocket *udpSocket = nullptr;
-    QTimer timer;
     QString data;
     int messageNo = 1;
 
