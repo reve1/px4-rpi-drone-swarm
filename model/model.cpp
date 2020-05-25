@@ -133,8 +133,42 @@ void Model::setRemoteVehicleInfo(const unsigned long &UUID,
 
 void Model::checkPossition()
 {
+    if (local_UUID == lider_UUID && VehicleNumber.value(local_UUID) != 1)
+    {
+        VehicleNumber.insert(local_UUID,1);
+        //qDebug() << VehicleNumber.values(local_UUID); // убрать после отладки
+    }
+
     if (local_UUID != lider_UUID && local_UUID != 0)
     {
+        if (VehicleFlightMode.value(local_UUID) != VehicleFlightMode.value(lider_UUID)) {
+            VehicleFlightMode.insert(local_UUID, VehicleFlightMode.value(lider_UUID));
+            switch(VehicleFlightMode.value(lider_UUID))
+            {
+            case 0:
+                qDebug() << "Изменен полетный режим лидера, установлен новый режим - Неизвестен.";
+                break;
+            case 1:
+                qDebug() << "Изменен полетный режим лидера, установлен новый режим - Взлет.";
+                emit Takeoff();
+                break;
+            case 2:
+                qDebug() << "Изменен полетный режим лидера, установлен новый режим - Возврат в точку взлета.";
+                emit ReturnToLaunch();
+                break;
+            case 3:
+                qDebug() << "Изменен полетный режим лидера, установлен новый режим - Приземление.";
+                emit Land();
+                break;
+            case 4:
+                qDebug() << "Изменен полетный режим лидера, установлен новый режим - Готовность.";
+                break;
+            default:
+                qDebug() << "Изменен полетный режим лидера, установлен новый режим - Полетный.";
+                break;
+            }
+        }
+
         if (180 > VehicleAngle.value(lider_UUID) && VehicleAngle.value(lider_UUID) >= 0)
         {
             if (VehicleAngle.value(lider_UUID ) + 225 > 360)
@@ -157,6 +191,7 @@ void Model::checkPossition()
             emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
             return;
         };
+
         if (-180 < VehicleAngle.value(lider_UUID) && VehicleAngle.value(lider_UUID) < 0)
         {
             double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 3.93;
@@ -168,10 +203,5 @@ void Model::checkPossition()
             emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
             return;
         };
-    }
-    if (local_UUID == lider_UUID && VehicleNumber.value(local_UUID) != 1)
-    {
-        VehicleNumber.insert(local_UUID,1);
-        qDebug() << VehicleNumber.values(local_UUID); // убрать после отладки
     }
 }

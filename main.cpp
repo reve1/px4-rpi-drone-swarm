@@ -44,9 +44,11 @@ int main(int argc, char *argv[])
     QObject::connect(md, SIGNAL(sendLocalVehicleInfo(unsigned long, double, double,float,float,int,int,float,int,int,int,float,int)), client, SLOT(sendLocalVehicleInfo(unsigned long,double,double,float,float,int,int,float,int,int,int,float,int)));
     //QObject::connect(vh, SIGNAL(LocalVehicleInfo(unsigned long,double,double,float,float,int,int)), client, SLOT(sendLocalVehicleInfo(unsigned long,double,double,float,float,int,int)));
     QObject::connect(server, SIGNAL(ReceivedRemoteVehicleInfo(unsigned long,double,double,float,float,int,int,float,int,int,int,float,int)), md, SLOT(setRemoteVehicleInfo(unsigned long,double,double,float,float,int,int,float,int,int,int,float,int)));
-    QObject::connect(md, SIGNAL(goToPosition(double,double,float,float)),vh, SLOT(fly(double,double,float,float)),Qt::DirectConnection);
-    QObject::connect(VhThred, SIGNAL(started()), vh, SLOT(Run()));
-
+    QObject::connect(md, SIGNAL(goToPosition(double,double,float,float)), vh, SLOT(fly(double,double,float,float)),Qt::DirectConnection);
+    QObject::connect(md, SIGNAL(Takeoff(), vh, SLOT(setReturnToLaunch()),Qt::DirectConnection);
+    QObject::connect(md, SIGNAL(ReturnToLaunch(), vh, SLOT(setLand()),Qt::DirectConnection)
+    QObject::connect(md, SIGNAL(Land(), vh, SLOT(setTakeOff()),Qt::DirectConnection)
+    QObject::connect(VhThred, SIGNAL(started()), vh, SLOT(Run()));                            
 #endif
 
     //BluetoothDiscovery *bd = new BluetoothDiscovery;

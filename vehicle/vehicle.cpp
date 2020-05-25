@@ -28,7 +28,6 @@ void Vehicle::Run()
     });
 
     auto telemetry = std::make_shared<mavsdk::Telemetry>(system);
-    auto action = std::make_shared<mavsdk::Action>(system);
 
     while (telemetry->health_all_ok() != true) {
         qDebug() << "БВС не готов к запуску";
@@ -36,10 +35,10 @@ void Vehicle::Run()
     }
 
     setTelemetryRate(telemetry);
-
     getTelemetry(telemetry);
-    setArm(action);
-    setTakeOff(action);
+
+    setArm();
+    setTakeOff();
     //fly(44.076928,43.0879335,540,0);
     getTelemetry(telemetry);
     sleep_for(seconds(12000));
@@ -74,8 +73,24 @@ void Vehicle::setTelemetryRate(std::shared_ptr<mavsdk::Telemetry> telemetry)
     FileWrite::WriteFromClass(5, data.simplified());
 }
 
-void Vehicle::setArm(std::shared_ptr<mavsdk::Action> action)
+void Vehicle::setReturnToLaunch()
 {
+    auto action = std::make_shared<mavsdk::Action>(system);
+    mavsdk::Action::Result arm = action->return_to_launch();
+    if (arm != mavsdk::Action::Result::Success) {
+        qDebug() << "Ошибка возврата";
+        data = "Ошибка возврата";
+        FileWrite::WriteFromClass(5, data.simplified());
+        return;
+    }
+    qDebug() << "Отправлен сигнал возврата";
+    data = "Отправлен сигнал возврата";
+    FileWrite::WriteFromClass(5, data.simplified());
+}
+
+void Vehicle::setArm()
+{
+    auto action = std::make_shared<mavsdk::Action>(system);
     mavsdk::Action::Result arm = action->arm();
     if (arm != mavsdk::Action::Result::Success) {
         qDebug() << "Ошибка арминга";
@@ -88,8 +103,9 @@ void Vehicle::setArm(std::shared_ptr<mavsdk::Action> action)
     FileWrite::WriteFromClass(5, data.simplified());
 }
 
-void Vehicle::setTakeOff(std::shared_ptr<mavsdk::Action> action)
+void Vehicle::setTakeOff()
 {
+    auto action = std::make_shared<mavsdk::Action>(system);
     mavsdk::Action::Result takeoff = action->takeoff();
     if (takeoff != mavsdk::Action::Result::Success) {
         qDebug() << "Ошибка взлета";
@@ -103,8 +119,9 @@ void Vehicle::setTakeOff(std::shared_ptr<mavsdk::Action> action)
     sleep_for(seconds(20));
 }
 
-void Vehicle::setLand(std::shared_ptr<mavsdk::Action> action)
+void Vehicle::setLand()
 {
+    auto action = std::make_shared<mavsdk::Action>(system);
     mavsdk::Action::Result land = action->land();
     if (land != mavsdk::Action::Result::Success) {
         qDebug() << "Ошибка посадки";

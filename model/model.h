@@ -57,6 +57,9 @@ signals:
     void newCoordSet(double, double);
     void sendLocalVehicleInfo(unsigned long, double, double,float,float,int,int,float,int,int,int,float,int);
     void goToPosition(double,double,float,float);
+    void Takeoff();
+    void ReturnToLaunch();
+    void Land();
 
 public slots:
     void setLocalVehiclePositionInfo(const unsigned long &UUID,

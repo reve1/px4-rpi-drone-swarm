@@ -36,12 +36,15 @@ public slots:
              const double &LON,
              const float &AMSL,
              const float &angle_yaw);
+    void setReturnToLaunch();
+    void setLand();
+    void setTakeOff();
+
 private:
     void getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry);
     void setTelemetryRate(std::shared_ptr<mavsdk::Telemetry> telemetry);
-    void setArm(std::shared_ptr<mavsdk::Action> action);
-    void setLand(std::shared_ptr<mavsdk::Action> action);
-    void setTakeOff(std::shared_ptr<mavsdk::Action> action);
+    void setArm();
+
     void setGoToLocation(std::shared_ptr<mavsdk::Action> action);
     QString data;
     mavsdk::Telemetry::FlightMode oldFlightMode = mavsdk::Telemetry::FlightMode::Unknown;
