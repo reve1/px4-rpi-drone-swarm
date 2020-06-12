@@ -48,6 +48,7 @@ private:
     void setGoToLocation(std::shared_ptr<mavsdk::Action> action);
     QString data;
     mavsdk::Telemetry::FlightMode oldFlightMode = mavsdk::Telemetry::FlightMode::Unknown;
+    mavsdk::Telemetry::LandedState oldLandedState = mavsdk::Telemetry::LandedState::Unknown;
     mavsdk::ConnectionResult connection_result;
     mavsdk::Mavsdk dc;
     mavsdk::System &system = dc.system();

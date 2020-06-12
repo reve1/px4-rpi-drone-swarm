@@ -23,13 +23,12 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    //QLoggingCategory::setFilterRules(QStringLiteral("qt.bluetooth* = true"));
+
 
     Model *md = new Model;
-    Chat *bchat = new Chat;
-    FileWrite fw;
     UdpServer *server = new UdpServer;
     UdpClient *client = new UdpClient;
+    FileWrite fw;
 
 #if !defined (Q_OS_WIN)
     QThread *VhThred = new QThread;
@@ -63,6 +62,8 @@ int main(int argc, char *argv[])
                      vh, SLOT(Run()));
 #endif
 
+    //QLoggingCategory::setFilterRules(QStringLiteral("qt.bluetooth* = true"));
+    //Chat *bchat = new Chat;
     //BluetoothDiscovery *bd = new BluetoothDiscovery;
     //QObject::connect(bd, SIGNAL(deviceFound(QBluetoothServiceInfo)), bchat, SLOT(connectClicked(QBluetoothServiceInfo)));
     //QObject::connect(bchat, SIGNAL(socketError()), bd, SLOT(StartServiceDiscovery()));
