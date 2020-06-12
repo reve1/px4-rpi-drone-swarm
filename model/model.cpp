@@ -157,11 +157,14 @@ void Model::checkPossition()
                 emit ReturnToLaunch();
                 break;
             case 3:
-                qDebug() << "Изменен полетный режим лидера, установлен новый режим - Приземление.";
+                qDebug() << "Изменен полетный режим лидера, установлен новый режим - Посадка.";
                 emit Land();
                 break;
             case 4:
                 qDebug() << "Изменен полетный режим лидера, установлен новый режим - Готовность.";
+                break;
+            case 6:
+                qDebug() << "Изменен полетный режим лидера, установлен новый режим - На земле.";
                 break;
             default:
                 qDebug() << "Изменен полетный режим лидера, установлен новый режим - Полетный.";
@@ -173,7 +176,8 @@ void Model::checkPossition()
         {
             if (VehicleAngle.value(lider_UUID ) + 225 > 360)
             {
-                double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - 3.93;
+                //double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - 3.93;
+                double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - 2.36;
                 double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * 10);
                 //double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
                 double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
@@ -182,7 +186,8 @@ void Model::checkPossition()
                 emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
                 return;
             }
-            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 3.93;
+            //double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 3.93;
+            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 2.36;
             double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * 10);
             //double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
             double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
@@ -194,7 +199,8 @@ void Model::checkPossition()
 
         if (-180 < VehicleAngle.value(lider_UUID) && VehicleAngle.value(lider_UUID) < 0)
         {
-            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 3.93;
+            //double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 3.93;
+            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 2.36;
             double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * 10);
             //double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
             double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);
