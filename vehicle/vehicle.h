@@ -24,6 +24,7 @@ class Vehicle : public QObject
 public:
     Vehicle();
 signals:
+    void LocalUUID(unsigned long);
     void LocalVehiclePositionInfo(unsigned long,double,double,float,float);
     void LocalVehicleGPSInfo(unsigned long,int,int);
     void LocalVehicleBatteryInfo(unsigned long,float);

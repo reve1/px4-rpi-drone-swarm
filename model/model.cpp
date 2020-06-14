@@ -2,11 +2,9 @@
 
 Model::Model()
 {
-    connect(&timer, &QTimer::timeout, this, &Model::TimeStampCheck);
+    connect(&timer, &QTimer::timeout, this, &Model::vehicleLocalTimeStamp);
     connect(&timer_to_go, &QTimer::timeout, this, &Model::sendTimer);
     connect(&timer_to_go, &QTimer::timeout, this, &Model::checkPossition);
-    timer.start(1000);
-    timer_to_go.start(100);
 }
 
 void Model::sendTimer()
@@ -23,16 +21,18 @@ void Model::sendTimer()
                               VehicleNumber.value(local_UUID),
                               VehicleFormation.value(local_UUID),
                               VehicleAngle.value(local_UUID),
-                              VehicleFlightMode.value(local_UUID));
+                              VehicleFlightMode.value(local_UUID),
+                              VehicleTimeStamp.value(local_UUID));
 }
 
-void Model::TimeStampCheck()
+void Model::vehicleLocalTimeStamp()
 {
-    foreach (unsigned long key, VehicleTimeStamp.keys())
+    foreach (unsigned long key, VehicleLocalTimeStamp.keys())
     {
-        QDateTime value=VehicleTimeStamp.value(key);
+        QDateTime value = VehicleLocalTimeStamp.value(key);
         if (value.addSecs(5) < QDateTime::currentDateTime())
         {
+            VehicleLocalTimeStamp.remove(key);
             VehicleTimeStamp.remove(key);
             VehicleGPAlt.remove(key);
             VehicleGPLat.remove(key);
@@ -62,7 +62,16 @@ void Model::setLocalVehiclePositionInfo(const unsigned long &UUID,
     VehicleGPLon.insert(UUID,Lon);
     VehicleGPAlt.insert(UUID,Alt);
     VehicleGPAMSL.insert(UUID,AMSL);
-    //qDebug() << "Локальное значение";
+}
+
+void Model::setLocalUUID(const unsigned long &UUID)
+{
+    local_UUID = UUID;
+    VehicleLocalFlag.insert(UUID,1);
+    VehicleNumber.insert(UUID,1);
+    VehicleTimeStamp.insert(UUID,QDateTime::currentDateTime());
+    timer.start(1000);
+    timer_to_go.start(100);
 }
 
 void Model::setLocalVehicleGPSInfo(const unsigned long &UUID,
@@ -82,9 +91,7 @@ void Model::setLocalVehicleAngle(const unsigned long &UUID,
                                  const float &angle_yaw)
 {
     VehicleAngle.insert(UUID,angle_yaw);
-    local_UUID = UUID;
-    VehicleLocalFlag.insert(UUID,1);
-    VehicleTimeStamp.insert(UUID,QDateTime::currentDateTime());
+    VehicleLocalTimeStamp.insert(UUID,QDateTime::currentDateTime());
 }
 
 void Model::setLocalVehicleFlightMode(const unsigned long &UUID,
@@ -105,7 +112,8 @@ void Model::setRemoteVehicleInfo(const unsigned long &UUID,
                                  const int &Number,
                                  const int &Formation,
                                  const float &angle_yaw,
-                                 const int &flightMode)
+                                 const int &flightMode,
+                                 const QDateTime &TimeStamp)
 {
     if (local_UUID != UUID)
     {
@@ -126,12 +134,46 @@ void Model::setRemoteVehicleInfo(const unsigned long &UUID,
         VehicleFormation.insert(UUID,Formation);
         VehicleAngle.insert(UUID,angle_yaw);
         VehicleFlightMode.insert(UUID,flightMode);
-        VehicleTimeStamp.insert(UUID,QDateTime::currentDateTime());
+        VehicleLocalTimeStamp.insert(UUID,QDateTime::currentDateTime());
+        VehicleTimeStamp.insert(UUID,TimeStamp);
     }
 }
 
 void Model::checkPossition()
 {
+    foreach (unsigned long key, VehicleNumber.keys())
+    {
+        if (VehicleNumber.value(key) == (VehicleNumber.value(local_UUID) - 1))
+        {
+            if (VehicleTimeStamp.value(key) > VehicleTimeStamp.value(local_UUID))
+            {
+                VehicleNumber.insert(local_UUID,VehicleNumber.value(local_UUID) - 1);
+                qDebug() << "Найдено понижающее несоответсвие" << VehicleNumber.value(local_UUID) - 1; // убрать после отладки
+            }
+        }
+        if (VehicleNumber.value(key) == (VehicleNumber.value(local_UUID) + 1))
+        {
+            if (VehicleTimeStamp.value(key) < VehicleTimeStamp.value(local_UUID))
+            {
+                VehicleNumber.insert(local_UUID,VehicleNumber.value(local_UUID) + 1);
+                qDebug() << "Найдено повышающее несоответсвие" << VehicleNumber.value(local_UUID) + 1; // убрать после отладки
+            }
+        }
+        if (VehicleNumber.value(key) == (VehicleNumber.value(local_UUID)) && key != local_UUID)
+        {
+            if (VehicleTimeStamp.value(key) > VehicleTimeStamp.value(local_UUID))
+            {
+                VehicleNumber.insert(local_UUID,VehicleNumber.value(local_UUID) - 1);
+                qDebug() << "Найдена ХЕРНЯ" << VehicleNumber.value(local_UUID) - 1; // убрать после отладки
+            }
+            else
+            {
+                VehicleNumber.insert(local_UUID,VehicleNumber.value(local_UUID) + 1);
+                qDebug() << "Найдена ХЕРНЯ" << VehicleNumber.value(local_UUID) + 1; // убрать после отладки
+            }
+        }
+    }
+
     if (local_UUID == lider_UUID && VehicleNumber.value(local_UUID) != 1)
     {
         VehicleNumber.insert(local_UUID,1);
@@ -175,8 +217,8 @@ void Model::checkPossition()
         {
             if (VehicleAngle.value(lider_UUID ) + 225 > 360)
             {
-                double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - 3.93;   //225 degrees
-                //double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - 2.36;     //135 degrees
+                double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - 3.93;     //225 degrees
+                //double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - 2.36;   //135 degrees
                 double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * 10);  //x
                 double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);  //y
                 float targetAMSL = VehicleGPAMSL.value(lider_UUID);                             //z
@@ -184,8 +226,8 @@ void Model::checkPossition()
                 emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
                 return;
             }
-            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 3.93;              //225 degrees
-            //double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 2.36;                //135 degrees
+            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 3.93;                //225 degrees
+            //double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 2.36;              //135 degrees
             double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * 10);      //x
             double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);      //y
             float targetAMSL = VehicleGPAMSL.value(lider_UUID);                                 //zs
@@ -196,8 +238,8 @@ void Model::checkPossition()
 
         if (-180 < VehicleAngle.value(lider_UUID) && VehicleAngle.value(lider_UUID) < 0)
         {
-            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 3.93;              //225 degrees
-            //double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 2.36;                //135 degrees
+            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 3.93;                //225 degrees
+            //double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 2.36;              //135 degrees
             double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * 10);      //x
             double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);      //y
             float targetAMSL = VehicleGPAMSL.value(lider_UUID);                                 //z

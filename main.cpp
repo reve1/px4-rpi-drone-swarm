@@ -24,7 +24,6 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-
     Model *md = new Model;
     UdpServer *server = new UdpServer;
     UdpClient *client = new UdpClient;
@@ -35,6 +34,8 @@ int main(int argc, char *argv[])
     Vehicle *vh = new Vehicle;
     vh->moveToThread(VhThred);
     VhThred->start();
+    QObject::connect(vh, SIGNAL(LocalUUID(unsigned long)),
+                     md, SLOT(setLocalUUID(unsigned long)));
     QObject::connect(vh, SIGNAL(LocalVehiclePositionInfo(unsigned long,double,double,float,float)),
                      md, SLOT(setLocalVehiclePositionInfo(unsigned long,double,double,float,float)));
     QObject::connect(vh, SIGNAL(LocalVehicleGPSInfo(unsigned long,int,int)),
@@ -45,11 +46,11 @@ int main(int argc, char *argv[])
                      md, SLOT (setLocalVehicleAngle(unsigned long,float)));
     QObject::connect(vh, SIGNAL(LocalVehicleFlightMode(unsigned long,int)),
                      md, SLOT (setLocalVehicleFlightMode(unsigned long,int)));
-    QObject::connect(md, SIGNAL(sendLocalVehicleInfo(unsigned long, double, double,float,float,int,int,float,int,int,int,float,int)),
-                     client, SLOT(sendLocalVehicleInfo(unsigned long,double,double,float,float,int,int,float,int,int,int,float,int)));
+    QObject::connect(md, SIGNAL(sendLocalVehicleInfo(unsigned long, double, double,float,float,int,int,float,int,int,int,float,int,QDateTime)),
+                     client, SLOT(sendLocalVehicleInfo(unsigned long,double,double,float,float,int,int,float,int,int,int,float,int,QDateTime)));
     //QObject::connect(vh, SIGNAL(LocalVehicleInfo(unsigned long,double,double,float,float,int,int)), client, SLOT(sendLocalVehicleInfo(unsigned long,double,double,float,float,int,int)));
-    QObject::connect(server, SIGNAL(ReceivedRemoteVehicleInfo(unsigned long,double,double,float,float,int,int,float,int,int,int,float,int)),
-                     md, SLOT(setRemoteVehicleInfo(unsigned long,double,double,float,float,int,int,float,int,int,int,float,int)));
+    QObject::connect(server, SIGNAL(ReceivedRemoteVehicleInfo(unsigned long,double,double,float,float,int,int,float,int,int,int,float,int,QDateTime)),
+                     md, SLOT(setRemoteVehicleInfo(unsigned long,double,double,float,float,int,int,float,int,int,int,float,int,QDateTime)));
     QObject::connect(md, SIGNAL(goToPosition(double,double,float,float)),
                      vh, SLOT(fly(double,double,float,float)),Qt::DirectConnection);
     QObject::connect(md, SIGNAL(Takeoff()),
