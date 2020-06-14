@@ -13,8 +13,8 @@ void Vehicle::Run()
     connection_result = dc.add_udp_connection( "localhost", 14540); // MAV_1
     //connection_result = dc.add_udp_connection( "localhost", 14541); // MAV_2
     //connection_result = dc.add_udp_connection( "localhost", 14542); // MAV_3
-    //connection_result = dc.add_udp_connection( "localhost", 14542); // MAV_4
-    //connection_result = dc.add_udp_connection( "localhost", 14542); // MAV_5
+    //connection_result = dc.add_udp_connection( "localhost", 14543); // MAV_4
+    //connection_result = dc.add_udp_connection( "localhost", 14544); // MAV_5
 
     //connection_result = dc.add_serial_connection("/dev/ttyS0", 57600);
     //connection_result = dc.add_serial_connection("/dev/ttyUSB0", 57600);
