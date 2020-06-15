@@ -141,6 +141,7 @@ void Model::setRemoteVehicleInfo(const unsigned long &UUID,
 
 void Model::checkPossition()
 {
+    /*
     foreach (unsigned long key, VehicleNumber.keys())
     {
         if (VehicleNumber.value(key) == (VehicleNumber.value(local_UUID) - 1))
@@ -173,7 +174,7 @@ void Model::checkPossition()
             }
         }
     }
-
+*/
     if (local_UUID == lider_UUID && VehicleNumber.value(local_UUID) != 1)
     {
         VehicleNumber.insert(local_UUID,1);
@@ -215,6 +216,8 @@ void Model::checkPossition()
 
         double yaw_rad = (VehicleNumber.value(local_UUID)%2==0) ? 3.93 : 2.36;
         int position = VehicleNumber.value(local_UUID)/2;
+        yaw_rad = 2.36;
+        position = 3 / 2;
 
         qDebug() << yaw_rad;
         qDebug() << position;
