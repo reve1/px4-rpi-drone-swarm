@@ -1,4 +1,5 @@
 #include "udpclient.h"
+#include <sstream>
 
 UdpClient::UdpClient(QObject *parent): QObject(parent)
 {
@@ -20,9 +21,18 @@ void UdpClient::sendLocalVehicleInfo(const unsigned long &UUID,
                                      const int &flightMode,
                                      const QDateTime &VehicleTimeStamp)
 {
+    //std::stringstream ss;
+    //ss << Lat;
+    //const char* str = ss.str().c_str();
+    //QByteArray data = QByteArray::fromRawData(
+    //            reinterpret_cast<const char*>(str),
+    //            15);
+
+    //qDebug() << data;
+
     QByteArray datagram = QString::number(UUID).toUtf8() + "/"
-            + QByteArray::number(Lat) + "/"
-            + QByteArray::number(Lon) + "/"
+            + QByteArray::number(Lat,'g',17) + "/"
+            + QByteArray::number(Lon,'g',17) + "/"
             + QByteArray::number(Alt) + "/"
             + QByteArray::number(AMSL) + "/"
             + QByteArray::number(GPS_num) + "/"

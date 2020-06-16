@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <QTimer>
 #include <QtMath>
+#include <mavsdk/geometry.h>
 
 class Model : public QObject
 {
