@@ -2,11 +2,9 @@
 
 Model::Model()
 {
-    connect(&timer, &QTimer::timeout, this, &Model::TimeStampCheck);
+    connect(&timer, &QTimer::timeout, this, &Model::vehicleLocalTimeStamp);
     connect(&timer_to_go, &QTimer::timeout, this, &Model::sendTimer);
     connect(&timer_to_go, &QTimer::timeout, this, &Model::checkPossition);
-    timer.start(1000);
-    timer_to_go.start(100);
 }
 
 void Model::sendTimer()
@@ -23,16 +21,18 @@ void Model::sendTimer()
                               VehicleNumber.value(local_UUID),
                               VehicleFormation.value(local_UUID),
                               VehicleAngle.value(local_UUID),
-                              VehicleFlightMode.value(local_UUID));
+                              VehicleFlightMode.value(local_UUID),
+                              VehicleTimeStamp.value(local_UUID));
 }
 
-void Model::TimeStampCheck()
+void Model::vehicleLocalTimeStamp()
 {
-    foreach (unsigned long key, VehicleTimeStamp.keys())
+    foreach (unsigned long key, VehicleLocalTimeStamp.keys())
     {
-        QDateTime value=VehicleTimeStamp.value(key);
+        QDateTime value = VehicleLocalTimeStamp.value(key);
         if (value.addSecs(5) < QDateTime::currentDateTime())
         {
+            VehicleLocalTimeStamp.remove(key);
             VehicleTimeStamp.remove(key);
             VehicleGPAlt.remove(key);
             VehicleGPLat.remove(key);
@@ -43,11 +43,14 @@ void Model::TimeStampCheck()
             VehicleBattery.remove(key);
             VehicleLocalFlag.remove(key);
             VehicleLiderFlag.remove(key);
+            (VehicleNumber.value(key) == VehicleNumber.value(local_UUID) - 1)
+                    ? VehicleNumber.insert(local_UUID,VehicleNumber.value(key))
+                    : nullptr;
             VehicleNumber.remove(key);
             VehicleFormation.remove(key);
             VehicleAngle.remove(key);
             VehicleFlightMode.remove(key);
-            qDebug() << "Кеш очищен, удалены устаревшие значение UUID = " << key ;
+            qDebug() << "Кеш очищен, удалены устаревшие значение UUID = " << key;
         }
     }
 }
@@ -62,7 +65,16 @@ void Model::setLocalVehiclePositionInfo(const unsigned long &UUID,
     VehicleGPLon.insert(UUID,Lon);
     VehicleGPAlt.insert(UUID,Alt);
     VehicleGPAMSL.insert(UUID,AMSL);
-    //qDebug() << "Локальное значение";
+}
+
+void Model::setLocalUUID(const unsigned long &UUID)
+{
+    local_UUID = UUID;
+    VehicleLocalFlag.insert(UUID,1);
+    VehicleNumber.insert(UUID,1);
+    VehicleTimeStamp.insert(UUID,QDateTime::currentDateTime());
+    timer.start(1000);
+    timer_to_go.start(100);
 }
 
 void Model::setLocalVehicleGPSInfo(const unsigned long &UUID,
@@ -82,9 +94,7 @@ void Model::setLocalVehicleAngle(const unsigned long &UUID,
                                  const float &angle_yaw)
 {
     VehicleAngle.insert(UUID,angle_yaw);
-    local_UUID = UUID;
-    VehicleLocalFlag.insert(UUID,1);
-    VehicleTimeStamp.insert(UUID,QDateTime::currentDateTime());
+    VehicleLocalTimeStamp.insert(UUID,QDateTime::currentDateTime());
 }
 
 void Model::setLocalVehicleFlightMode(const unsigned long &UUID,
@@ -105,7 +115,8 @@ void Model::setRemoteVehicleInfo(const unsigned long &UUID,
                                  const int &Number,
                                  const int &Formation,
                                  const float &angle_yaw,
-                                 const int &flightMode)
+                                 const int &flightMode,
+                                 const QDateTime &TimeStamp)
 {
     if (local_UUID != UUID)
     {
@@ -126,12 +137,42 @@ void Model::setRemoteVehicleInfo(const unsigned long &UUID,
         VehicleFormation.insert(UUID,Formation);
         VehicleAngle.insert(UUID,angle_yaw);
         VehicleFlightMode.insert(UUID,flightMode);
-        VehicleTimeStamp.insert(UUID,QDateTime::currentDateTime());
+        VehicleLocalTimeStamp.insert(UUID,QDateTime::currentDateTime());
+        VehicleTimeStamp.insert(UUID,TimeStamp);
     }
 }
 
 void Model::checkPossition()
 {
+    foreach (unsigned long key, VehicleNumber.keys())
+    {
+        if (VehicleNumber.value(key) == (VehicleNumber.value(local_UUID) - 1))
+        {
+            if (VehicleTimeStamp.value(key) > VehicleTimeStamp.value(local_UUID))
+            {
+                VehicleNumber.insert(local_UUID,VehicleNumber.value(local_UUID) - 1);
+            }
+        }
+        if (VehicleNumber.value(key) == (VehicleNumber.value(local_UUID) + 1))
+        {
+            if (VehicleTimeStamp.value(key) < VehicleTimeStamp.value(local_UUID))
+            {
+                VehicleNumber.insert(local_UUID,VehicleNumber.value(local_UUID) + 1);
+            }
+        }
+        if (VehicleNumber.value(key) == (VehicleNumber.value(local_UUID)) && key != local_UUID)
+        {
+            if (VehicleTimeStamp.value(key) > VehicleTimeStamp.value(local_UUID))
+            {
+                VehicleNumber.insert(local_UUID,VehicleNumber.value(local_UUID) - 1);
+            }
+            else
+            {
+                VehicleNumber.insert(local_UUID,VehicleNumber.value(local_UUID) + 1);
+            }
+        }
+    }
+
     if (local_UUID == lider_UUID && VehicleNumber.value(local_UUID) != 1)
     {
         VehicleNumber.insert(local_UUID,1);
@@ -171,39 +212,98 @@ void Model::checkPossition()
             }
         }
 
+        double yaw_rad = (VehicleNumber.value(local_UUID) % 2 == 0) ? 3.93 : 2.36;
+        int position = VehicleNumber.value(local_UUID) / 2;
+
+        //qDebug() << yaw_rad;
+        //qDebug() << position;
+
+        using GlobalCoordinate = mavsdk::geometry::CoordinateTransformation::GlobalCoordinate;
+        //using LocalCoordinate = mavsdk::geometry::CoordinateTransformation::LocalCoordinate;
+
+        mavsdk::geometry::CoordinateTransformation ct(GlobalCoordinate{VehicleGPLat.value(lider_UUID),VehicleGPLon.value(lider_UUID)});
+        //LocalCoordinate local_pos = ct.local_from_global(GlobalCoordinate{VehicleGPLat.value(lider_UUID),VehicleGPLon.value(lider_UUID)});
+        //GlobalCoordinate global_pos = ct.global_from_local({-5,-5});
+        //emit goToPosition (global_pos.latitude_deg,global_pos.longitude_deg,VehicleGPAMSL.value(lider_UUID),VehicleAngle.value(lider_UUID));
+
         if (180 > VehicleAngle.value(lider_UUID) && VehicleAngle.value(lider_UUID) >= 0)
         {
             if (VehicleAngle.value(lider_UUID ) + 225 > 360)
             {
-                double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - 3.93;   //225 degrees
-                //double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - 2.36;     //135 degrees
-                double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * 10);  //x
-                double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);  //y
-                float targetAMSL = VehicleGPAMSL.value(lider_UUID);                             //z
-                float targetYaw = VehicleAngle.value(lider_UUID);                               //yaw
+                double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - yaw_rad;              //225 degrees
+                //double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - 2.36;               //135 degrees
+                //double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * position * 10);   //x
+                GlobalCoordinate global_pos = ct.global_from_local({qCos(x)*5,qSin(x)*5});
+                double targetLat = global_pos.latitude_deg;
+                //double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * position * 10);   //y
+                double targetLon = global_pos.longitude_deg;
+                float targetAMSL = VehicleGPAMSL.value(lider_UUID);                                         //z
+                float targetYaw = VehicleAngle.value(lider_UUID);                                           //yaw
                 emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
                 return;
             }
-            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 3.93;              //225 degrees
-            //double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 2.36;                //135 degrees
-            double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * 10);      //x
-            double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);      //y
-            float targetAMSL = VehicleGPAMSL.value(lider_UUID);                                 //zs
-            float targetYaw = VehicleAngle.value(lider_UUID);                                   //yaw
+            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + yaw_rad;                         //225 degrees
+            //double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 2.36;                          //135 degrees
+            //double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * position * 10);       //x
+            GlobalCoordinate global_pos = ct.global_from_local({qCos(x)*5,qSin(x)*5});
+            double targetLat = global_pos.latitude_deg;
+            //double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * position * 10);       //y
+            double targetLon = global_pos.longitude_deg;
+            float targetAMSL = VehicleGPAMSL.value(lider_UUID);                                             //zs
+            float targetYaw = VehicleAngle.value(lider_UUID);                                               //yaw
             emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
             return;
-        };
+        }
 
         if (-180 < VehicleAngle.value(lider_UUID) && VehicleAngle.value(lider_UUID) < 0)
         {
-            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 3.93;              //225 degrees
-            //double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 2.36;                //135 degrees
-            double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * 10);      //x
-            double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * 10);      //y
-            float targetAMSL = VehicleGPAMSL.value(lider_UUID);                                 //z
-            float targetYaw = VehicleAngle.value(lider_UUID);                                   //yaw
+            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + yaw_rad;                         //225 degrees
+            //double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 2.36;                          //135 degrees
+            //double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * position * 10);       //x
+            GlobalCoordinate global_pos = ct.global_from_local({qCos(x)*5,qSin(x)*5});
+            double targetLat = global_pos.latitude_deg;
+            //double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * position * 10);       //y
+            double targetLon = global_pos.longitude_deg;
+            float targetAMSL = VehicleGPAMSL.value(lider_UUID);                                             //z
+            float targetYaw = VehicleAngle.value(lider_UUID);                                               //yaw
             emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
             return;
-        };
+        }
+        /*
+        if (180 > VehicleAngle.value(lider_UUID) && VehicleAngle.value(lider_UUID) >= 0)
+        {
+            if (VehicleAngle.value(lider_UUID ) + 225 > 360)
+            {
+                double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - yaw_rad;              //225 degrees
+                //double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - 2.36;               //135 degrees
+                double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * position * 10);   //x
+                double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * position * 10);   //y
+                float targetAMSL = VehicleGPAMSL.value(lider_UUID);                                         //z
+                float targetYaw = VehicleAngle.value(lider_UUID);                                           //yaw
+                emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
+                return;
+            }
+            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + yaw_rad;                         //225 degrees
+            //double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 2.36;                          //135 degrees
+            double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * position * 10);       //x
+            double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * position * 10);       //y
+            float targetAMSL = VehicleGPAMSL.value(lider_UUID);                                             //zs
+            float targetYaw = VehicleAngle.value(lider_UUID);                                               //yaw
+            emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
+            return;
+        }
+
+        if (-180 < VehicleAngle.value(lider_UUID) && VehicleAngle.value(lider_UUID) < 0)
+        {
+            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + yaw_rad;                         //225 degrees
+            //double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 2.36;                          //135 degrees
+            double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * position * 10);       //x
+            double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * position * 10);       //y
+            float targetAMSL = VehicleGPAMSL.value(lider_UUID);                                             //z
+            float targetYaw = VehicleAngle.value(lider_UUID);                                               //yaw
+            emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
+            return;
+        }
+*/
     }
 }

@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <QTimer>
 #include <QtMath>
+#include <mavsdk/geometry.h>
 
 class Model : public QObject
 {
@@ -28,6 +29,7 @@ public:
     QMap <unsigned long,int> VehicleFormation;
     QMap <unsigned long,int> VehicleFlightMode;
     QMap <unsigned long,QDateTime> VehicleTimeStamp;
+    QMap <unsigned long,QDateTime> VehicleLocalTimeStamp;
 
     int UUID;
     double GlobalPositionLat;
@@ -55,13 +57,15 @@ public:
 
 signals:
     void newCoordSet(double, double);
-    void sendLocalVehicleInfo(unsigned long, double, double,float,float,int,int,float,int,int,int,float,int);
+    void sendLocalVehicleInfo(unsigned long, double, double,float,float,int,int,float,int,int,int,float,int,QDateTime);
     void goToPosition(double,double,float,float);
     void Takeoff();
     void ReturnToLaunch();
     void Land();
 
 public slots:
+    void setLocalUUID(const unsigned long &UUID);
+
     void setLocalVehiclePositionInfo(const unsigned long &UUID,
                                      const double &Lat,
                                      const double &Lon,
@@ -77,6 +81,7 @@ public slots:
 
     void setLocalVehicleAngle(const unsigned long &UUID,
                               const float &angle_yaw);
+
     void setLocalVehicleFlightMode(const unsigned long &UUID,
                                    const int &flightMode);
 
@@ -92,11 +97,12 @@ public slots:
                               const int &Number,
                               const int &Formation,
                               const float &angle_yaw,
-                              const int &flightMode);
+                              const int &flightMode,
+                              const QDateTime &VehicleTimeStamp);
 
 private slots:
     void sendTimer();
-    void TimeStampCheck();
+    void vehicleLocalTimeStamp();
     void checkPossition();
     //double CONTROLLERgetGlobalPositionLat () {return cm->GlobalPositionLat;}
     //void CONTROLLERsetGlobalPositionLat (double GlobalPositionLat_SET) {cm->GlobalPositionLat = GlobalPositionLat_SET; }

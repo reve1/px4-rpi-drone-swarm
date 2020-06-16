@@ -10,8 +10,8 @@ void Vehicle::Run()
 {
     bool discovered_system = false;
 
-    connection_result = dc.add_udp_connection( "localhost", 14540); // MAV_1
-    //connection_result = dc.add_udp_connection( "localhost", 14541); // MAV_2
+    //connection_result = dc.add_udp_connection( "localhost", 14540); // MAV_1
+    connection_result = dc.add_udp_connection( "localhost", 14541); // MAV_2
     //connection_result = dc.add_udp_connection( "localhost", 14542); // MAV_3
     //connection_result = dc.add_udp_connection( "localhost", 14543); // MAV_4
     //connection_result = dc.add_udp_connection( "localhost", 14544); // MAV_5
@@ -43,9 +43,30 @@ void Vehicle::Run()
 
     setArm();
     setTakeOff();
+
+    //mavsdk::geometry::CoordinateTransformation ct(GlobalCoordinate{telemetry->ground_truth().latitude_deg, telemetry->ground_truth().longitude_deg});
+
+
+    //GlobalCoordinate global_pos = {telemetry->position().latitude_deg,telemetry->position().longitude_deg};
+    //const auto pos_north = ct.local_from_global(global_pos);
+
+    //qDebug() << local_pos.east_m;
+    //qDebug() << local_pos.north_m;
+
+    //qDebug() << global_pos.latitude_deg;
+    //qDebug() << global_pos.longitude_deg;
+
+    //qDebug() << pos_north.east_m << pos_north.north_m;
+
+    //telemetry->ground_truth().latitude_deg;
+    //telemetry->ground_truth().longitude_deg;
+
+
+
     //fly(44.076928,43.0879335,540,0);
     getTelemetry(telemetry);
     sleep_for(seconds(12000));
+
 
     //getTelemetry(telemetry);
     //double targetLat = 44.0769288 + 00.0000125 * 2; //x
@@ -72,6 +93,7 @@ void Vehicle::setTelemetryRate(std::shared_ptr<mavsdk::Telemetry> telemetry)
         FileWrite::WriteFromClass(5, data.simplified());
         sleep_for(seconds(1));
     }
+    emit LocalUUID(system.get_uuid());
     qDebug() << "Отправлен сигнал установки телеметрии";
     data = "Отправлен сигнал установки телеметрии";
     FileWrite::WriteFromClass(5, data.simplified());
@@ -152,7 +174,7 @@ void Vehicle::setGoToLocation(std::shared_ptr<mavsdk::Action> action)
 }
 
 void Vehicle::getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry)
-{
+{        
     telemetry->subscribe_position([this](mavsdk::Telemetry::Position position)
     {
         unsigned long UUID = system.get_uuid();
@@ -164,10 +186,10 @@ void Vehicle::getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry)
         //qDebug() << "Высота: " << ALT << " m";
         //data = "Высота: " + QString::number(ALT) + " m";
         //FileWrite::WriteFromClass(5, data.simplified());
-        //qDebug() <<"Широта: " << LAT;
+        //qDebug() << "Широта: " << LAT;
+        //qDebug() << "Широта: " << position.latitude_deg;
         //data = "Широта: " + QString::number(LAT);
         //FileWrite::WriteFromClass(5, data.simplified());
-        //qDebug() <<"Долгота: " << LON;
         //data = "Долгота: " + QString::number(LON);
         //FileWrite::WriteFromClass(5, data.simplified());
         //qDebug() <<"Высота AMSL: " << AMSL << " m";
@@ -282,8 +304,8 @@ void Vehicle::fly(const double &LAT, const double &LON, const float &AMSL, const
 
     /*
     mavsdk::geometry::CoordinateTransformation::GlobalCoordinate GlobalCoord;
-    GlobalCoord.latitude_deg=44.0768;
-    GlobalCoord.longitude_deg= 43.0877;
+    GlobalCoord.latitude_deg = 44.0768;
+    GlobalCoord.longitude_deg = 43.0877;
     mavsdk::geometry::CoordinateTransformation::LocalCoordinate LocalCoord;
     mavsdk::geometry::CoordinateTransformation *myobj = new mavsdk::geometry::CoordinateTransformation(GlobalCoord);
     mavsdk::geometry::CoordinateTransformation::GlobalCoordinate GlobalCoord_;
@@ -298,6 +320,6 @@ void Vehicle::fly(const double &LAT, const double &LON, const float &AMSL, const
     //mavsdk::geometry::CoordinateTransformation ct(GlobalCoordinate{ground_truth_latitude_deg,ground_truth_longitude_deg});
     //LocalCoordinate local_pos = ct.local_from_global(GlobalCoordinate{LAT, LON});
     //GlobalCoordinate global_pos = ct.global_from_local(LocalCoordinate{local_pos.east_m - 10, local_pos.north_m - 10});
-    */
+*/
 }
 

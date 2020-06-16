@@ -9,7 +9,6 @@
 #include <mavsdk/include/mavsdk/plugins/action/action.h>
 #include <mavsdk/include/mavsdk/plugins/telemetry/telemetry.h>
 #include <mavsdk/include/mavsdk/plugins/follow_me/follow_me.h>
-#include <mavsdk/geometry.h>
 #include <streams/filewrite.h>
 #include <model/model.h>
 #include <iostream>
@@ -24,6 +23,7 @@ class Vehicle : public QObject
 public:
     Vehicle();
 signals:
+    void LocalUUID(unsigned long);
     void LocalVehiclePositionInfo(unsigned long,double,double,float,float);
     void LocalVehicleGPSInfo(unsigned long,int,int);
     void LocalVehicleBatteryInfo(unsigned long,float);

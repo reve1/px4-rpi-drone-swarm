@@ -27,7 +27,8 @@ private slots:
                               const int &Number,
                               const int &Formation,
                               const float &angle_yaw,
-                              const int &flightMode);
+                              const int &flightMode,
+                              const QDateTime &VehicleTimeStamp);
 
 private:
     QUdpSocket *udpSocket = nullptr;

@@ -1,4 +1,5 @@
 #include "udpclient.h"
+#include <sstream>
 
 UdpClient::UdpClient(QObject *parent): QObject(parent)
 {
@@ -17,12 +18,21 @@ void UdpClient::sendLocalVehicleInfo(const unsigned long &UUID,
                                      const int &Number,
                                      const int &Formation,
                                      const float &angle_yaw,
-                                     const int &flightMode)
+                                     const int &flightMode,
+                                     const QDateTime &VehicleTimeStamp)
 {
-    QString x = QString::number(UUID);
-    QByteArray datagram = x.toUtf8() + "/"
-            + QByteArray::number(Lat) + "/"
-            + QByteArray::number(Lon) + "/"
+    //std::stringstream ss;
+    //ss << Lat;
+    //const char* str = ss.str().c_str();
+    //QByteArray data = QByteArray::fromRawData(
+    //            reinterpret_cast<const char*>(str),
+    //            15);
+
+    //qDebug() << data;
+
+    QByteArray datagram = QString::number(UUID).toUtf8() + "/"
+            + QByteArray::number(Lat,'g',17) + "/"
+            + QByteArray::number(Lon,'g',17) + "/"
             + QByteArray::number(Alt) + "/"
             + QByteArray::number(AMSL) + "/"
             + QByteArray::number(GPS_num) + "/"
@@ -32,7 +42,8 @@ void UdpClient::sendLocalVehicleInfo(const unsigned long &UUID,
             + QByteArray::number(Number) + "/"
             + QByteArray::number(Formation) + "/"
             + QByteArray::number(angle_yaw) + "/"
-            + QByteArray::number(flightMode) + "/";
+            + QByteArray::number(flightMode) + "/"
+            + VehicleTimeStamp.toString().toUtf8() + "/";
     udpSocket->writeDatagram(datagram, QHostAddress::Broadcast, 6666);
     //qDebug() << "Отправлена датаграмма: " << datagram;
 }
