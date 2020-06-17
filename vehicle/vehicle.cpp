@@ -19,7 +19,7 @@ void Vehicle::Run()
     //connection_result = dc.add_serial_connection("/dev/ttyUSB0", 57600);
 
     if (connection_result != mavsdk::ConnectionResult::Success) {
-        //qDebug() << "Результат подключения: " << connection_result;
+        qDebug() << "Успешное подключение: ";
         //return 1;
     }
 
@@ -60,7 +60,7 @@ void Vehicle::setTelemetryRate(std::shared_ptr<mavsdk::Telemetry> telemetry)
         sleep_for(seconds(1));
     }
     emit LocalUUID(system.get_uuid());
-    qDebug() << "Отправлен сигнал установки телеметрии";
+    //qDebug() << "Отправлен сигнал установки телеметрии";
     data = "Отправлен сигнал установки телеметрии";
     FileWrite::WriteFromClass(5, data.simplified());
 }
@@ -70,12 +70,12 @@ void Vehicle::setReturnToLaunch()
     auto action = std::make_shared<mavsdk::Action>(system);
     mavsdk::Action::Result arm = action->return_to_launch();
     if (arm != mavsdk::Action::Result::Success) {
-        qDebug() << "Ошибка возврата";
+        //qDebug() << "Ошибка возврата";
         data = "Ошибка возврата";
         FileWrite::WriteFromClass(5, data.simplified());
         return;
     }
-    qDebug() << "Отправлен сигнал возврата";
+    //qDebug() << "Отправлен сигнал возврата";
     data = "Отправлен сигнал возврата";
     FileWrite::WriteFromClass(5, data.simplified());
 }
@@ -85,12 +85,12 @@ void Vehicle::setArm()
     auto action = std::make_shared<mavsdk::Action>(system);
     mavsdk::Action::Result arm = action->arm();
     if (arm != mavsdk::Action::Result::Success) {
-        qDebug() << "Ошибка арминга";
+        //qDebug() << "Ошибка арминга";
         data = "Ошибка арминга";
         FileWrite::WriteFromClass(5, data.simplified());
         return;
     }
-    qDebug() << "Отправлен сигнал арминга";
+    //qDebug() << "Отправлен сигнал арминга";
     data = "Отправлен сигнал арминга";
     FileWrite::WriteFromClass(5, data.simplified());
 }
@@ -100,12 +100,12 @@ void Vehicle::setTakeOff()
     auto action = std::make_shared<mavsdk::Action>(system);
     mavsdk::Action::Result takeoff = action->takeoff();
     if (takeoff != mavsdk::Action::Result::Success) {
-        qDebug() << "Ошибка взлета";
+        //qDebug() << "Ошибка взлета";
         data = "Ошибка взлета";
         FileWrite::WriteFromClass(5, data.simplified());
         return;
     }
-    qDebug() << "Отправлен сигнал взлета";
+    //qDebug() << "Отправлен сигнал взлета";
     data = "Отправлен сигнал взлета";
     FileWrite::WriteFromClass(5, data.simplified());
     sleep_for(seconds(20));
@@ -116,12 +116,12 @@ void Vehicle::setLand()
     auto action = std::make_shared<mavsdk::Action>(system);
     mavsdk::Action::Result land = action->land();
     if (land != mavsdk::Action::Result::Success) {
-        qDebug() << "Ошибка посадки";
+        //qDebug() << "Ошибка посадки";
         data = "Ошибка посадки";
         FileWrite::WriteFromClass(5, data.simplified());
         return;
     }
-    qDebug() << "Отправлен сигнал посадки";
+    //qDebug() << "Отправлен сигнал посадки";
     data = "Отправлен сигнал посадки";
     FileWrite::WriteFromClass(5, data.simplified());
 }
@@ -130,11 +130,11 @@ void Vehicle::setGoToLocation(std::shared_ptr<mavsdk::Action> action)
 {
     mavsdk::Action::Result goto_location_result = action->goto_location(44.0769288,43.0879335,540,0);
     if (goto_location_result != mavsdk::Action::Result::Success){
-        qDebug() << "Ошибка движения БВС к заданной точке";
+        //qDebug() << "Ошибка движения БВС к заданной точке";
         data = "Ошибка движения БВС к заданной точке";
         FileWrite::WriteFromClass(5, data.simplified());
     }
-    qDebug() << "Отправлен сигнал движения БВС к заданной точке";
+    //qDebug() << "Отправлен сигнал движения БВС к заданной точке";
     data = "Отправлен сигнал движения БВС к заданной точке";
     FileWrite::WriteFromClass(5, data.simplified());
 }
@@ -148,20 +148,14 @@ void Vehicle::getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry)
         double LAT = position.latitude_deg;
         float ALT = position.relative_altitude_m;
         float AMSL = position.absolute_altitude_m;
-
-        //qDebug() << "Высота: " << ALT << " m";
         //data = "Высота: " + QString::number(ALT) + " m";
         //FileWrite::WriteFromClass(5, data.simplified());
-        //qDebug() << "Широта: " << LAT;
-        //qDebug() << "Широта: " << position.latitude_deg;
         //data = "Широта: " + QString::number(LAT);
         //FileWrite::WriteFromClass(5, data.simplified());
         //data = "Долгота: " + QString::number(LON);
         //FileWrite::WriteFromClass(5, data.simplified());
-        //qDebug() <<"Высота AMSL: " << AMSL << " m";
         //data = "Высота AMSL: " + QString::number(AMSL) + " m";
         //FileWrite::WriteFromClass(5, data.simplified());
-
         emit LocalVehiclePositionInfo(UUID,LAT,LON,ALT,AMSL);
     });
 
@@ -171,10 +165,9 @@ void Vehicle::getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry)
         int GPS_num = gpsinfo.num_satellites;
         int GPS_fix_type = 0;
         //qDebug() <<"Спутников GPS: " << GPS;
-        //data = &"Спутников GPS: " [GPS_num];
         //FileWrite::WriteFromClass(5, data.simplified());
-        //qDebug() <<"Статус GPS: " << GPS_fix_type;
         //data = &"Статус GPS: " [GPS_fix_type];
+        //FileWrite::WriteFromClass(5, data.simplified());
         emit LocalVehicleGPSInfo(UUID,GPS_num,GPS_fix_type);
     });
 
@@ -184,7 +177,6 @@ void Vehicle::getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry)
         float battery_remaining_percent = battery.remaining_percent;
         //data = "Оставшийся заряд батареи: " + QString::number(battery_remaining_percent);
         //FileWrite::WriteFromClass(5, data.simplified());
-        //qDebug() <<"Оставшийся заряд батареи: " << battery.remaining_percent;
         emit LocalVehicleBatteryInfo(UUID,battery_remaining_percent);
     });
 
@@ -194,7 +186,6 @@ void Vehicle::getTelemetry(std::shared_ptr<mavsdk::Telemetry> telemetry)
         float angle_yaw = euler_angle.yaw_deg;
         //data = "Угол отклонения: " + QString::number(angle_yaw);
         //FileWrite::WriteFromClass(5, data.simplified());
-        //qDebug() <<"Угол отклонения: " << angle_yaw;
         emit LocalVehicleAngle(UUID,angle_yaw);
     });
 
