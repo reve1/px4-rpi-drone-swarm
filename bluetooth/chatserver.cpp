@@ -121,7 +121,7 @@ void ChatServer::clientConnected()
 
     emit clientConnected(socket->peerName());
 
-    qDebug() << "Подключился клиент: " << socket->peerName() << " адресс: " << socket->peerAddress().toString();
+    qDebug() << "Подключился клиент: " << socket->peerName() << " адрес: " << socket->peerAddress().toString();
     data = "Подключился клиент " + socket->peerAddress().toString();
     FileWrite::WriteFromClass(1, data);
 }
@@ -135,7 +135,7 @@ void ChatServer::clientDisconnected()
     emit clientDisconnected(socket->peerName());
     clientSockets.removeOne(socket);
     socket->deleteLater();
-    qDebug() << "Отключился клиент: " << socket->peerName() << " адресс: " << socket->peerAddress().toString();
+    qDebug() << "Отключился клиент: " << socket->peerName() << " адрес: " << socket->peerAddress().toString();
     data = "Отключился клиент " + socket->peerAddress().toString();
     FileWrite::WriteFromClass(1, data);
 }

@@ -2,7 +2,6 @@
 
 Vehicle::Vehicle()
 {
-    //connect(this, &Vehicle::newCoordSet, this, &Vehicle::folowMeSetTarget);
 
 }
 
@@ -40,43 +39,10 @@ void Vehicle::Run()
 
     setTelemetryRate(telemetry);
     getTelemetry(telemetry);
-
     setArm();
     setTakeOff();
-
-    //mavsdk::geometry::CoordinateTransformation ct(GlobalCoordinate{telemetry->ground_truth().latitude_deg, telemetry->ground_truth().longitude_deg});
-
-
-    //GlobalCoordinate global_pos = {telemetry->position().latitude_deg,telemetry->position().longitude_deg};
-    //const auto pos_north = ct.local_from_global(global_pos);
-
-    //qDebug() << local_pos.east_m;
-    //qDebug() << local_pos.north_m;
-
-    //qDebug() << global_pos.latitude_deg;
-    //qDebug() << global_pos.longitude_deg;
-
-    //qDebug() << pos_north.east_m << pos_north.north_m;
-
-    //telemetry->ground_truth().latitude_deg;
-    //telemetry->ground_truth().longitude_deg;
-
-
-
-    //fly(44.076928,43.0879335,540,0);
     getTelemetry(telemetry);
     sleep_for(seconds(12000));
-
-
-    //getTelemetry(telemetry);
-    //double targetLat = 44.0769288 + 00.0000125 * 2; //x
-    //double targetLon = 43.0879335 + 00.0000010 * 2; //y
-    //setGoToLocation(action);
-    //getTelemetry(telemetry);
-    //setLand(action);
-    //sleep_for(seconds(2));
-    //getTelemetry(telemetry);
-    //action->return_to_launch();
 }
 
 void Vehicle::setTelemetryRate(std::shared_ptr<mavsdk::Telemetry> telemetry)
@@ -301,25 +267,5 @@ void Vehicle::fly(const double &LAT, const double &LON, const float &AMSL, const
 {
     auto action = std::make_shared<mavsdk::Action>(system);
     action->goto_location_async(LAT,LON,AMSL,angle_yaw,nullptr);
-
-    /*
-    mavsdk::geometry::CoordinateTransformation::GlobalCoordinate GlobalCoord;
-    GlobalCoord.latitude_deg = 44.0768;
-    GlobalCoord.longitude_deg = 43.0877;
-    mavsdk::geometry::CoordinateTransformation::LocalCoordinate LocalCoord;
-    mavsdk::geometry::CoordinateTransformation *myobj = new mavsdk::geometry::CoordinateTransformation(GlobalCoord);
-    mavsdk::geometry::CoordinateTransformation::GlobalCoordinate GlobalCoord_;
-    GlobalCoord_.latitude_deg=205;
-    GlobalCoord_.longitude_deg= 207;
-    LocalCoord = myobj->local_from_global(GlobalCoord_);
-    double a = LocalCoord.north_m;
-    qDebug () << LocalCoord.north_m;
-
-    //using GlobalCoordinate = mavsdk::geometry::CoordinateTransformation::GlobalCoordinate;
-    //using LocalCoordinate = mavsdk::geometry::CoordinateTransformation::LocalCoordinate;
-    //mavsdk::geometry::CoordinateTransformation ct(GlobalCoordinate{ground_truth_latitude_deg,ground_truth_longitude_deg});
-    //LocalCoordinate local_pos = ct.local_from_global(GlobalCoordinate{LAT, LON});
-    //GlobalCoordinate global_pos = ct.global_from_local(LocalCoordinate{local_pos.east_m - 10, local_pos.north_m - 10});
-*/
 }
 
