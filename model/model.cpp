@@ -144,6 +144,10 @@ void Model::setRemoteVehicleInfo(const unsigned long &UUID,
 
 void Model::checkPossition()
 {
+    (VehicleNumber.values().contains(VehicleNumber.value(local_UUID-1)) == false && VehicleNumber.value(local_UUID) != 1)
+            ? VehicleNumber.insert(local_UUID,VehicleNumber.value(local_UUID-1))
+            : NULL;
+
     foreach (unsigned long key, VehicleNumber.keys())
     {
         if (VehicleNumber.value(key) == (VehicleNumber.value(local_UUID) - 1))
@@ -171,6 +175,7 @@ void Model::checkPossition()
                 VehicleNumber.insert(local_UUID,VehicleNumber.value(local_UUID) + 1);
             }
         }
+
     }
 
     if (local_UUID == lider_UUID && VehicleNumber.value(local_UUID) != 1)
