@@ -1,0 +1,46 @@
+export PX4_HOME_ALT=530
+export PX4_HOME_LON=43.0877167
+export PX4_HOME_LAT=44.0767085
+./Tools/sitl_multiple_run.sh 5
+./Tools/jmavsim_run.sh -l
+
+
+
+export PX4_HOME_ALT=530
+export PX4_HOME_LON=43.0877167
+export PX4_HOME_LAT=44.0767085
+./Tools/jmavsim_run.sh -p 4561 -l
+
+export PX4_HOME_ALT=530
+export PX4_HOME_LON=43.0877167
+export PX4_HOME_LAT=44.0767085
+./Tools/jmavsim_run.sh -p 4562 -l
+
+export PX4_HOME_ALT=530
+export PX4_HOME_LON=43.0877167
+export PX4_HOME_LAT=44.0767085
+./Tools/jmavsim_run.sh -p 4563 -l
+
+export PX4_HOME_ALT=530
+export PX4_HOME_LON=43.0877167
+export PX4_HOME_LAT=44.0767085
+./Tools/jmavsim_run.sh -p 4564 -l
+
+
+export PX4_HOME_ALT=530
+export PX4_HOME_LON=43.0877167
+export PX4_HOME_LAT=44.0767085
+./Tools/sitl_multiple_run.sh 3
+./Tools/jmavsim_run.sh -l
+
+
+
+export PX4_HOME_ALT=530
+export PX4_HOME_LON=43.0877167
+export PX4_HOME_LAT=44.0767085
+./Tools/jmavsim_run.sh -p 4561 -l
+
+export PX4_HOME_ALT=530
+export PX4_HOME_LON=43.0877167
+export PX4_HOME_LAT=44.0767085
+./Tools/jmavsim_run.sh -p 4562 -l
