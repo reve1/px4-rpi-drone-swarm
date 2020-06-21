@@ -1,9 +1,13 @@
 # px4-rpi-drone-swarm
 
-Координаты для Энергетика
+![](workgif.gif)
 
+
+<details>
+  <summary>Координаты для Энергетика</summary>
+    
 Home
-
+    
 lat 440767084
 lon 430877167
 alt 530000
@@ -19,17 +23,26 @@ alt 540000
 lat 440764170
 lon 430876500
 alt 540000
+</details>
 
-
-export PX4_HOME_LAT=44.0767085
+<details>
+  <summary>Симулятор</summary>
+    
+export PX4_HOME_ALT=530
 
 export PX4_HOME_LON=43.0877167
 
-export PX4_HOME_ALT=530
+export PX4_HOME_LAT=44.0767085
+
+export HEADLESS=1
 
 make px4_sitl_default jmavsim
 
+</details>
 
+<details>
+  <summary>Bluetooth tweaks</summary>
+    
 sdptool search SP
 
 /etc/bluetooth/
@@ -45,12 +58,5 @@ sudo rfcomm connect hci0 B8:27:EB:89:C5:44 8
 3. A4:17:31:36:3E:16 `Notebook (Linux Ubuntu 19.04)`
 
 4. 00:1A:7D:11:A1:6A  `HPN (Linux Ubuntu 18.04)` or `HPN (Windows 10)`
-
-
-
-    //quint128 buffer = QBluetoothUuid(...).toUInt128();
-    quint128 buffer = QBluetoothUuid(serviceUuid).toUInt128();
-    quint128 correctedUuid = {};
-    for (int i = 0; i < 16; i++)
-        correctedUuid.data[15 - i] = buffer.data[i];
-    qDebug() << QBluetoothUuid(correctedUuid);
+    
+</details>
