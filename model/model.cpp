@@ -270,41 +270,5 @@ void Model::checkPossition()
             emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
             return;
         }
-        /*
-        if (180 > VehicleAngle.value(lider_UUID) && VehicleAngle.value(lider_UUID) >= 0)
-        {
-            if (VehicleAngle.value(lider_UUID ) + 225 > 360)
-            {
-                double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - yaw_rad;              //225 degrees
-                //double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - 2.36;               //135 degrees
-                double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * position * 10);   //x
-                double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * position * 10);   //y
-                float targetAMSL = VehicleGPAMSL.value(lider_UUID);                                         //z
-                float targetYaw = VehicleAngle.value(lider_UUID);                                           //yaw
-                emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
-                return;
-            }
-            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + yaw_rad;                         //225 degrees
-            //double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 2.36;                          //135 degrees
-            double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * position * 10);       //x
-            double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * position * 10);       //y
-            float targetAMSL = VehicleGPAMSL.value(lider_UUID);                                             //zs
-            float targetYaw = VehicleAngle.value(lider_UUID);                                               //yaw
-            emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
-            return;
-        }
-
-        if (-180 < VehicleAngle.value(lider_UUID) && VehicleAngle.value(lider_UUID) < 0)
-        {
-            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + yaw_rad;                         //225 degrees
-            //double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 2.36;                          //135 degrees
-            double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * position * 10);       //x
-            double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * position * 10);       //y
-            float targetAMSL = VehicleGPAMSL.value(lider_UUID);                                             //z
-            float targetYaw = VehicleAngle.value(lider_UUID);                                               //yaw
-            emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
-            return;
-        }
-*/
     }
 }
