@@ -215,7 +215,7 @@ void Model::checkPossition()
         double yaw_rad = (VehicleNumber.value(local_UUID) % 2 == 0) ? 3.93 : 2.36;
         int position = VehicleNumber.value(local_UUID) / 2;
 
-        //qDebug() << yaw_rad;
+        //qDebug() << position;
         //qDebug() << position;
 
         using GlobalCoordinate = mavsdk::geometry::CoordinateTransformation::GlobalCoordinate;
@@ -228,12 +228,13 @@ void Model::checkPossition()
 
         if (180 > VehicleAngle.value(lider_UUID) && VehicleAngle.value(lider_UUID) >= 0)
         {
-            if (VehicleAngle.value(lider_UUID ) + 225 > 360)
+            if (VehicleAngle.value(lider_UUID ) + 225 > 360 && VehicleNumber.value(local_UUID) % 2 == 0)
             {
                 double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - yaw_rad;              //225 degrees
+                //double x = (6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID))) - (6.28 - yaw_rad);              //225 degrees
                 //double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - 2.36;               //135 degrees
                 //double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * position * 10);   //x
-                GlobalCoordinate global_pos = ct.global_from_local({qCos(x)*5,qSin(x)*5});
+                GlobalCoordinate global_pos = ct.global_from_local({qCos(x)*5*position,qSin(x)*5*position});
                 double targetLat = global_pos.latitude_deg;
                 //double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * position * 10);   //y
                 double targetLon = global_pos.longitude_deg;
@@ -245,7 +246,7 @@ void Model::checkPossition()
             double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + yaw_rad;                         //225 degrees
             //double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 2.36;                          //135 degrees
             //double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * position * 10);       //x
-            GlobalCoordinate global_pos = ct.global_from_local({qCos(x)*5,qSin(x)*5});
+            GlobalCoordinate global_pos = ct.global_from_local({qCos(x)*5*position,qSin(x)*5*position});
             double targetLat = global_pos.latitude_deg;
             //double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * position * 10);       //y
             double targetLon = global_pos.longitude_deg;
@@ -260,7 +261,7 @@ void Model::checkPossition()
             double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + yaw_rad;                         //225 degrees
             //double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 2.36;                          //135 degrees
             //double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * position * 10);       //x
-            GlobalCoordinate global_pos = ct.global_from_local({qCos(x)*5,qSin(x)*5});
+            GlobalCoordinate global_pos = ct.global_from_local({qCos(x)*5*position,qSin(x)*5*position});
             double targetLat = global_pos.latitude_deg;
             //double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * position * 10);       //y
             double targetLon = global_pos.longitude_deg;
@@ -269,41 +270,5 @@ void Model::checkPossition()
             emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
             return;
         }
-        /*
-        if (180 > VehicleAngle.value(lider_UUID) && VehicleAngle.value(lider_UUID) >= 0)
-        {
-            if (VehicleAngle.value(lider_UUID ) + 225 > 360)
-            {
-                double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - yaw_rad;              //225 degrees
-                //double x = 6.28 - qDegreesToRadians(VehicleAngle.value(lider_UUID)) - 2.36;               //135 degrees
-                double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * position * 10);   //x
-                double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * position * 10);   //y
-                float targetAMSL = VehicleGPAMSL.value(lider_UUID);                                         //z
-                float targetYaw = VehicleAngle.value(lider_UUID);                                           //yaw
-                emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
-                return;
-            }
-            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + yaw_rad;                         //225 degrees
-            //double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 2.36;                          //135 degrees
-            double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * position * 10);       //x
-            double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * position * 10);       //y
-            float targetAMSL = VehicleGPAMSL.value(lider_UUID);                                             //zs
-            float targetYaw = VehicleAngle.value(lider_UUID);                                               //yaw
-            emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
-            return;
-        }
-
-        if (-180 < VehicleAngle.value(lider_UUID) && VehicleAngle.value(lider_UUID) < 0)
-        {
-            double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + yaw_rad;                         //225 degrees
-            //double x = qDegreesToRadians(VehicleAngle.value(lider_UUID)) + 2.36;                          //135 degrees
-            double targetLat = VehicleGPLat.value(lider_UUID) + qCos(x)*(00.0000125 * position * 10);       //x
-            double targetLon = VehicleGPLon.value(lider_UUID) + qSin(x)*(00.0000125 * position * 10);       //y
-            float targetAMSL = VehicleGPAMSL.value(lider_UUID);                                             //z
-            float targetYaw = VehicleAngle.value(lider_UUID);                                               //yaw
-            emit goToPosition (targetLat,targetLon,targetAMSL,targetYaw);
-            return;
-        }
-*/
     }
 }

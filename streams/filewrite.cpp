@@ -7,11 +7,11 @@ FileWrite::FileWrite()
 void FileWrite::WriteFromClass(int flag, QString data)
 {
 #if defined (Q_OS_ANDROID)
-        QString path = "/storage/emulated/0/";      //Android
+        QString path = "/storage/emulated/0/";                  //Android
 #elif defined (Q_OS_WIN)
-        QString path = "C:\\Users\\Public\\Documents\\";     //Win
+        QString path = "C:\\Users\\Public\\Documents\\";        //Win
 #else
-        QString path = "/var/log/s500/";            //linux-RPi
+        QString path = "/var/log/s500/";                        //linux-RPi
 #endif
     QString name;
     switch(flag)

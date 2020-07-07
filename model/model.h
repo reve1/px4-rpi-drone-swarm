@@ -104,9 +104,6 @@ private slots:
     void sendTimer();
     void vehicleLocalTimeStamp();
     void checkPossition();
-    //double CONTROLLERgetGlobalPositionLat () {return cm->GlobalPositionLat;}
-    //void CONTROLLERsetGlobalPositionLat (double GlobalPositionLat_SET) {cm->GlobalPositionLat = GlobalPositionLat_SET; }
 };
-
 
 #endif // MODEL_H
